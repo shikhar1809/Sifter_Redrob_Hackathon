@@ -128,7 +128,7 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand-lockup">
-          <img className="brand-logo" src="/Logo.png" alt="Sifter" />
+          <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="Sifter" />
           <div>
             <div className="brand-name">Sifter</div>
             <div className="brand-subtitle">local recruitment pipeline</div>
