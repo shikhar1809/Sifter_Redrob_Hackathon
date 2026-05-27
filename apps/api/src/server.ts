@@ -66,36 +66,36 @@ app.post("/pipeline-runs", async (request, reply) => {
   let runId: string | null = null;
   result.intelligence = {
     provider: "gemini",
-    enabled: config.geminiReviewEnabled,
+    enabled: config.geminiReviewEnabled && body.data.options.aiReview,
     configured: Boolean(config.geminiApiKey),
-    status: config.geminiReviewEnabled && config.geminiApiKey ? "fallback" : "disabled",
+    status: config.geminiReviewEnabled && body.data.options.aiReview && config.geminiApiKey ? "fallback" : "disabled",
     model: config.geminiModel,
     reviewedCandidates: 0,
     message:
-      config.geminiReviewEnabled && config.geminiApiKey
-        ? "Gemini review did not attach; local deterministic report is available."
-        : "Gemini review is disabled or not configured; local deterministic report is available.",
+      config.geminiReviewEnabled && body.data.options.aiReview && config.geminiApiKey
+        ? "AI review did not attach; local deterministic report is available."
+        : "AI review is off or not configured; local deterministic report is available.",
   };
 
-  try {
-    const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, result.final);
-    result.invited = attachAiReviews(result.invited, reviews);
-    result.simulation = attachAiReviews(result.simulation, reviews);
-    result.final = attachAiReviews(result.final, reviews);
-    result.intelligence = {
-      provider: "gemini",
-      enabled: config.geminiReviewEnabled,
-      configured: Boolean(config.geminiApiKey),
-      status: reviews.size ? "completed" : result.intelligence.status,
-      model: config.geminiModel,
-      reviewedCandidates: reviews.size,
-      message: reviews.size
-        ? `Gemini reviewed ${reviews.size} recommended candidate${reviews.size === 1 ? "" : "s"}.`
-        : result.intelligence.message,
-    };
-  } catch (error) {
-    result.intelligence.message = "Gemini review failed during this run; local deterministic report is available.";
-    request.log.warn({ error }, "Gemini review failed; continuing with deterministic results");
+  if (body.data.options.aiReview) {
+    try {
+      const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, result.final);
+      result.invited = attachAiReviews(result.invited, reviews);
+      result.simulation = attachAiReviews(result.simulation, reviews);
+      result.final = attachAiReviews(result.final, reviews);
+      result.intelligence = {
+        provider: "gemini",
+        enabled: config.geminiReviewEnabled,
+        configured: Boolean(config.geminiApiKey),
+        status: reviews.size ? "completed" : result.intelligence.status,
+        model: config.geminiModel,
+        reviewedCandidates: reviews.size,
+        message: reviews.size ? `AI reviewed ${reviews.size} recommended candidate${reviews.size === 1 ? "" : "s"}.` : result.intelligence.message,
+      };
+    } catch (error) {
+      result.intelligence.message = "AI review failed during this run; local deterministic report is available.";
+      request.log.warn({ error }, "AI review failed; continuing with deterministic results");
+    }
   }
 
   try {

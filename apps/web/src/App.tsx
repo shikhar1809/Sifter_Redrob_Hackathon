@@ -9,8 +9,11 @@ type RunResponse = {
 
 type Phase = "role" | "setup" | "processing";
 type OutputFormat = "report_csv" | "report" | "csv";
+type PrivacyMode = "local" | "ai";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
+const softCandidateLimit = 500;
+const hardCandidateLimit = 2000;
 
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -39,6 +42,7 @@ export default function App() {
   const [phase, setPhase] = useState<Phase>("role");
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("report_csv");
   const [showAuditGates, setShowAuditGates] = useState(false);
+  const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("ai");
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -59,7 +63,8 @@ export default function App() {
   );
 
   const roleReady = roleDescription.trim().length >= 12 && roleTitle.trim().length > 0;
-  const setupReady = roleReady && candidates.length > 0 && inviteCap > 0 && Boolean(outputFormat);
+  const candidateLimitState = candidates.length > hardCandidateLimit ? "hard" : candidates.length > softCandidateLimit ? "soft" : "ok";
+  const setupReady = roleReady && candidates.length > 0 && candidates.length <= hardCandidateLimit && inviteCap > 0 && Boolean(outputFormat);
   const ready = setupReady;
 
   async function parseCsvText(nextCsv = csv) {
@@ -102,7 +107,7 @@ export default function App() {
         body: JSON.stringify({
           roleDescription,
           candidates,
-          options: { strictMode, inviteCap, githubMode: "fallback" },
+          options: { strictMode, inviteCap, githubMode: "fallback", aiReview: privacyMode === "ai" },
         }),
       });
       const payload: RunResponse | { error: unknown } = await response.json();
@@ -199,6 +204,50 @@ export default function App() {
     URL.revokeObjectURL(url);
   }
 
+  function downloadReport() {
+    if (!result || !finalWithScores.length) return;
+    const report = buildMarkdownReport({
+      roleTitle,
+      roleDescription,
+      result,
+      rows: finalWithScores,
+      outputFormat,
+      privacyMode,
+      strictMode,
+    });
+    const blob = new Blob([report], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "sifter_recruiter_report.md";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearCsvData() {
+    setCsv("");
+    setCandidates([]);
+    setUploadedFileName(null);
+    setResult(null);
+    setRunId(null);
+    setSimulationScores({});
+    setStatus("idle");
+    setProgressLabel("waiting for inputs");
+    setRunProgress(0);
+    setError(null);
+  }
+
+  function clearCurrentRun() {
+    setResult(null);
+    setRunId(null);
+    setSimulationScores({});
+    setStatus(candidates.length ? `parsed ${candidates.length} candidates` : "idle");
+    setProgressLabel("waiting for inputs");
+    setRunProgress(0);
+    setError(null);
+    setShowAuditGates(false);
+  }
+
   return (
     <main className="app-shell">
       {status === "running" ? <FilteringOverlay /> : null}
@@ -210,6 +259,10 @@ export default function App() {
           <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="Sifter" />
         </div>
         <div className="top-actions">
+          <button className="btn btn-secondary" onClick={downloadReport} disabled={!finalWithScores.length || outputFormat === "csv"}>
+            <Download size={16} />
+            Report
+          </button>
           <button className="btn btn-secondary" onClick={exportCsv} disabled={!finalWithScores.length || outputFormat === "report"}>
             <FileDown size={16} />
             Export
@@ -420,12 +473,50 @@ export default function App() {
               </Field>
             </div>
 
+            <Field label="Privacy mode">
+              <div className="segmented-control">
+                <button type="button" className={privacyMode === "local" ? "active" : ""} onClick={() => setPrivacyMode("local")}>
+                  Local only
+                </button>
+                <button type="button" className={privacyMode === "ai" ? "active" : ""} onClick={() => setPrivacyMode("ai")}>
+                  AI assisted
+                </button>
+              </div>
+              <div className="privacy-note">
+                {privacyMode === "local"
+                  ? "Candidate data stays in the local pipeline and uses deterministic scoring only."
+                  : "Recommended candidates are reviewed by the configured AI service for richer notes."}
+              </div>
+            </Field>
+
+            {candidates.length ? (
+              <div className={`candidate-limit ${candidateLimitState}`}>
+                <strong>{candidates.length} candidates loaded</strong>
+                <span>
+                  {candidateLimitState === "hard"
+                    ? `Hard limit is ${hardCandidateLimit}. Split the CSV before running.`
+                    : candidateLimitState === "soft"
+                      ? `Large file warning: above ${softCandidateLimit}, review may take longer.`
+                      : "CSV size is within the recommended local range."}
+                </span>
+              </div>
+            ) : null}
+
             <label className="toggle-control setup-toggle">
               <input type="checkbox" checked={strictMode} onChange={(event) => setStrictMode(event.target.checked)} />
               <span>Strict hard filter</span>
             </label>
 
             {error ? <div className="error-box">{error}</div> : null}
+
+            <div className="danger-actions">
+              <button className="btn btn-secondary" type="button" onClick={clearCsvData} disabled={!csv && !candidates.length && !result}>
+                Clear CSV
+              </button>
+              <button className="btn btn-secondary" type="button" onClick={clearCurrentRun} disabled={!result}>
+                Clear run
+              </button>
+            </div>
 
             <div className="stage-actions stage-actions-split">
               <button className="btn btn-secondary" type="button" onClick={() => setPhase("role")}>
@@ -474,11 +565,18 @@ export default function App() {
                 <span>Output</span>
                 <strong>{outputFormatLabel(outputFormat)}</strong>
               </div>
+              <div>
+                <span>Privacy</span>
+                <strong>{privacyMode === "ai" ? "AI assisted" : "Local only"}</strong>
+              </div>
             </div>
             <div className="stage-actions">
               <button className="btn btn-secondary" onClick={() => setPhase("setup")}>
                 <ArrowLeft size={16} />
                 Edit setup
+              </button>
+              <button className="btn btn-secondary" onClick={clearCurrentRun} disabled={!result}>
+                Clear run
               </button>
             </div>
             {error ? <div className="error-box">{error}</div> : null}
@@ -1012,6 +1110,78 @@ function countReasons(reasons: string[]): { label: string; count: number }[] {
     .filter(Boolean)
     .forEach((reason) => counts.set(reason, (counts.get(reason) ?? 0) + 1));
   return Array.from(counts, ([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count);
+}
+
+function buildMarkdownReport({
+  roleTitle,
+  roleDescription,
+  result,
+  rows,
+  outputFormat,
+  privacyMode,
+  strictMode,
+}: {
+  roleTitle: string;
+  roleDescription: string;
+  result: PipelineResult;
+  rows: GateCandidate[];
+  outputFormat: OutputFormat;
+  privacyMode: PrivacyMode;
+  strictMode: boolean;
+}) {
+  const rejected = result.gate1.filter((row) => !row.hardPass);
+  const reasons = countReasons(rejected.map((row) => row.hardReason ?? "not specified")).slice(0, 5);
+  const candidateSections = rows.slice(0, 5).map((row) => {
+    const report = buildCandidateReport(row);
+    return [
+      `## #${row.rank} ${row.name}`,
+      `Score: ${row.finalScore ?? "n/a"} | Confidence: ${row.hireConfidence ?? "n/a"} | Risk: ${report.riskLevel}`,
+      "",
+      `Next action: ${report.nextAction}`,
+      "",
+      `Personal note: ${report.note}`,
+      "",
+      `Strengths:`,
+      ...report.strengths.map((item) => `- ${item}`),
+      "",
+      `Weaknesses:`,
+      ...report.weaknesses.map((item) => `- ${item}`),
+      "",
+      `Missing evidence:`,
+      ...report.missingEvidence.map((item) => `- ${item}`),
+      "",
+      `Interview question: ${report.interviewQuestion}`,
+      "",
+      `Review basis: ${report.confidenceNote}`,
+      `Fields used: ${report.sourceFields.join(", ")}`,
+      "",
+    ].join("\n");
+  });
+
+  return [
+    `# Sifter Recruiter Report`,
+    "",
+    `Role: ${roleTitle || "Untitled role"}`,
+    `Generated: ${new Date().toLocaleString()}`,
+    `Output format: ${outputFormatLabel(outputFormat)}`,
+    `Privacy mode: ${privacyMode === "ai" ? "AI assisted" : "Local only"}`,
+    `Strict filter: ${strictMode ? "on" : "off"}`,
+    "",
+    `## Role Requirements`,
+    roleDescription,
+    "",
+    `## Summary`,
+    `- Uploaded: ${result.gate1.length}`,
+    `- Rejected: ${rejected.length}`,
+    `- Invited: ${result.invited.length}`,
+    `- Recommended: ${rows.length}`,
+    `- Review status: ${intelligenceMessage(result.intelligence)}`,
+    "",
+    `## Top Rejection Reasons`,
+    ...(reasons.length ? reasons.map((reason) => `- ${reason.label}: ${reason.count}`) : ["- No dominant hard-filter rejection reason."]),
+    "",
+    ...candidateSections,
+  ].join("\n");
 }
 
 function readError(payload: unknown): string {
