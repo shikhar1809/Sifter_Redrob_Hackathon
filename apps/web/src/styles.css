@@ -913,6 +913,13 @@ td {
   line-height: 1.1;
 }
 
+.report-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 .score-pill {
   display: inline-flex;
   align-items: center;
@@ -924,6 +931,17 @@ td {
   padding: 6px 9px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px;
+  font-weight: 900;
+}
+
+.reviewer-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #050505;
+  padding: 6px 9px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
   font-weight: 900;
 }
 
@@ -1026,6 +1044,37 @@ td {
   color: var(--muted);
   font-size: 13px;
   font-weight: 850;
+  line-height: 1.35;
+}
+
+.confidence-note {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 10px;
+}
+
+.confidence-note span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.confidence-note p {
+  margin: 0 0 7px;
+  color: #30302c;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.confidence-note strong {
+  display: block;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
   line-height: 1.35;
 }
 

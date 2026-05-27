@@ -1,4 +1,10 @@
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const here = dirname(fileURLToPath(import.meta.url));
+loadEnv();
+loadEnv({ path: resolve(here, "../../../.env") });
 
 export const config = {
   host: process.env.API_HOST ?? "127.0.0.1",
@@ -8,4 +14,7 @@ export const config = {
   authRequired: process.env.AUTH_REQUIRED === "true",
   keycloakJwksUrl: process.env.KEYCLOAK_JWKS_URL,
   keycloakIssuer: process.env.KEYCLOAK_ISSUER,
+  geminiApiKey: process.env.GEMINI_API_KEY,
+  geminiModel: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+  geminiReviewEnabled: process.env.GEMINI_REVIEW_ENABLED !== "false",
 };

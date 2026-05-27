@@ -789,9 +789,12 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
                     <span>#{row.rank}</span>
                     <strong>{row.name}</strong>
                   </div>
-                  <div className={`score-pill risk-${report.riskLevel.toLowerCase()}`}>
-                    <ClipboardList size={14} />
-                    {report.riskLevel} risk
+                  <div className="report-badges">
+                    <div className={`score-pill risk-${report.riskLevel.toLowerCase()}`}>
+                      <ClipboardList size={14} />
+                      {report.riskLevel} risk
+                    </div>
+                    <div className="reviewer-pill">{report.reviewer === "gemini" ? "Gemini review" : "Local review"}</div>
                   </div>
                 </div>
                 <p className="personal-note">{report.note}</p>
@@ -830,6 +833,11 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
                     <span>Interview question</span>
                     <p>{report.interviewQuestion}</p>
                   </div>
+                </div>
+                <div className="confidence-note">
+                  <span>Review basis</span>
+                  <p>{report.confidenceNote}</p>
+                  <strong>Fields used: {report.sourceFields.join(", ")}</strong>
                 </div>
                 <div className="rank-reason">{report.rankReason}</div>
               </article>
@@ -876,6 +884,7 @@ function buildClientShortlist(rows: GateCandidate[], scores: Record<string, numb
 }
 
 function buildCandidateReport(row: GateCandidate) {
+  const ai = row.aiReview;
   const riskLevel = candidateRisk(row);
   const missingEvidence = buildMissingEvidence(row);
   const nextAction = nextActionFor(row, riskLevel, missingEvidence);
@@ -906,13 +915,18 @@ function buildCandidateReport(row: GateCandidate) {
   ];
 
   return {
-    note: `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
-    strengths: strengths.length ? strengths : ["Cleared the required gates and remained competitive on score."],
-    weaknesses: weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
-    missingEvidence,
-    interviewQuestion,
-    nextAction,
-    riskLevel,
+    note:
+      ai?.personalNote ??
+      `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
+    strengths: ai?.strengths?.length ? ai.strengths : strengths.length ? strengths : ["Cleared the required gates and remained competitive on score."],
+    weaknesses: ai?.weaknesses?.length ? ai.weaknesses : weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
+    missingEvidence: ai?.missingEvidence?.length ? ai.missingEvidence : missingEvidence,
+    interviewQuestion: ai?.interviewQuestion ?? interviewQuestion,
+    nextAction: ai?.nextAction ?? nextAction,
+    riskLevel: ai?.riskLevel ?? riskLevel,
+    confidenceNote: ai?.confidenceNote ?? "Deterministic review only; no Gemini reviewer note was attached.",
+    sourceFields: ai?.sourceFields ?? ["skills", "summary", "scores"],
+    reviewer: ai?.provider ?? "local",
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
   };
 }

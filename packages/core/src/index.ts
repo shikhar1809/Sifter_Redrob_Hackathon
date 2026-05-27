@@ -73,6 +73,20 @@ export type GateCandidate = CandidateInput & {
   hireConfidence?: "provisional" | "high" | "medium" | "low";
   recommendation?: string;
   rank?: number;
+  aiReview?: CandidateAiReview;
+};
+
+export type CandidateAiReview = {
+  personalNote: string;
+  nextAction: string;
+  riskLevel: "Low" | "Medium" | "High";
+  strengths: string[];
+  weaknesses: string[];
+  missingEvidence: string[];
+  interviewQuestion: string;
+  confidenceNote: string;
+  sourceFields: string[];
+  provider: "gemini";
 };
 
 export type PipelineResult = {

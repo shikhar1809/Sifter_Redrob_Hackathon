@@ -6,6 +6,7 @@ import { z } from "zod";
 import { registerAuth } from "./auth.js";
 import { config } from "./config.js";
 import { checkDatabase, savePipelineRun } from "./db.js";
+import { attachAiReviews, reviewCandidatesWithGemini } from "./gemini.js";
 
 const app = Fastify({
   logger: {
@@ -29,6 +30,12 @@ app.get("/health", async () => ({
   ok: true,
   database: await checkDatabase(),
   authRequired: config.authRequired,
+  intelligence: {
+    provider: "gemini",
+    enabled: config.geminiReviewEnabled,
+    configured: Boolean(config.geminiApiKey),
+    model: config.geminiModel,
+  },
 }));
 
 app.post("/csv/parse", async (request, reply) => {
@@ -48,6 +55,15 @@ app.post("/pipeline-runs", async (request, reply) => {
 
   const result = runDeterministicPipeline(body.data);
   let runId: string | null = null;
+
+  try {
+    const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, result.final);
+    result.invited = attachAiReviews(result.invited, reviews);
+    result.simulation = attachAiReviews(result.simulation, reviews);
+    result.final = attachAiReviews(result.final, reviews);
+  } catch (error) {
+    request.log.warn({ error }, "Gemini review failed; continuing with deterministic results");
+  }
 
   try {
     runId = await savePipelineRun({
