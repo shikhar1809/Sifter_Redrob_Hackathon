@@ -201,6 +201,7 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      {status === "running" ? <FilteringOverlay /> : null}
       <MoneyPlantVine className="vine-top-right" />
       <MoneyPlantVine className="vine-left-edge" />
       <MoneyPlantVine className="vine-bottom-right" />
@@ -545,6 +546,24 @@ function StepRail({ phase }: { phase: Phase }) {
   );
 }
 
+function FilteringOverlay() {
+  const leaves = Array.from({ length: 18 }, (_, index) => index);
+
+  return (
+    <div className="filtering-overlay" role="status" aria-live="polite">
+      <div className="wind-field" aria-hidden="true">
+        {leaves.map((leaf) => (
+          <span key={leaf} className={`wind-leaf leaf-${leaf + 1}`} />
+        ))}
+      </div>
+      <div className="filtering-copy">
+        <span>Processing candidates</span>
+        <strong>Filtering Your Next Hire</strong>
+      </div>
+    </div>
+  );
+}
+
 function RangePair({
   label,
   min,
@@ -755,7 +774,7 @@ function ResultSummary({
         <Brain size={16} />
         <div>
           <strong>{intelligenceTitle(intelligence?.status)}</strong>
-          <span>{intelligence?.message ?? "Local deterministic report is available."}</span>
+          <span>{intelligenceMessage(intelligence)}</span>
         </div>
       </div>
       <div className="summary-grid">
@@ -813,7 +832,7 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
                       <ClipboardList size={14} />
                       {report.riskLevel} risk
                     </div>
-                    <div className="reviewer-pill">{report.reviewer === "gemini" ? "Gemini review" : "Local review"}</div>
+                    <div className="reviewer-pill">{report.reviewer === "local" ? "Local review" : "AI review"}</div>
                   </div>
                 </div>
                 <p className="personal-note">{report.note}</p>
@@ -943,7 +962,7 @@ function buildCandidateReport(row: GateCandidate) {
     interviewQuestion: ai?.interviewQuestion ?? interviewQuestion,
     nextAction: ai?.nextAction ?? nextAction,
     riskLevel: ai?.riskLevel ?? riskLevel,
-    confidenceNote: ai?.confidenceNote ?? "Deterministic review only; no Gemini reviewer note was attached.",
+    confidenceNote: ai?.confidenceNote ?? "Deterministic review only; no AI reviewer note was attached.",
     sourceFields: cleanSourceFields(ai?.sourceFields ?? ["skills", "summary", "profileScore", "deepScore", "ownershipScore"]),
     reviewer: ai?.provider ?? "local",
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
@@ -1014,9 +1033,18 @@ function outputFormatLabel(format: OutputFormat): string {
 }
 
 function intelligenceTitle(status?: NonNullable<PipelineResult["intelligence"]>["status"]): string {
-  if (status === "completed") return "Gemini review completed";
-  if (status === "fallback") return "Gemini fallback used";
+  if (status === "completed") return "AI review completed";
+  if (status === "fallback") return "AI fallback used";
   return "Local review only";
+}
+
+function intelligenceMessage(intelligence?: PipelineResult["intelligence"]): string {
+  if (!intelligence) return "Local deterministic report is available.";
+  if (intelligence.status === "completed") {
+    return `AI reviewed ${intelligence.reviewedCandidates} recommended candidate${intelligence.reviewedCandidates === 1 ? "" : "s"}.`;
+  }
+  if (intelligence.status === "fallback") return "AI review was unavailable during this run; local deterministic report is available.";
+  return "AI review is disabled or not configured; local deterministic report is available.";
 }
 
 function delay(ms: number) {
