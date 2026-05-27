@@ -142,43 +142,16 @@ textarea {
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 12px;
   min-width: 0;
 }
 
-.brand-logo-crop {
-  width: clamp(96px, 8.8vw, 108px);
-  height: clamp(88px, 8vw, 104px);
-  overflow: hidden;
-  flex: 0 0 auto;
-}
-
 .brand-logo {
-  width: clamp(280px, 22vw, 330px);
-  max-width: none;
+  width: clamp(220px, 24vw, 340px);
+  max-width: min(52vw, 340px);
   height: auto;
   display: block;
-  transform: translate(-4px, -24px);
-}
-
-.brand-name {
-  font-size: 16px;
-  font-weight: 950;
-  line-height: 1;
-}
-
-.brand-subtitle {
-  width: max-content;
-  max-width: 190px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: #ffffff;
-  padding: 6px 10px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 850;
-  line-height: 1;
-  text-transform: uppercase;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .top-actions,
@@ -610,12 +583,8 @@ td {
   }
 
   .brand-logo {
-    width: 280px;
-  }
-
-  .brand-logo-crop {
-    width: 96px;
-    height: 88px;
+    width: min(260px, 72vw);
+    max-width: 72vw;
   }
 
   .top-actions,

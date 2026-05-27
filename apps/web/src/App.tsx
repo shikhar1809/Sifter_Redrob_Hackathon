@@ -146,12 +146,7 @@ export default function App() {
       </div>
       <header className="topbar">
         <div className="brand-lockup">
-          <div className="brand-logo-crop" aria-label="Sifter">
-            <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="" />
-          </div>
-          <div>
-            <div className="brand-subtitle">local recruitment pipeline</div>
-          </div>
+          <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="Sifter" />
         </div>
         <div className="top-actions">
           <button className="btn btn-secondary" onClick={exportCsv} disabled={!finalWithScores.length}>
