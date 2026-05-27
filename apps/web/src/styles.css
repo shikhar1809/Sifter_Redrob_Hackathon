@@ -335,7 +335,7 @@ textarea {
 .input-stage {
   position: relative;
   z-index: 1;
-  width: min(760px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto;
 }
 
@@ -416,6 +416,64 @@ textarea {
 .role-builder {
   display: grid;
   gap: 2px;
+}
+
+.step-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px;
+  color: var(--muted);
+}
+
+.step-pill span {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #050505;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.step-pill strong {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+.step-pill.active {
+  background: #050505;
+  color: #ffffff;
+}
+
+.step-pill.active span,
+.step-pill.done span {
+  background: #050505;
+  color: #ffffff;
+}
+
+.step-pill.done {
+  background: #f7f7f3;
+  color: #050505;
 }
 
 .field-label {
@@ -570,6 +628,10 @@ textarea {
   line-height: 1.45;
 }
 
+.setup-role-preview {
+  margin-bottom: 14px;
+}
+
 .toggle-control {
   display: flex;
   align-items: end;
@@ -586,6 +648,14 @@ textarea {
   accent-color: #050505;
 }
 
+.setup-toggle {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 11px;
+}
+
 .pipeline-stack {
   display: grid;
   gap: 14px;
@@ -598,7 +668,7 @@ textarea {
 
 .workspace-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 10px;
 }
 
@@ -632,6 +702,29 @@ textarea {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+}
+
+.stage-actions-end {
+  justify-content: flex-end;
+}
+
+.stage-actions-split {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.run-step-button {
+  min-width: 180px;
+}
+
+.setup-waiting {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 11px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .gate-panel {
@@ -882,7 +975,8 @@ td {
   }
 
   .top-actions,
-  .button-row {
+  .button-row,
+  .stage-actions-split {
     display: grid;
     grid-template-columns: 1fr;
   }
@@ -900,7 +994,8 @@ td {
   }
 
   .console-metrics,
-  .settings-grid {
+  .settings-grid,
+  .step-rail {
     grid-template-columns: 1fr;
   }
 

@@ -1,11 +1,14 @@
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, ClipboardList, Download, FileDown, Play, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, ClipboardList, Download, FileDown, Play, Upload } from "lucide-react";
 import type { CandidateInput, GateCandidate, PipelineResult } from "@seederpro/core";
 
 type RunResponse = {
   runId: string | null;
   result: PipelineResult;
 };
+
+type Phase = "role" | "setup" | "processing";
+type OutputFormat = "report_csv" | "report" | "csv";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 
@@ -33,7 +36,8 @@ export default function App() {
   const [progressLabel, setProgressLabel] = useState("waiting for inputs");
   const [error, setError] = useState<string | null>(null);
   const [simulationScores, setSimulationScores] = useState<Record<string, number | "">>({});
-  const [phase, setPhase] = useState<"input" | "pipeline">("input");
+  const [phase, setPhase] = useState<Phase>("role");
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>("report_csv");
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -53,15 +57,9 @@ export default function App() {
     [experienceMax, experienceMin, keyLanguages, location, roleNotes, roleTitle, salaryMax, salaryMin, wantsProject, workMode],
   );
 
-  const ready = roleDescription.trim().length >= 12 && candidates.length > 0;
-  const readyMessage = ready
-    ? `Ready: ${candidates.length} candidates parsed`
-    : candidates.length === 0 && roleDescription.trim().length < 12
-      ? "Add a role description and upload or parse candidate CSV"
-      : candidates.length === 0
-        ? "Upload CSV or paste CSV, then parse candidates"
-        : "Add a role description before running";
-  const showReadiness = ready || roleDescription.trim().length < 12;
+  const roleReady = roleDescription.trim().length >= 12 && roleTitle.trim().length > 0;
+  const setupReady = roleReady && candidates.length > 0 && inviteCap > 0 && Boolean(outputFormat);
+  const ready = setupReady;
 
   async function parseCsvText(nextCsv = csv) {
     setError(null);
@@ -76,15 +74,16 @@ export default function App() {
     setCandidates(payload.candidates);
     setResult(null);
     setRunId(null);
-    setPhase("pipeline");
+    setPhase("setup");
     setStatus(`parsed ${payload.candidates.length} candidates`);
   }
 
   async function runPipeline() {
     if (!ready) {
-      setError(readyMessage);
+      setError("Complete role requirements, parse candidate CSV, choose output format, and set invite cap before running.");
       return;
     }
+    setPhase("processing");
     setStatus("running");
     setRunProgress(8);
     setProgressLabel("Preparing candidate data");
@@ -188,16 +187,18 @@ export default function App() {
             <FileDown size={16} />
             Export
           </button>
-          {phase === "pipeline" ? (
-            <button className="btn btn-secondary" onClick={() => setPhase("input")}>
+          {phase === "setup" ? (
+            <button className="btn btn-secondary" onClick={() => setPhase("role")}>
               <ArrowLeft size={16} />
-              Edit inputs
+              Role
             </button>
           ) : null}
-          <button className="btn btn-primary" onClick={runPipeline} disabled={!ready || status === "running"}>
-            <Play size={16} />
-            {status === "running" ? "Running" : "Run pipeline"}
-          </button>
+          {phase === "processing" ? (
+            <button className="btn btn-secondary" onClick={() => setPhase("setup")}>
+              <ArrowLeft size={16} />
+              Setup
+            </button>
+          ) : null}
         </div>
       </header>
 
@@ -232,143 +233,195 @@ export default function App() {
         </div>
       </section>
 
-      <div className={phase === "input" ? "input-stage" : "workbench pipeline-stage"}>
-        {phase === "input" ? (
-        <section className="panel input-panel">
-          <PanelTitle title="Inputs" meta={ready ? "ready" : "waiting"} />
-          {showReadiness ? <div className={`readiness ${ready ? "is-ready" : ""}`}>{readyMessage}</div> : null}
+      <div className={phase === "processing" ? "workbench pipeline-stage" : "input-stage"}>
+        {phase === "role" ? (
+          <section className="panel input-panel">
+            <PanelTitle title="Step 1: Role Requirements" meta={roleReady ? "ready" : "required"} />
+            <StepRail phase={phase} />
 
-          <div className="role-builder">
-            <Field label="Role title">
-              <input className="field-control compact-control" value={roleTitle} onChange={(event) => setRoleTitle(event.target.value)} />
-            </Field>
-
-            <RangePair
-              label="Experience"
-              min={0}
-              max={20}
-              unit="yrs"
-              low={experienceMin}
-              high={experienceMax}
-              setLow={(value) => setExperienceMin(Math.min(value, experienceMax))}
-              setHigh={(value) => setExperienceMax(Math.max(value, experienceMin))}
-            />
-
-            <Field label="Key languages / stack">
-              <input className="field-control compact-control" value={keyLanguages} onChange={(event) => setKeyLanguages(event.target.value)} placeholder="Python, Spark, Kafka, Airflow" />
-            </Field>
-
-            <Field label="Project evidence">
-              <div className="segmented-control">
-                <button type="button" className={wantsProject ? "active" : ""} onClick={() => setWantsProject(true)}>
-                  Required
-                </button>
-                <button type="button" className={!wantsProject ? "active" : ""} onClick={() => setWantsProject(false)}>
-                  Optional
-                </button>
-              </div>
-            </Field>
-
-            <Field label="Work mode">
-              <div className="segmented-control">
-                <button type="button" className={workMode === "location" ? "active" : ""} onClick={() => setWorkMode("location")}>
-                  Location
-                </button>
-                <button type="button" className={workMode === "remote" ? "active" : ""} onClick={() => setWorkMode("remote")}>
-                  Remote
-                </button>
-              </div>
-            </Field>
-
-            {workMode === "location" ? (
-              <Field label="Location">
-                <input className="field-control compact-control" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Bengaluru hybrid" />
+            <div className="role-builder">
+              <Field label="Role title">
+                <input className="field-control compact-control" value={roleTitle} onChange={(event) => setRoleTitle(event.target.value)} />
               </Field>
-            ) : null}
 
-            <RangePair
-              label="Salary expectation"
-              min={0}
-              max={100}
-              unit="LPA"
-              low={salaryMin}
-              high={salaryMax}
-              setLow={(value) => setSalaryMin(Math.min(value, salaryMax))}
-              setHigh={(value) => setSalaryMax(Math.max(value, salaryMin))}
-            />
+              <RangePair
+                label="Experience"
+                min={0}
+                max={20}
+                unit="yrs"
+                low={experienceMin}
+                high={experienceMax}
+                setLow={(value) => setExperienceMin(Math.min(value, experienceMax))}
+                setHigh={(value) => setExperienceMax(Math.max(value, experienceMin))}
+              />
 
-            <Field label="Extra signals">
-              <textarea className="field-control notes-box" value={roleNotes} onChange={(event) => setRoleNotes(event.target.value)} placeholder="Add preferred signals, dealbreakers, or context." />
-            </Field>
+              <Field label="Key languages / stack">
+                <input className="field-control compact-control" value={keyLanguages} onChange={(event) => setKeyLanguages(event.target.value)} placeholder="Python, Spark, Kafka, Airflow" />
+              </Field>
 
-            <div className="role-preview">
-              <span>Generated role brief</span>
+              <Field label="Project evidence">
+                <div className="segmented-control">
+                  <button type="button" className={wantsProject ? "active" : ""} onClick={() => setWantsProject(true)}>
+                    Required
+                  </button>
+                  <button type="button" className={!wantsProject ? "active" : ""} onClick={() => setWantsProject(false)}>
+                    Optional
+                  </button>
+                </div>
+              </Field>
+
+              <Field label="Work mode">
+                <div className="segmented-control">
+                  <button type="button" className={workMode === "location" ? "active" : ""} onClick={() => setWorkMode("location")}>
+                    Location
+                  </button>
+                  <button type="button" className={workMode === "remote" ? "active" : ""} onClick={() => setWorkMode("remote")}>
+                    Remote
+                  </button>
+                </div>
+              </Field>
+
+              {workMode === "location" ? (
+                <Field label="Location">
+                  <input className="field-control compact-control" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Bengaluru hybrid" />
+                </Field>
+              ) : null}
+
+              <RangePair
+                label="Salary expectation"
+                min={0}
+                max={100}
+                unit="LPA"
+                low={salaryMin}
+                high={salaryMax}
+                setLow={(value) => setSalaryMin(Math.min(value, salaryMax))}
+                setHigh={(value) => setSalaryMax(Math.max(value, salaryMin))}
+              />
+
+              <Field label="Extra signals">
+                <textarea className="field-control notes-box" value={roleNotes} onChange={(event) => setRoleNotes(event.target.value)} placeholder="Add preferred signals, dealbreakers, or context." />
+              </Field>
+
+              <div className="role-preview">
+                <span>Generated role brief</span>
+                <p>{roleDescription}</p>
+              </div>
+            </div>
+
+            <div className="stage-actions stage-actions-end">
+              <button
+                className="btn btn-primary"
+                type="button"
+                disabled={!roleReady}
+                onClick={() => {
+                  setError(null);
+                  setPhase("setup");
+                }}
+              >
+                <ArrowRight size={16} />
+                Continue
+              </button>
+            </div>
+          </section>
+        ) : null}
+
+        {phase === "setup" ? (
+          <section className="panel input-panel">
+            <PanelTitle title="Step 2: CSV Upload & Output Setup" meta={candidates.length ? `${candidates.length} parsed` : "waiting"} />
+            <StepRail phase={phase} />
+
+            <div className="role-preview setup-role-preview">
+              <span>Role locked for this run</span>
               <p>{roleDescription}</p>
             </div>
-          </div>
 
-          <Field label="Candidate CSV">
-            <div className="button-row">
-              <button className="btn btn-secondary" type="button" onClick={() => fileInputRef.current?.click()}>
-                <Upload size={16} />
-                Upload CSV
+            <Field label="Candidate CSV">
+              <div className="button-row">
+                <button className="btn btn-secondary" type="button" onClick={() => fileInputRef.current?.click()}>
+                  <Upload size={16} />
+                  Upload CSV
+                </button>
+                <input
+                  ref={fileInputRef}
+                  className="hidden-input"
+                  type="file"
+                  accept=".csv,text/csv"
+                  onClick={(event) => {
+                    event.currentTarget.value = "";
+                  }}
+                  onChange={(event) => importCsvFile(event.target.files?.[0] ?? null)}
+                />
+                <button className="btn btn-secondary" type="button" onClick={downloadTemplate}>
+                  <Download size={16} />
+                  Template
+                </button>
+              </div>
+              <div className="file-state">
+                <span>{uploadedFileName ? `Uploaded: ${uploadedFileName}` : "No file uploaded yet"}</span>
+                <span>{candidates.length ? `${candidates.length} candidates parsed` : "0 candidates parsed"}</span>
+              </div>
+              <textarea className="field-control csv-box" value={csv} onChange={(event) => setCsv(event.target.value)} placeholder="Paste candidate CSV here" />
+              <button
+                className="btn btn-secondary full-width"
+                type="button"
+                onClick={() =>
+                  parseCsvText().catch((err: Error) => {
+                    setStatus("error");
+                    setCandidates([]);
+                    setError(err.message);
+                  })
+                }
+              >
+                Parse CSV
               </button>
-              <input
-                ref={fileInputRef}
-                className="hidden-input"
-                type="file"
-                accept=".csv,text/csv"
-                onClick={(event) => {
-                  event.currentTarget.value = "";
-                }}
-                onChange={(event) => importCsvFile(event.target.files?.[0] ?? null)}
-              />
-              <button className="btn btn-secondary" type="button" onClick={downloadTemplate}>
-                <Download size={16} />
-                Template
-              </button>
-            </div>
-            <div className="file-state">
-              <span>{uploadedFileName ? `Uploaded: ${uploadedFileName}` : "No file uploaded yet"}</span>
-              <span>{candidates.length ? `${candidates.length} candidates parsed` : "0 candidates parsed"}</span>
-            </div>
-            <textarea className="field-control csv-box" value={csv} onChange={(event) => setCsv(event.target.value)} placeholder="Paste candidate CSV here" />
-            <button
-              className="btn btn-secondary full-width"
-              type="button"
-              onClick={() =>
-                parseCsvText().catch((err: Error) => {
-                  setStatus("error");
-                  setCandidates([]);
-                  setError(err.message);
-                })
-              }
-            >
-              Parse CSV
-            </button>
-          </Field>
-
-          <div className="settings-grid">
-            <Field label="Invite cap">
-              <select className="field-control compact-control" value={inviteCap} onChange={(event) => setInviteCap(Number(event.target.value))}>
-                <option value={3}>Top 3</option>
-                <option value={5}>Top 5</option>
-                <option value={8}>Top 8</option>
-              </select>
             </Field>
-            <label className="toggle-control">
+
+            <div className="settings-grid">
+              <Field label="Output format">
+                <select className="field-control compact-control" value={outputFormat} onChange={(event) => setOutputFormat(event.target.value as OutputFormat)}>
+                  <option value="report_csv">Report + CSV</option>
+                  <option value="report">Report only</option>
+                  <option value="csv">CSV only</option>
+                </select>
+              </Field>
+              <Field label="Invite cap">
+                <select className="field-control compact-control" value={inviteCap} onChange={(event) => setInviteCap(Number(event.target.value))}>
+                  <option value={3}>Top 3</option>
+                  <option value={5}>Top 5</option>
+                  <option value={8}>Top 8</option>
+                </select>
+              </Field>
+            </div>
+
+            <label className="toggle-control setup-toggle">
               <input type="checkbox" checked={strictMode} onChange={(event) => setStrictMode(event.target.checked)} />
               <span>Strict hard filter</span>
             </label>
-          </div>
 
-          {error ? <div className="error-box">{error}</div> : null}
-          {runId ? <div className="run-id">Saved run: {runId}</div> : null}
-        </section>
-        ) : (
+            {error ? <div className="error-box">{error}</div> : null}
+
+            <div className="stage-actions stage-actions-split">
+              <button className="btn btn-secondary" type="button" onClick={() => setPhase("role")}>
+                <ArrowLeft size={16} />
+                Back
+              </button>
+              {setupReady ? (
+                <button className="btn btn-primary run-step-button" onClick={runPipeline} disabled={status === "running"}>
+                  <Play size={16} />
+                  {status === "running" ? "Running" : "Run pipeline"}
+                </button>
+              ) : (
+                <div className="setup-waiting">Run appears after CSV is parsed and settings are ready.</div>
+              )}
+            </div>
+          </section>
+        ) : null}
+
+        {phase === "processing" ? (
         <section className="pipeline-stack">
           <section className="panel run-panel">
-            <PanelTitle title="Pipeline Workspace" meta={ready ? `${candidates.length} candidates loaded` : "needs input"} />
+            <PanelTitle title="Step 3: Processing & Results" meta={ready ? `${candidates.length} candidates loaded` : "needs input"} />
+            <StepRail phase={phase} />
             <div className="workspace-summary">
               <div>
                 <span>Role</span>
@@ -390,15 +443,15 @@ export default function App() {
                 <span>Source</span>
                 <strong>{uploadedFileName ?? "Pasted CSV"}</strong>
               </div>
+              <div>
+                <span>Output</span>
+                <strong>{outputFormatLabel(outputFormat)}</strong>
+              </div>
             </div>
             <div className="stage-actions">
-              <button className="btn btn-secondary" onClick={() => setPhase("input")}>
+              <button className="btn btn-secondary" onClick={() => setPhase("setup")}>
                 <ArrowLeft size={16} />
-                Edit inputs
-              </button>
-              <button className="btn btn-primary" onClick={runPipeline} disabled={!ready || status === "running"}>
-                <Play size={16} />
-                {status === "running" ? "Running" : "Run pipeline"}
+                Edit setup
               </button>
             </div>
             {error ? <div className="error-box">{error}</div> : null}
@@ -411,7 +464,7 @@ export default function App() {
           <TopFiveReport rows={finalWithScores} />
           <Final rows={finalWithScores} />
         </section>
-        )}
+        ) : null}
       </div>
     </main>
   );
@@ -431,6 +484,26 @@ function PanelTitle({ title, meta }: { title: string; meta: string }) {
     <div className="panel-title">
       <span>{title}</span>
       <span>{meta}</span>
+    </div>
+  );
+}
+
+function StepRail({ phase }: { phase: Phase }) {
+  const steps: { id: Phase; label: string }[] = [
+    { id: "role", label: "Role" },
+    { id: "setup", label: "CSV & Output" },
+    { id: "processing", label: "Processing" },
+  ];
+  const current = steps.findIndex((step) => step.id === phase);
+
+  return (
+    <div className="step-rail" aria-label="Pipeline steps">
+      {steps.map((step, index) => (
+        <div key={step.id} className={`step-pill ${index === current ? "active" : ""} ${index < current ? "done" : ""}`}>
+          <span>{index + 1}</span>
+          <strong>{step.label}</strong>
+        </div>
+      ))}
     </div>
   );
 }
@@ -747,6 +820,12 @@ function readError(payload: unknown): string {
 
 function quoteCsv(value: string): string {
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function outputFormatLabel(format: OutputFormat): string {
+  if (format === "report") return "Report only";
+  if (format === "csv") return "CSV only";
+  return "Report + CSV";
 }
 
 function delay(ms: number) {
