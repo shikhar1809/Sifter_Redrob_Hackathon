@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Download, FileDown, Play, Upload } from "lucide-react";
+import { ArrowLeft, ClipboardList, Download, FileDown, Play, Upload } from "lucide-react";
 import type { CandidateInput, GateCandidate, PipelineResult } from "@seederpro/core";
 
 type RunResponse = {
@@ -33,6 +33,7 @@ export default function App() {
   const [progressLabel, setProgressLabel] = useState("waiting for inputs");
   const [error, setError] = useState<string | null>(null);
   const [simulationScores, setSimulationScores] = useState<Record<string, number | "">>({});
+  const [phase, setPhase] = useState<"input" | "pipeline">("input");
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -74,6 +75,7 @@ export default function App() {
     setCandidates(payload.candidates);
     setResult(null);
     setRunId(null);
+    setPhase("pipeline");
     setStatus(`parsed ${payload.candidates.length} candidates`);
   }
 
@@ -185,6 +187,12 @@ export default function App() {
             <FileDown size={16} />
             Export
           </button>
+          {phase === "pipeline" ? (
+            <button className="btn btn-secondary" onClick={() => setPhase("input")}>
+              <ArrowLeft size={16} />
+              Edit inputs
+            </button>
+          ) : null}
           <button className="btn btn-primary" onClick={runPipeline} disabled={!ready || status === "running"}>
             <Play size={16} />
             {status === "running" ? "Running" : "Run pipeline"}
@@ -223,7 +231,8 @@ export default function App() {
         </div>
       </section>
 
-      <div className="workbench">
+      <div className={phase === "input" ? "input-stage" : "workbench pipeline-stage"}>
+        {phase === "input" ? (
         <section className="panel input-panel">
           <PanelTitle title="Inputs" meta={ready ? "ready" : "waiting"} />
           <div className={`readiness ${ready ? "is-ready" : ""}`}>{readyMessage}</div>
@@ -355,15 +364,53 @@ export default function App() {
           {error ? <div className="error-box">{error}</div> : null}
           {runId ? <div className="run-id">Saved run: {runId}</div> : null}
         </section>
-
+        ) : (
         <section className="pipeline-stack">
+          <section className="panel run-panel">
+            <PanelTitle title="Pipeline Workspace" meta={ready ? `${candidates.length} candidates loaded` : "needs input"} />
+            <div className="workspace-summary">
+              <div>
+                <span>Role</span>
+                <strong>{roleTitle || "Untitled role"}</strong>
+              </div>
+              <div>
+                <span>Experience</span>
+                <strong>
+                  {experienceMin}-{experienceMax} yrs
+                </strong>
+              </div>
+              <div>
+                <span>Salary</span>
+                <strong>
+                  {salaryMin}-{salaryMax} LPA
+                </strong>
+              </div>
+              <div>
+                <span>Source</span>
+                <strong>{uploadedFileName ?? "Pasted CSV"}</strong>
+              </div>
+            </div>
+            <div className="stage-actions">
+              <button className="btn btn-secondary" onClick={() => setPhase("input")}>
+                <ArrowLeft size={16} />
+                Edit inputs
+              </button>
+              <button className="btn btn-primary" onClick={runPipeline} disabled={!ready || status === "running"}>
+                <Play size={16} />
+                {status === "running" ? "Running" : "Run pipeline"}
+              </button>
+            </div>
+            {error ? <div className="error-box">{error}</div> : null}
+          </section>
           <Gate title="Gate 1: Hard Filter" rows={result?.gate1 ?? []} kind="gate1" />
           <Gate title="Gate 2: Profile Score" rows={result?.gate2 ?? []} kind="gate2" />
           <Gate title="Gate 3: Risk And Intent" rows={result?.gate3 ?? []} kind="gate3" />
           <Gate title="Gate 4: Ownership Probe" rows={result?.gate4 ?? []} kind="gate4" />
           <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
+          <TopFiveReport rows={finalWithScores} />
           <Final rows={finalWithScores} />
         </section>
+        )}
       </div>
     </main>
   );
@@ -570,6 +617,58 @@ function Final({ rows }: { rows: GateCandidate[] }) {
   );
 }
 
+function TopFiveReport({ rows }: { rows: GateCandidate[] }) {
+  const topRows = rows.slice(0, 5);
+  return (
+    <section className="panel report-panel">
+      <PanelTitle title="Top 5 Constructive Report" meta={`${topRows.length} profiles`} />
+      {!topRows.length ? (
+        <div className="empty-state">Run the pipeline to generate candidate notes.</div>
+      ) : (
+        <div className="report-grid">
+          {topRows.map((row) => {
+            const report = buildCandidateReport(row);
+            return (
+              <article key={`report-${row.id}`} className="report-card">
+                <div className="report-card-head">
+                  <div>
+                    <span>#{row.rank}</span>
+                    <strong>{row.name}</strong>
+                  </div>
+                  <div className="score-pill">
+                    <ClipboardList size={14} />
+                    {row.finalScore ?? 0}
+                  </div>
+                </div>
+                <p className="personal-note">{report.note}</p>
+                <div className="report-columns">
+                  <div>
+                    <span>Strengths</span>
+                    <ul>
+                      {report.strengths.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <span>Weaknesses</span>
+                    <ul>
+                      {report.weaknesses.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div className="rank-reason">{report.rankReason}</div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function headersFor(kind: "gate1" | "gate2" | "gate3" | "gate4") {
   if (kind === "gate1") return ["Name", "Result", "Experience", "Location", "Reason"];
   if (kind === "gate2") return ["Name", "Score", "Signals", "Status"];
@@ -601,6 +700,40 @@ function buildClientShortlist(rows: GateCandidate[], scores: Record<string, numb
     })
     .sort((a, b) => (b.finalScore ?? 0) - (a.finalScore ?? 0))
     .map((row, index) => ({ ...row, rank: index + 1 }));
+}
+
+function buildCandidateReport(row: GateCandidate) {
+  const strengths = [
+    row.profileSignals && row.profileSignals !== "Few explicit skill matches" ? row.profileSignals : "",
+    row.careerCoherence && !row.careerCoherence.includes("transition") ? row.careerCoherence : "",
+    row.githubSignal === "present" ? `GitHub evidence: ${row.githubDetail}` : "",
+    row.experience_years ? `${row.experience_years} years within the target range` : "",
+  ]
+    .filter(Boolean)
+    .slice(0, 3);
+
+  const weaknessPool = [
+    row.redFlags && row.redFlags !== "none" ? row.redFlags : "",
+    row.githubSignal !== "present" ? "Public project proof is thin; validate ownership live." : "",
+    row.hireConfidence === "provisional" ? "Final confidence still needs live simulation scoring." : "",
+    row.salary_expectation_lpa ? `Salary expectation is ${row.salary_expectation_lpa} LPA; confirm budget fit.` : "",
+  ].filter(Boolean);
+
+  const weaknesses = weaknessPool.slice(0, 3);
+  const skillText = row.skillsList.slice(0, 4).join(", ") || "the relevant stack";
+  const scoreParts = [
+    `profile ${row.profileScore ?? "-"}`,
+    `risk ${row.deepScore ?? "-"}`,
+    `ownership ${row.ownershipScore ?? "-"}`,
+    row.simulationScore == null ? "simulation pending" : `simulation ${row.simulationScore}`,
+  ];
+
+  return {
+    note: `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
+    strengths: strengths.length ? strengths : ["Cleared the required gates and remained competitive on score."],
+    weaknesses: weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
+    rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
+  };
 }
 
 function readError(payload: unknown): string {
