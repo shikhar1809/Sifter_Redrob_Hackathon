@@ -1,0 +1,28 @@
+{
+  "name": "seederpro",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source recruitment pipeline with transparent scoring and self-hostable infrastructure.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "predev": "npm run build --workspace @seederpro/core",
+    "dev": "concurrently -n api,web -c green,blue \"npm run dev --workspace @seederpro/api\" \"npm run dev --workspace @seederpro/web\"",
+    "predev:api": "npm run build --workspace @seederpro/core",
+    "dev:api": "npm run dev --workspace @seederpro/api",
+    "predev:web": "npm run build --workspace @seederpro/core",
+    "dev:web": "npm run dev --workspace @seederpro/web",
+    "build": "npm run build --workspace @seederpro/core && npm run build --workspace @seederpro/api && npm run build --workspace @seederpro/web",
+    "typecheck": "npm run typecheck --workspace @seederpro/core && npm run typecheck --workspace @seederpro/api && npm run typecheck --workspace @seederpro/web",
+    "lint": "npm run lint --workspace @seederpro/core && npm run lint --workspace @seederpro/api && npm run lint --workspace @seederpro/web",
+    "db:schema": "npm run db:schema --workspace @seederpro/api"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
