@@ -126,6 +126,24 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      <div className="eco-sprig sprig-one" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="eco-sprig sprig-two" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="eco-sprig sprig-three" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <header className="topbar">
         <div className="brand-lockup">
           <div className="brand-logo-crop" aria-label="Sifter">
