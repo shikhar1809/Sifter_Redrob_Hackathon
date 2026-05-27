@@ -147,17 +147,18 @@ textarea {
 }
 
 .brand-logo-crop {
-  width: clamp(100px, 9vw, 132px);
-  height: clamp(72px, 7vw, 94px);
+  width: clamp(96px, 8.8vw, 108px);
+  height: clamp(88px, 8vw, 104px);
   overflow: hidden;
   flex: 0 0 auto;
 }
 
 .brand-logo {
-  width: clamp(228px, 20vw, 300px);
+  width: clamp(280px, 22vw, 330px);
+  max-width: none;
   height: auto;
   display: block;
-  transform: translate(-7px, -6px);
+  transform: translate(-4px, -24px);
 }
 
 .brand-name {
@@ -609,12 +610,12 @@ td {
   }
 
   .brand-logo {
-    width: 238px;
+    width: 280px;
   }
 
   .brand-logo-crop {
-    width: 108px;
-    height: 76px;
+    width: 96px;
+    height: 88px;
   }
 
   .top-actions,
