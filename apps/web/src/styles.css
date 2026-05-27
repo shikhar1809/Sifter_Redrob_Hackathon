@@ -673,6 +673,53 @@ textarea {
   gap: 10px;
 }
 
+.intelligence-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 11px;
+}
+
+.intelligence-banner svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.intelligence-banner strong,
+.intelligence-banner span {
+  display: block;
+}
+
+.intelligence-banner strong {
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.intelligence-banner span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.intelligence-completed {
+  background: #050505;
+  color: #ffffff;
+}
+
+.intelligence-completed span {
+  color: #c5c5be;
+}
+
+.intelligence-fallback {
+  background: #f7f7f3;
+}
+
 .summary-message {
   margin-top: 10px;
   border: 1px solid var(--line);
@@ -778,6 +825,32 @@ textarea {
 
 .gate-panel {
   padding: 14px;
+}
+
+.audit-panel {
+  padding: 14px;
+}
+
+.audit-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #050505;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.audit-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .table-frame {

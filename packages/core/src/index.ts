@@ -98,6 +98,17 @@ export type PipelineResult = {
   invited: GateCandidate[];
   simulation: GateCandidate[];
   final: GateCandidate[];
+  intelligence?: PipelineIntelligence;
+};
+
+export type PipelineIntelligence = {
+  provider: "gemini";
+  enabled: boolean;
+  configured: boolean;
+  status: "completed" | "fallback" | "disabled";
+  model: string;
+  reviewedCandidates: number;
+  message: string;
 };
 
 const defaultSkills = [

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ClipboardList, Download, FileDown, Play, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Brain, ClipboardList, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
 import type { CandidateInput, GateCandidate, PipelineResult } from "@seederpro/core";
 
 type RunResponse = {
@@ -38,6 +38,7 @@ export default function App() {
   const [simulationScores, setSimulationScores] = useState<Record<string, number | "">>({});
   const [phase, setPhase] = useState<Phase>("role");
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("report_csv");
+  const [showAuditGates, setShowAuditGates] = useState(false);
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -482,13 +483,23 @@ export default function App() {
             {error ? <div className="error-box">{error}</div> : null}
           </section>
           {result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
-          <Gate title="Gate 1: Hard Filter" rows={result?.gate1 ?? []} kind="gate1" />
-          <Gate title="Gate 2: Profile Score" rows={result?.gate2 ?? []} kind="gate2" />
-          <Gate title="Gate 3: Risk And Intent" rows={result?.gate3 ?? []} kind="gate3" />
-          <Gate title="Gate 4: Ownership Probe" rows={result?.gate4 ?? []} kind="gate4" />
-          <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
           {outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
+          <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
           {outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
+          <section className="panel audit-panel">
+            <button className="audit-toggle" type="button" onClick={() => setShowAuditGates(!showAuditGates)}>
+              <ShieldCheck size={16} />
+              {showAuditGates ? "Hide audit gates" : "Show audit gates"}
+            </button>
+            {showAuditGates ? (
+              <div className="audit-stack">
+                <Gate title="Gate 1: Hard Filter" rows={result?.gate1 ?? []} kind="gate1" />
+                <Gate title="Gate 2: Profile Score" rows={result?.gate2 ?? []} kind="gate2" />
+                <Gate title="Gate 3: Risk And Intent" rows={result?.gate3 ?? []} kind="gate3" />
+                <Gate title="Gate 4: Ownership Probe" rows={result?.gate4 ?? []} kind="gate4" />
+              </div>
+            ) : null}
+          </section>
         </section>
         ) : null}
       </div>
@@ -731,6 +742,7 @@ function ResultSummary({
   const hardRejected = result.gate1.filter((row) => !row.hardPass);
   const reasons = countReasons(hardRejected.map((row) => row.hardReason ?? "not specified"));
   const topReasons = reasons.slice(0, 3);
+  const intelligence = result.intelligence;
   const message =
     recommended.length >= Math.min(inviteCap, 5)
       ? `${recommended.length} candidates are ready for review.`
@@ -739,6 +751,13 @@ function ResultSummary({
   return (
     <section className="panel summary-panel">
       <PanelTitle title="Recruiter Summary" meta="next action" />
+      <div className={`intelligence-banner intelligence-${intelligence?.status ?? "disabled"}`}>
+        <Brain size={16} />
+        <div>
+          <strong>{intelligenceTitle(intelligence?.status)}</strong>
+          <span>{intelligence?.message ?? "Local deterministic report is available."}</span>
+        </div>
+      </div>
       <div className="summary-grid">
         <Metric value={result.gate1.length} label="uploaded" />
         <Metric value={hardRejected.length} label="rejected" />
@@ -925,10 +944,20 @@ function buildCandidateReport(row: GateCandidate) {
     nextAction: ai?.nextAction ?? nextAction,
     riskLevel: ai?.riskLevel ?? riskLevel,
     confidenceNote: ai?.confidenceNote ?? "Deterministic review only; no Gemini reviewer note was attached.",
-    sourceFields: ai?.sourceFields ?? ["skills", "summary", "scores"],
+    sourceFields: cleanSourceFields(ai?.sourceFields ?? ["skills", "summary", "profileScore", "deepScore", "ownershipScore"]),
     reviewer: ai?.provider ?? "local",
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
   };
+}
+
+function cleanSourceFields(fields: string[]): string[] {
+  const allowed = ["name", "experience_years", "location", "skills", "summary", "salary_expectation_lpa", "github_url", "profileScore", "deepScore", "ownershipScore", "finalScore", "redFlags", "probeQuestion"];
+  const normalized = fields
+    .flatMap((field) => field.split(/,|;/))
+    .map((field) => field.trim())
+    .map((field) => allowed.find((allowedField) => field.toLowerCase().includes(allowedField.toLowerCase())) ?? field)
+    .filter((field) => allowed.includes(field));
+  return Array.from(new Set(normalized)).slice(0, 6);
 }
 
 function buildMissingEvidence(row: GateCandidate): string[] {
@@ -982,6 +1011,12 @@ function outputFormatLabel(format: OutputFormat): string {
   if (format === "report") return "Report only";
   if (format === "csv") return "CSV only";
   return "Report + CSV";
+}
+
+function intelligenceTitle(status?: NonNullable<PipelineResult["intelligence"]>["status"]): string {
+  if (status === "completed") return "Gemini review completed";
+  if (status === "fallback") return "Gemini fallback used";
+  return "Local review only";
 }
 
 function delay(ms: number) {

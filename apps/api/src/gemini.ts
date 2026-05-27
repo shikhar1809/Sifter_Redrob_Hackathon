@@ -119,6 +119,8 @@ function buildPrompt(roleDescription: string, candidates: GateCandidate[]): stri
         probeQuestion: candidate.probeQuestion,
       })),
     )}`,
+    "",
+    "sourceFields must be an array using only these field names when relevant: name, experience_years, location, skills, summary, salary_expectation_lpa, github_url, profileScore, deepScore, ownershipScore, finalScore, redFlags, probeQuestion.",
   ].join("\n");
 }
 

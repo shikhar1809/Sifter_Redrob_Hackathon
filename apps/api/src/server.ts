@@ -20,7 +20,7 @@ await app.register(cors, {
 });
 
 await app.register(rateLimit, {
-  max: 120,
+  max: 80,
   timeWindow: "1 minute",
 });
 
@@ -49,19 +49,52 @@ app.post("/csv/parse", async (request, reply) => {
   }
 });
 
+app.addHook("preHandler", async (request, reply) => {
+  if (request.method === "POST" && request.url === "/pipeline-runs") {
+    const contentLength = Number(request.headers["content-length"] ?? 0);
+    if (contentLength > 4 * 1024 * 1024) {
+      return reply.status(413).send({ error: "Pipeline request is too large. Split the CSV or reduce candidate count." });
+    }
+  }
+});
+
 app.post("/pipeline-runs", async (request, reply) => {
   const body = runPipelineInputSchema.safeParse(request.body);
   if (!body.success) return reply.status(400).send({ error: body.error.flatten() });
 
   const result = runDeterministicPipeline(body.data);
   let runId: string | null = null;
+  result.intelligence = {
+    provider: "gemini",
+    enabled: config.geminiReviewEnabled,
+    configured: Boolean(config.geminiApiKey),
+    status: config.geminiReviewEnabled && config.geminiApiKey ? "fallback" : "disabled",
+    model: config.geminiModel,
+    reviewedCandidates: 0,
+    message:
+      config.geminiReviewEnabled && config.geminiApiKey
+        ? "Gemini review did not attach; local deterministic report is available."
+        : "Gemini review is disabled or not configured; local deterministic report is available.",
+  };
 
   try {
     const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, result.final);
     result.invited = attachAiReviews(result.invited, reviews);
     result.simulation = attachAiReviews(result.simulation, reviews);
     result.final = attachAiReviews(result.final, reviews);
+    result.intelligence = {
+      provider: "gemini",
+      enabled: config.geminiReviewEnabled,
+      configured: Boolean(config.geminiApiKey),
+      status: reviews.size ? "completed" : result.intelligence.status,
+      model: config.geminiModel,
+      reviewedCandidates: reviews.size,
+      message: reviews.size
+        ? `Gemini reviewed ${reviews.size} recommended candidate${reviews.size === 1 ? "" : "s"}.`
+        : result.intelligence.message,
+    };
   } catch (error) {
+    result.intelligence.message = "Gemini review failed during this run; local deterministic report is available.";
     request.log.warn({ error }, "Gemini review failed; continuing with deterministic results");
   }
 
