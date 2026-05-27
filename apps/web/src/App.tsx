@@ -162,8 +162,33 @@ export default function App() {
 
   function exportCsv() {
     if (!finalWithScores.length) return;
-    const columns = ["rank", "name", "finalScore", "hireConfidence", "experience_years", "location", "salary_expectation_lpa", "recommendation", "redFlags", "github_url"];
-    const body = finalWithScores.map((row) => columns.map((column) => quoteCsv(String(row[column as keyof GateCandidate] ?? ""))).join(","));
+    const columns = [
+      "rank",
+      "name",
+      "finalScore",
+      "hireConfidence",
+      "nextAction",
+      "riskLevel",
+      "missingEvidence",
+      "interviewQuestion",
+      "experience_years",
+      "location",
+      "salary_expectation_lpa",
+      "recommendation",
+      "redFlags",
+      "github_url",
+    ];
+    const body = finalWithScores.map((row) => {
+      const report = buildCandidateReport(row);
+      const values: Record<string, unknown> = {
+        ...row,
+        nextAction: report.nextAction,
+        riskLevel: report.riskLevel,
+        missingEvidence: report.missingEvidence.join("; "),
+        interviewQuestion: report.interviewQuestion,
+      };
+      return columns.map((column) => quoteCsv(String(values[column] ?? ""))).join(",");
+    });
     const blob = new Blob([[columns.join(","), ...body].join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -183,7 +208,7 @@ export default function App() {
           <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="Sifter" />
         </div>
         <div className="top-actions">
-          <button className="btn btn-secondary" onClick={exportCsv} disabled={!finalWithScores.length}>
+          <button className="btn btn-secondary" onClick={exportCsv} disabled={!finalWithScores.length || outputFormat === "report"}>
             <FileDown size={16} />
             Export
           </button>
@@ -456,13 +481,14 @@ export default function App() {
             </div>
             {error ? <div className="error-box">{error}</div> : null}
           </section>
+          {result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
           <Gate title="Gate 1: Hard Filter" rows={result?.gate1 ?? []} kind="gate1" />
           <Gate title="Gate 2: Profile Score" rows={result?.gate2 ?? []} kind="gate2" />
           <Gate title="Gate 3: Risk And Intent" rows={result?.gate3 ?? []} kind="gate3" />
           <Gate title="Gate 4: Ownership Probe" rows={result?.gate4 ?? []} kind="gate4" />
           <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
-          <TopFiveReport rows={finalWithScores} />
-          <Final rows={finalWithScores} />
+          {outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
+          {outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
         </section>
         ) : null}
       </div>
@@ -691,30 +717,88 @@ function Final({ rows }: { rows: GateCandidate[] }) {
   );
 }
 
-function TopFiveReport({ rows }: { rows: GateCandidate[] }) {
+function ResultSummary({
+  result,
+  recommended,
+  inviteCap,
+  strictMode,
+}: {
+  result: PipelineResult;
+  recommended: GateCandidate[];
+  inviteCap: number;
+  strictMode: boolean;
+}) {
+  const hardRejected = result.gate1.filter((row) => !row.hardPass);
+  const reasons = countReasons(hardRejected.map((row) => row.hardReason ?? "not specified"));
+  const topReasons = reasons.slice(0, 3);
+  const message =
+    recommended.length >= Math.min(inviteCap, 5)
+      ? `${recommended.length} candidates are ready for review.`
+      : `Only ${recommended.length} candidate${recommended.length === 1 ? "" : "s"} met ${strictMode ? "strict" : "current"} filters. Relax filters or review rejected profiles if this feels too narrow.`;
+
+  return (
+    <section className="panel summary-panel">
+      <PanelTitle title="Recruiter Summary" meta="next action" />
+      <div className="summary-grid">
+        <Metric value={result.gate1.length} label="uploaded" />
+        <Metric value={hardRejected.length} label="rejected" />
+        <Metric value={result.invited.length} label="invited" />
+        <Metric value={recommended.length} label="recommended" />
+      </div>
+      <div className="summary-message">{message}</div>
+      <div className="reason-strip">
+        {topReasons.length ? (
+          topReasons.map((reason) => (
+            <div key={reason.label}>
+              <span>{reason.count}</span>
+              <strong>{reason.label}</strong>
+            </div>
+          ))
+        ) : (
+          <div>
+            <span>0</span>
+            <strong>No hard-filter rejection reason dominates.</strong>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inviteCap: number }) {
   const topRows = rows.slice(0, 5);
   return (
     <section className="panel report-panel">
-      <PanelTitle title="Top 5 Constructive Report" meta={`${topRows.length} profiles`} />
+      <PanelTitle title="Recommended Candidates" meta={`${topRows.length} profiles`} />
       {!topRows.length ? (
-        <div className="empty-state">Run the pipeline to generate candidate notes.</div>
+        <div className="empty-state">No recommended candidates yet. Review rejected profiles or relax strict filters.</div>
       ) : (
-        <div className="report-grid">
-          {topRows.map((row) => {
-            const report = buildCandidateReport(row);
-            return (
-              <article key={`report-${row.id}`} className="report-card">
+        <>
+          {topRows.length < Math.min(inviteCap, 5) ? (
+            <div className="recommendation-notice">
+              Only {topRows.length} candidate{topRows.length === 1 ? "" : "s"} met strict filters. You can relax filters or inspect rejected rows before deciding.
+            </div>
+          ) : null}
+          <div className="report-grid">
+            {topRows.map((row) => {
+              const report = buildCandidateReport(row);
+              return (
+                <article key={`report-${row.id}`} className="report-card">
                 <div className="report-card-head">
                   <div>
                     <span>#{row.rank}</span>
                     <strong>{row.name}</strong>
                   </div>
-                  <div className="score-pill">
+                  <div className={`score-pill risk-${report.riskLevel.toLowerCase()}`}>
                     <ClipboardList size={14} />
-                    {row.finalScore ?? 0}
+                    {report.riskLevel} risk
                   </div>
                 </div>
                 <p className="personal-note">{report.note}</p>
+                <div className="next-action-box">
+                  <span>Next action</span>
+                  <strong>{report.nextAction}</strong>
+                </div>
                 <div className="report-columns">
                   <div>
                     <span>Strengths</span>
@@ -733,11 +817,26 @@ function TopFiveReport({ rows }: { rows: GateCandidate[] }) {
                     </ul>
                   </div>
                 </div>
+                <div className="report-columns report-columns-lower">
+                  <div>
+                    <span>Missing evidence</span>
+                    <ul>
+                      {report.missingEvidence.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <span>Interview question</span>
+                    <p>{report.interviewQuestion}</p>
+                  </div>
+                </div>
                 <div className="rank-reason">{report.rankReason}</div>
               </article>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </section>
   );
@@ -777,6 +876,10 @@ function buildClientShortlist(rows: GateCandidate[], scores: Record<string, numb
 }
 
 function buildCandidateReport(row: GateCandidate) {
+  const riskLevel = candidateRisk(row);
+  const missingEvidence = buildMissingEvidence(row);
+  const nextAction = nextActionFor(row, riskLevel, missingEvidence);
+  const interviewQuestion = row.probeQuestion || row.scenarioQuestion || `Ask ${row.name} to walk through one production project and the tradeoffs they personally owned.`;
   const strengths = [
     row.profileSignals && row.profileSignals !== "Few explicit skill matches" ? row.profileSignals : "",
     row.careerCoherence && !row.careerCoherence.includes("transition") ? row.careerCoherence : "",
@@ -806,8 +909,47 @@ function buildCandidateReport(row: GateCandidate) {
     note: `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
     strengths: strengths.length ? strengths : ["Cleared the required gates and remained competitive on score."],
     weaknesses: weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
+    missingEvidence,
+    interviewQuestion,
+    nextAction,
+    riskLevel,
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
   };
+}
+
+function buildMissingEvidence(row: GateCandidate): string[] {
+  const missing = [];
+  if (row.githubSignal !== "present") missing.push("Public project or repository evidence.");
+  if (row.simulationScore == null) missing.push("Live simulation score.");
+  if (!row.summary.toLowerCase().includes("owned") && !row.summary.toLowerCase().includes("led")) missing.push("Clear ownership example.");
+  if (row.redFlags && row.redFlags !== "none") missing.push(`Clarification on ${row.redFlags}.`);
+  return missing.length ? missing.slice(0, 3) : ["No major missing evidence from CSV; verify examples in interview."];
+}
+
+function candidateRisk(row: GateCandidate): "Low" | "Medium" | "High" {
+  const flags = row.redFlags && row.redFlags !== "none" ? row.redFlags.split(";").length : 0;
+  if ((row.finalScore ?? 0) >= 85 && flags === 0 && row.simulationScore != null) return "Low";
+  if ((row.finalScore ?? 0) < 70 || flags >= 2) return "High";
+  return "Medium";
+}
+
+function nextActionFor(row: GateCandidate, riskLevel: "Low" | "Medium" | "High", missingEvidence: string[]): string {
+  if (riskLevel === "Low") return "Invite to interview with hiring team.";
+  if (row.simulationScore == null) return "Run live simulation or ask for project proof before final decision.";
+  if (missingEvidence.some((item) => item.toLowerCase().includes("repository") || item.toLowerCase().includes("ownership"))) {
+    return "Ask for missing project evidence, then compare with other recommended candidates.";
+  }
+  return "Keep as backup unless the interview resolves the risk.";
+}
+
+function countReasons(reasons: string[]): { label: string; count: number }[] {
+  const counts = new Map<string, number>();
+  reasons
+    .flatMap((reason) => reason.split(";"))
+    .map((reason) => reason.trim())
+    .filter(Boolean)
+    .forEach((reason) => counts.set(reason, (counts.get(reason) ?? 0) + 1));
+  return Array.from(counts, ([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count);
 }
 
 function readError(payload: unknown): string {
