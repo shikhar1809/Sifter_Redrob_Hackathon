@@ -253,6 +253,37 @@ textarea {
   font-size: 12px;
 }
 
+.progress-block {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 0 14px;
+}
+
+.progress-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #d7d7d1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.progress-track {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  background: #111111;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: #ffffff;
+  transition: width 420ms ease;
+}
+
 .console-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -371,6 +402,11 @@ textarea {
   margin-bottom: 14px;
 }
 
+.role-builder {
+  display: grid;
+  gap: 2px;
+}
+
 .field-label {
   display: block;
   margin-bottom: 7px;
@@ -396,6 +432,11 @@ textarea {
 
 .role-box {
   min-height: 145px;
+  line-height: 1.45;
+}
+
+.notes-box {
+  min-height: 76px;
   line-height: 1.45;
 }
 
@@ -427,6 +468,95 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.segmented-control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.segmented-control button {
+  min-height: 40px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: #ffffff;
+  color: #050505;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.segmented-control button:last-child {
+  border-right: 0;
+}
+
+.segmented-control button.active {
+  background: #050505;
+  color: #ffffff;
+}
+
+.range-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.range-head > span:last-child {
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.dual-range {
+  display: grid;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px 11px;
+}
+
+.dual-range input {
+  width: 100%;
+  accent-color: #050505;
+}
+
+.range-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.role-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #050505;
+  color: #ffffff;
+  padding: 12px;
+}
+
+.role-preview span {
+  display: block;
+  margin-bottom: 8px;
+  color: #c5c5be;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.role-preview p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .toggle-control {

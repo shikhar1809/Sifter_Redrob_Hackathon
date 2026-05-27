@@ -11,7 +11,16 @@ const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [roleDescription, setRoleDescription] = useState("");
+  const [roleTitle, setRoleTitle] = useState("Senior Data Engineer");
+  const [experienceMin, setExperienceMin] = useState(4);
+  const [experienceMax, setExperienceMax] = useState(7);
+  const [keyLanguages, setKeyLanguages] = useState("Python, Spark, Kafka, Airflow, GCP or AWS");
+  const [wantsProject, setWantsProject] = useState(true);
+  const [workMode, setWorkMode] = useState<"remote" | "location">("location");
+  const [location, setLocation] = useState("Bengaluru hybrid");
+  const [salaryMin, setSalaryMin] = useState(18);
+  const [salaryMax, setSalaryMax] = useState(28);
+  const [roleNotes, setRoleNotes] = useState("Prefer production pipeline ownership, distributed systems, and team collaboration.");
   const [csv, setCsv] = useState("");
   const [candidates, setCandidates] = useState<CandidateInput[]>([]);
   const [result, setResult] = useState<PipelineResult | null>(null);
@@ -20,6 +29,8 @@ export default function App() {
   const [strictMode, setStrictMode] = useState(true);
   const [inviteCap, setInviteCap] = useState(5);
   const [status, setStatus] = useState("idle");
+  const [runProgress, setRunProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("waiting for inputs");
   const [error, setError] = useState<string | null>(null);
   const [simulationScores, setSimulationScores] = useState<Record<string, number | "">>({});
 
@@ -27,6 +38,19 @@ export default function App() {
     if (!result) return [];
     return buildClientShortlist(result.simulation, simulationScores);
   }, [result, simulationScores]);
+
+  const roleDescription = useMemo(
+    () =>
+      [
+        `${roleTitle || "Role"}, ${experienceMin}-${experienceMax} years, ${workMode === "remote" ? "remote" : location || "location required"}, ${salaryMin}-${salaryMax} LPA.`,
+        `Must have ${keyLanguages || "the listed key skills"}.`,
+        wantsProject ? "Must show relevant production project ownership or shipped project evidence." : "Project portfolio is optional.",
+        roleNotes.trim(),
+      ]
+        .filter(Boolean)
+        .join(" "),
+    [experienceMax, experienceMin, keyLanguages, location, roleNotes, roleTitle, salaryMax, salaryMin, wantsProject, workMode],
+  );
 
   const ready = roleDescription.trim().length >= 12 && candidates.length > 0;
   const readyMessage = ready
@@ -59,27 +83,50 @@ export default function App() {
       return;
     }
     setStatus("running");
+    setRunProgress(8);
+    setProgressLabel("Preparing candidate data");
     setError(null);
-    const response = await fetch(`${apiBase}/pipeline-runs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roleDescription,
-        candidates,
-        options: { strictMode, inviteCap, githubMode: "fallback" },
-      }),
-    });
-    const payload: RunResponse | { error: unknown } = await response.json();
-    if (!response.ok) {
+    await delay(350);
+    setRunProgress(24);
+    setProgressLabel("Reading role parameters");
+    await delay(350);
+    setRunProgress(42);
+    setProgressLabel("Running screening gates");
+    try {
+      const response = await fetch(`${apiBase}/pipeline-runs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roleDescription,
+          candidates,
+          options: { strictMode, inviteCap, githubMode: "fallback" },
+        }),
+      });
+      const payload: RunResponse | { error: unknown } = await response.json();
+      if (!response.ok) {
+        setStatus("error");
+        setRunProgress(0);
+        setProgressLabel("pipeline stopped");
+        setError(readError(payload));
+        return;
+      }
+      setRunProgress(72);
+      setProgressLabel("Building shortlist");
+      await delay(450);
+      const typed = payload as RunResponse;
+      setResult(typed.result);
+      setRunId(typed.runId);
+      setSimulationScores({});
+      setRunProgress(100);
+      setProgressLabel("Pipeline complete");
+      setStatus("complete");
+      window.setTimeout(() => setRunProgress(0), 900);
+    } catch (err) {
       setStatus("error");
-      setError(readError(payload));
-      return;
+      setRunProgress(0);
+      setProgressLabel("pipeline stopped");
+      setError(err instanceof Error ? err.message : "Could not reach local API");
     }
-    const typed = payload as RunResponse;
-    setResult(typed.result);
-    setRunId(typed.runId);
-    setSimulationScores({});
-    setStatus("complete");
   }
 
   async function importCsvFile(file: File | null) {
@@ -158,6 +205,15 @@ export default function App() {
             <span>pipeline.status</span>
             <span>{status}</span>
           </div>
+          <div className="progress-block">
+            <div className="progress-copy">
+              <span>{progressLabel}</span>
+              <span>{runProgress ? `${runProgress}%` : "standby"}</span>
+            </div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${runProgress}%` }} />
+            </div>
+          </div>
           <div className="console-metrics">
             <Metric value={candidates.length} label="candidates" />
             <Metric value={result?.gate1.filter((candidate) => candidate.hardPass).length ?? 0} label="passed gate 1" />
@@ -172,14 +228,74 @@ export default function App() {
           <PanelTitle title="Inputs" meta={ready ? "ready" : "waiting"} />
           <div className={`readiness ${ready ? "is-ready" : ""}`}>{readyMessage}</div>
 
-          <Field label="Role description">
-            <textarea
-              className="field-control role-box"
-              value={roleDescription}
-              onChange={(event) => setRoleDescription(event.target.value)}
-              placeholder="Paste the exact role description here, including experience range, location, salary range, must-have skills, and preferred signals."
+          <div className="role-builder">
+            <Field label="Role title">
+              <input className="field-control compact-control" value={roleTitle} onChange={(event) => setRoleTitle(event.target.value)} />
+            </Field>
+
+            <RangePair
+              label="Experience"
+              min={0}
+              max={20}
+              unit="yrs"
+              low={experienceMin}
+              high={experienceMax}
+              setLow={(value) => setExperienceMin(Math.min(value, experienceMax))}
+              setHigh={(value) => setExperienceMax(Math.max(value, experienceMin))}
             />
-          </Field>
+
+            <Field label="Key languages / stack">
+              <input className="field-control compact-control" value={keyLanguages} onChange={(event) => setKeyLanguages(event.target.value)} placeholder="Python, Spark, Kafka, Airflow" />
+            </Field>
+
+            <Field label="Project evidence">
+              <div className="segmented-control">
+                <button type="button" className={wantsProject ? "active" : ""} onClick={() => setWantsProject(true)}>
+                  Required
+                </button>
+                <button type="button" className={!wantsProject ? "active" : ""} onClick={() => setWantsProject(false)}>
+                  Optional
+                </button>
+              </div>
+            </Field>
+
+            <Field label="Work mode">
+              <div className="segmented-control">
+                <button type="button" className={workMode === "location" ? "active" : ""} onClick={() => setWorkMode("location")}>
+                  Location
+                </button>
+                <button type="button" className={workMode === "remote" ? "active" : ""} onClick={() => setWorkMode("remote")}>
+                  Remote
+                </button>
+              </div>
+            </Field>
+
+            {workMode === "location" ? (
+              <Field label="Location">
+                <input className="field-control compact-control" value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Bengaluru hybrid" />
+              </Field>
+            ) : null}
+
+            <RangePair
+              label="Salary expectation"
+              min={0}
+              max={100}
+              unit="LPA"
+              low={salaryMin}
+              high={salaryMax}
+              setLow={(value) => setSalaryMin(Math.min(value, salaryMax))}
+              setHigh={(value) => setSalaryMax(Math.max(value, salaryMin))}
+            />
+
+            <Field label="Extra signals">
+              <textarea className="field-control notes-box" value={roleNotes} onChange={(event) => setRoleNotes(event.target.value)} placeholder="Add preferred signals, dealbreakers, or context." />
+            </Field>
+
+            <div className="role-preview">
+              <span>Generated role brief</span>
+              <p>{roleDescription}</p>
+            </div>
+          </div>
 
           <Field label="Candidate CSV">
             <div className="button-row">
@@ -267,6 +383,49 @@ function PanelTitle({ title, meta }: { title: string; meta: string }) {
     <div className="panel-title">
       <span>{title}</span>
       <span>{meta}</span>
+    </div>
+  );
+}
+
+function RangePair({
+  label,
+  min,
+  max,
+  unit,
+  low,
+  high,
+  setLow,
+  setHigh,
+}: {
+  label: string;
+  min: number;
+  max: number;
+  unit: string;
+  low: number;
+  high: number;
+  setLow: (value: number) => void;
+  setHigh: (value: number) => void;
+}) {
+  return (
+    <div className="field">
+      <div className="range-head">
+        <span className="field-label">{label}</span>
+        <span>
+          {low}-{high} {unit}
+        </span>
+      </div>
+      <div className="dual-range">
+        <input type="range" min={min} max={max} value={low} onChange={(event) => setLow(Number(event.target.value))} />
+        <input type="range" min={min} max={max} value={high} onChange={(event) => setHigh(Number(event.target.value))} />
+      </div>
+      <div className="range-scale">
+        <span>
+          {min} {unit}
+        </span>
+        <span>
+          {max} {unit}
+        </span>
+      </div>
     </div>
   );
 }
@@ -454,4 +613,8 @@ function readError(payload: unknown): string {
 
 function quoteCsv(value: string): string {
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
