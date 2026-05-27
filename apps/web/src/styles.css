@@ -51,10 +51,10 @@ textarea {
 .eco-sprig {
   position: absolute;
   z-index: 0;
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   pointer-events: none;
-  opacity: 0.52;
+  opacity: 0.9;
 }
 
 .eco-sprig::before {
@@ -62,21 +62,21 @@ textarea {
   position: absolute;
   left: 52px;
   top: 10px;
-  width: 2px;
-  height: 96px;
+  width: 3px;
+  height: 118px;
   border-radius: 999px;
-  background: #15d885;
+  background: #20f58f;
   transform: rotate(28deg);
 }
 
 .eco-sprig span {
   position: absolute;
-  width: 28px;
-  height: 20px;
+  width: 36px;
+  height: 26px;
   border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 70% 30% 70% 30%;
-  background: rgba(113, 255, 190, 0.86);
-  box-shadow: inset -5px -4px 0 rgba(15, 143, 84, 0.18);
+  background: rgba(111, 255, 189, 0.98);
+  box-shadow: inset -7px -5px 0 rgba(10, 131, 71, 0.2), 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
 .eco-sprig span:nth-child(1) {
@@ -110,23 +110,23 @@ textarea {
 }
 
 .sprig-one {
-  right: 7vw;
-  top: 138px;
+  right: 18px;
+  top: 170px;
   transform: rotate(-12deg);
 }
 
 .sprig-two {
-  left: 5vw;
-  top: 530px;
-  transform: rotate(18deg) scale(0.72);
-  opacity: 0.42;
+  left: 14px;
+  top: 520px;
+  transform: rotate(18deg) scale(0.84);
+  opacity: 0.72;
 }
 
 .sprig-three {
-  right: 3vw;
-  top: 860px;
-  transform: rotate(38deg) scale(0.88);
-  opacity: 0.38;
+  right: 20px;
+  top: 850px;
+  transform: rotate(38deg) scale(0.92);
+  opacity: 0.68;
 }
 
 .topbar {
@@ -611,13 +611,13 @@ td {
   }
 
   .eco-sprig {
-    opacity: 0.32;
-    transform: scale(0.68);
+    opacity: 0.88;
+    transform: scale(0.74);
   }
 
   .sprig-one {
-    right: -18px;
-    top: 210px;
+    right: -32px;
+    top: 250px;
   }
 
   .sprig-two,
