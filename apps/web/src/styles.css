@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f4f1;
+  --background: #1263ff;
   --foreground: #050505;
   --muted: #62625d;
   --line: #050505;
@@ -17,8 +17,8 @@
 body {
   margin: 0;
   background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
     var(--background);
   background-size: 34px 34px;
   color: var(--foreground);
