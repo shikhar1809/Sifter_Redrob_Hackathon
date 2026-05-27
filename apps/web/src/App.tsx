@@ -61,6 +61,7 @@ export default function App() {
       : candidates.length === 0
         ? "Upload CSV or paste CSV, then parse candidates"
         : "Add a role description before running";
+  const showReadiness = ready || roleDescription.trim().length < 12;
 
   async function parseCsvText(nextCsv = csv) {
     setError(null);
@@ -235,7 +236,7 @@ export default function App() {
         {phase === "input" ? (
         <section className="panel input-panel">
           <PanelTitle title="Inputs" meta={ready ? "ready" : "waiting"} />
-          <div className={`readiness ${ready ? "is-ready" : ""}`}>{readyMessage}</div>
+          {showReadiness ? <div className={`readiness ${ready ? "is-ready" : ""}`}>{readyMessage}</div> : null}
 
           <div className="role-builder">
             <Field label="Role title">
