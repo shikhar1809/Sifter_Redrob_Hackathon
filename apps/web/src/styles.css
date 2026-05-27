@@ -52,20 +52,23 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 10px 0 18px;
+  padding: 4px 0 18px;
 }
 
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  min-width: 0;
 }
 
 .brand-logo {
-  width: 132px;
-  height: 54px;
+  width: clamp(190px, 18vw, 258px);
+  height: auto;
+  max-height: 108px;
   object-fit: contain;
   object-position: left center;
+  flex: 0 0 auto;
 }
 
 .brand-name {
@@ -75,9 +78,17 @@ textarea {
 }
 
 .brand-subtitle {
-  margin-top: 4px;
+  width: max-content;
+  max-width: 190px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 6px 10px;
   color: var(--muted);
   font-size: 12px;
+  font-weight: 850;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .top-actions,
@@ -502,6 +513,16 @@ td {
   .topbar {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .brand-lockup {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: min(230px, 78vw);
   }
 
   .top-actions,
