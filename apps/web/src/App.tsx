@@ -126,23 +126,20 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <div className="eco-sprig sprig-one" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
+      <div className="eco-vine vine-top-right" aria-hidden="true">
+        {Array.from({ length: 13 }, (_, index) => (
+          <span key={`top-right-${index}`} />
+        ))}
       </div>
-      <div className="eco-sprig sprig-two" aria-hidden="true">
-        <span />
-        <span />
-        <span />
+      <div className="eco-vine vine-left-edge" aria-hidden="true">
+        {Array.from({ length: 16 }, (_, index) => (
+          <span key={`left-edge-${index}`} />
+        ))}
       </div>
-      <div className="eco-sprig sprig-three" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
+      <div className="eco-vine vine-bottom-right" aria-hidden="true">
+        {Array.from({ length: 12 }, (_, index) => (
+          <span key={`bottom-right-${index}`} />
+        ))}
       </div>
       <header className="topbar">
         <div className="brand-lockup">
