@@ -126,21 +126,9 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <div className="eco-vine vine-top-right" aria-hidden="true">
-        {Array.from({ length: 13 }, (_, index) => (
-          <span key={`top-right-${index}`} />
-        ))}
-      </div>
-      <div className="eco-vine vine-left-edge" aria-hidden="true">
-        {Array.from({ length: 16 }, (_, index) => (
-          <span key={`left-edge-${index}`} />
-        ))}
-      </div>
-      <div className="eco-vine vine-bottom-right" aria-hidden="true">
-        {Array.from({ length: 12 }, (_, index) => (
-          <span key={`bottom-right-${index}`} />
-        ))}
-      </div>
+      <MoneyPlantVine className="vine-top-right" />
+      <MoneyPlantVine className="vine-left-edge" />
+      <MoneyPlantVine className="vine-bottom-right" />
       <header className="topbar">
         <div className="brand-lockup">
           <img className="brand-logo" src="/sifter_logo_no_bg.svg" alt="Sifter" />
@@ -289,6 +277,34 @@ function Metric({ value, label }: { value: number; label: string }) {
       <div className="metric-value">{value}</div>
       <div className="metric-label">{label}</div>
     </div>
+  );
+}
+
+function MoneyPlantVine({ className }: { className: string }) {
+  const leaves = [
+    { x: 118, y: 34, rotate: -34, scale: 0.72 },
+    { x: 152, y: 76, rotate: 32, scale: 0.88 },
+    { x: 102, y: 128, rotate: -42, scale: 0.92 },
+    { x: 158, y: 182, rotate: 30, scale: 1.02 },
+    { x: 96, y: 244, rotate: -36, scale: 0.95 },
+    { x: 151, y: 306, rotate: 34, scale: 0.86 },
+    { x: 111, y: 370, rotate: -28, scale: 0.8 },
+    { x: 150, y: 438, rotate: 31, scale: 0.72 },
+  ];
+
+  return (
+    <svg className={`money-vine ${className}`} aria-hidden="true" viewBox="0 0 260 520" focusable="false">
+      <path className="vine-stem-shadow" d="M128 8 C76 76 176 126 120 198 C78 252 176 304 118 374 C86 412 130 462 106 512" />
+      <path className="vine-stem" d="M128 8 C76 76 176 126 120 198 C78 252 176 304 118 374 C86 412 130 462 106 512" />
+      {leaves.map((leaf, index) => (
+        <g key={index} className="money-leaf" transform={`translate(${leaf.x} ${leaf.y}) rotate(${leaf.rotate}) scale(${leaf.scale})`}>
+          <path d="M0 -24 C18 -48 54 -35 54 -2 C54 30 18 48 0 62 C-18 48 -54 30 -54 -2 C-54 -35 -18 -48 0 -24 Z" />
+          <path className="leaf-vein" d="M0 -16 C-2 6 -1 30 0 54" />
+          <path className="leaf-vein side" d="M0 14 C13 7 24 -2 34 -14" />
+          <path className="leaf-vein side" d="M0 20 C-14 12 -26 1 -36 -12" />
+        </g>
+      ))}
+    </svg>
   );
 }
 
