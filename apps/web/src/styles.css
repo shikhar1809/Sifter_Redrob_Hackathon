@@ -58,17 +58,22 @@ textarea {
 .brand-lockup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   min-width: 0;
 }
 
-.brand-logo {
-  width: clamp(190px, 18vw, 258px);
-  height: auto;
-  max-height: 108px;
-  object-fit: contain;
-  object-position: left center;
+.brand-logo-crop {
+  width: clamp(100px, 9vw, 132px);
+  height: clamp(72px, 7vw, 94px);
+  overflow: hidden;
   flex: 0 0 auto;
+}
+
+.brand-logo {
+  width: clamp(228px, 20vw, 300px);
+  height: auto;
+  display: block;
+  transform: translate(-7px, -6px);
 }
 
 .brand-name {
@@ -515,14 +520,13 @@ td {
     flex-direction: column;
   }
 
-  .brand-lockup {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
+  .brand-logo {
+    width: 238px;
   }
 
-  .brand-logo {
-    width: min(230px, 78vw);
+  .brand-logo-crop {
+    width: 108px;
+    height: 76px;
   }
 
   .top-actions,
