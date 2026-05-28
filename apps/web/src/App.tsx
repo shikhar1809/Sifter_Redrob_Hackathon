@@ -689,19 +689,19 @@ function StepRail({ phase }: { phase: Phase }) {
 
 function FloatingPrincipleClouds() {
   return (
-    <section className="principle-clouds" aria-label="Sifter product principles">
+    <section className="vision-notes" aria-label="Sifter product principles">
       {productPrinciples.map((principle) => (
-        <div key={principle.key} className={`principle-cloud principle-cloud-${principle.key}`}>
-          <i className="cloud-puff cloud-puff-one" aria-hidden="true" />
-          <i className="cloud-puff cloud-puff-two" aria-hidden="true" />
-          <i className="cloud-puff cloud-puff-three" aria-hidden="true" />
-          <i className="cloud-puff cloud-puff-four" aria-hidden="true" />
-          <i className="cloud-puff cloud-puff-five" aria-hidden="true" />
-          <div className="cloud-copy">
+        <article key={principle.key} className={`vision-note vision-note-${principle.key}`}>
+          <div className="vision-note-mark" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div>
             <span>{principle.title}</span>
             <p>{principle.body}</p>
           </div>
-        </div>
+        </article>
       ))}
     </section>
   );
