@@ -237,7 +237,15 @@ textarea {
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  opacity: 0;
   pointer-events: none;
+  visibility: hidden;
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.vision-notes.is-visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .vision-note {
@@ -1538,13 +1546,7 @@ td {
   }
 
   .vision-notes {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 18px;
-    overflow: visible;
+    display: none;
   }
 
   .vision-note {

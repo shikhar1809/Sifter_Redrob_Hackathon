@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Brain, ClipboardList, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
 import type { CandidateInput, GateCandidate, PipelineResult } from "@seederpro/core";
 
@@ -41,6 +41,7 @@ const productPrinciples: Array<{ key: ProductPrinciple; title: string; body: str
 
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const workAreaRef = useRef<HTMLDivElement | null>(null);
   const [roleTitle, setRoleTitle] = useState("Senior Data Engineer");
   const [experienceMin, setExperienceMin] = useState(4);
   const [experienceMax, setExperienceMax] = useState(7);
@@ -67,6 +68,7 @@ export default function App() {
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("report_csv");
   const [showAuditGates, setShowAuditGates] = useState(false);
   const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("local");
+  const [showVisionNotes, setShowVisionNotes] = useState(false);
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -90,6 +92,25 @@ export default function App() {
   const candidateLimitState = candidates.length > hardCandidateLimit ? "hard" : candidates.length > softCandidateLimit ? "soft" : "ok";
   const setupReady = roleReady && candidates.length > 0 && candidates.length <= hardCandidateLimit && inviteCap > 0 && Boolean(outputFormat);
   const ready = setupReady;
+
+  useEffect(() => {
+    function updateVisionNotes() {
+      const target = workAreaRef.current;
+      if (!target) return;
+      const top = target.getBoundingClientRect().top;
+      setShowVisionNotes(top < window.innerHeight * 0.48);
+    }
+
+    const frame = window.requestAnimationFrame(updateVisionNotes);
+    window.addEventListener("scroll", updateVisionNotes, { passive: true });
+    window.addEventListener("resize", updateVisionNotes);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateVisionNotes);
+      window.removeEventListener("resize", updateVisionNotes);
+    };
+  }, [phase]);
 
   async function parseCsvText(nextCsv = csv) {
     setError(null);
@@ -305,7 +326,6 @@ export default function App() {
           ) : null}
         </div>
       </header>
-      <FloatingPrincipleClouds />
 
       <section className="hero-grid">
         <div className="hero-copy">
@@ -341,8 +361,9 @@ export default function App() {
           </div>
         </div>
       </section>
+      <FloatingPrincipleClouds visible={showVisionNotes} />
 
-      <div className={phase === "processing" ? "workbench pipeline-stage" : "input-stage"}>
+      <div ref={workAreaRef} className={phase === "processing" ? "workbench pipeline-stage" : "input-stage"}>
         {phase === "role" ? (
           <section className="panel input-panel">
             <PanelTitle title="Step 1: Role Requirements" meta={roleReady ? "ready" : "required"} />
@@ -687,9 +708,9 @@ function StepRail({ phase }: { phase: Phase }) {
   );
 }
 
-function FloatingPrincipleClouds() {
+function FloatingPrincipleClouds({ visible }: { visible: boolean }) {
   return (
-    <section className="vision-notes" aria-label="Sifter product principles">
+    <section className={visible ? "vision-notes is-visible" : "vision-notes"} aria-label="Sifter product principles" aria-hidden={!visible}>
       {productPrinciples.map((principle) => (
         <article key={principle.key} className={`vision-note vision-note-${principle.key}`}>
           <div className="vision-note-mark" aria-hidden="true">
