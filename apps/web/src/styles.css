@@ -243,39 +243,83 @@ textarea {
 .principle-cloud {
   position: fixed;
   isolation: isolate;
-  width: clamp(188px, 15vw, 238px);
-  min-height: 132px;
+  width: clamp(214px, 16vw, 270px);
+  min-height: 142px;
   border: 1px solid var(--line);
-  border-radius: 52% 48% 44% 56% / 58% 56% 44% 42%;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fff9 100%);
-  padding: 24px 18px 16px;
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.14), inset 0 -10px 0 rgba(73, 243, 146, 0.08);
+  padding: 46px 22px 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow:
+    0 7px 0 rgba(0, 0, 0, 0.14),
+    inset 0 -9px 0 rgba(73, 243, 146, 0.08);
   animation: cloud-drift 8s ease-in-out infinite;
 }
 
-.principle-cloud::before,
+.principle-cloud::before {
+  display: none;
+}
+
 .principle-cloud::after {
   content: "";
   position: absolute;
-  z-index: -1;
+  left: 16px;
+  right: 16px;
+  bottom: 13px;
+  z-index: 0;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(73, 243, 146, 0.1);
+}
+
+.cloud-puff {
+  position: absolute;
+  z-index: 1;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #ffffff;
-  box-shadow: inset 0 -8px 0 rgba(73, 243, 146, 0.06);
+  box-shadow:
+    0 5px 0 rgba(0, 0, 0, 0.1),
+    inset 0 -8px 0 rgba(73, 243, 146, 0.06);
 }
 
-.principle-cloud::before {
-  left: 22px;
-  top: -22px;
-  width: 82px;
-  height: 62px;
+.cloud-puff-one {
+  left: 18px;
+  top: 12px;
+  width: 52px;
+  height: 52px;
 }
 
-.principle-cloud::after {
-  right: 20px;
-  top: -17px;
-  width: 72px;
-  height: 54px;
+.cloud-puff-two {
+  left: 52px;
+  top: -6px;
+  width: 76px;
+  height: 76px;
+}
+
+.cloud-puff-three {
+  left: 112px;
+  top: -14px;
+  width: 92px;
+  height: 92px;
+}
+
+.cloud-puff-four {
+  right: 30px;
+  top: 6px;
+  width: 64px;
+  height: 64px;
+}
+
+.cloud-puff-five {
+  right: 8px;
+  top: 36px;
+  width: 36px;
+  height: 36px;
+}
+
+.cloud-copy {
+  position: relative;
+  z-index: 2;
 }
 
 .principle-cloud span {
@@ -312,27 +356,27 @@ textarea {
 }
 
 .principle-cloud-trust {
-  left: max(18px, calc(50% - 704px));
-  top: 154px;
+  left: max(18px, calc(50% - 716px));
+  top: 150px;
   rotate: -2deg;
 }
 
 .principle-cloud-cost {
-  right: max(18px, calc(50% - 704px));
-  top: 176px;
+  right: max(18px, calc(50% - 716px));
+  top: 172px;
   rotate: 2deg;
   animation-delay: -2.6s;
 }
 
 .principle-cloud-privacy {
-  left: max(22px, calc(50% - 690px));
+  left: max(22px, calc(50% - 700px));
   top: 510px;
   rotate: 2.5deg;
   animation-delay: -4.2s;
 }
 
 .principle-cloud-simplicity {
-  right: max(22px, calc(50% - 690px));
+  right: max(22px, calc(50% - 700px));
   top: 560px;
   rotate: -2.5deg;
   animation-delay: -6.1s;

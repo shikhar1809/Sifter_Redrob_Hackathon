@@ -692,8 +692,15 @@ function FloatingPrincipleClouds() {
     <section className="principle-clouds" aria-label="Sifter product principles">
       {productPrinciples.map((principle) => (
         <div key={principle.key} className={`principle-cloud principle-cloud-${principle.key}`}>
-          <span>{principle.title}</span>
-          <p>{principle.body}</p>
+          <i className="cloud-puff cloud-puff-one" aria-hidden="true" />
+          <i className="cloud-puff cloud-puff-two" aria-hidden="true" />
+          <i className="cloud-puff cloud-puff-three" aria-hidden="true" />
+          <i className="cloud-puff cloud-puff-four" aria-hidden="true" />
+          <i className="cloud-puff cloud-puff-five" aria-hidden="true" />
+          <div className="cloud-copy">
+            <span>{principle.title}</span>
+            <p>{principle.body}</p>
+          </div>
         </div>
       ))}
     </section>
