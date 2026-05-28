@@ -19,23 +19,23 @@ const aiReviewLimit = 5;
 const productPrinciples: Array<{ key: ProductPrinciple; title: string; body: string }> = [
   {
     key: "trust",
-    title: "Trust",
-    body: "Transparent scoring, visible gates, clear reasons. Recruiters must be able to defend why someone is shortlisted.",
+    title: "Clear reasons",
+    body: "Know why each person made the shortlist, so you can explain it with confidence.",
   },
   {
     key: "cost",
-    title: "Cost Discipline",
-    body: "Most AI tools burn money silently. Sifter can win by saying: local first, AI only where it matters.",
+    title: "Cost stays low",
+    body: "Use the free local flow first. Add extra help only when it genuinely helps your decision.",
   },
   {
     key: "privacy",
-    title: "Privacy",
-    body: "Candidate data is sensitive. Local processing by default is a real advantage.",
+    title: "Private by default",
+    body: "Candidate details are sensitive. Sifter starts with a local workflow that respects that.",
   },
   {
     key: "simplicity",
-    title: "Recruiter Workflow Simplicity",
-    body: "Not a giant HR suite. Just: upload CSV, define role, shortlist, export report.",
+    title: "Easy daily flow",
+    body: "Upload your CSV, describe the role, get a shortlist, and share the report.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function App() {
   const [location, setLocation] = useState("Bengaluru hybrid");
   const [salaryMin, setSalaryMin] = useState(18);
   const [salaryMax, setSalaryMax] = useState(28);
-  const [roleNotes, setRoleNotes] = useState("Prefer production pipeline ownership, distributed systems, and team collaboration.");
+  const [roleNotes, setRoleNotes] = useState("Prefer people who have owned real projects and worked well with a team.");
   const [csv, setCsv] = useState("");
   const [candidates, setCandidates] = useState<CandidateInput[]>([]);
   const [result, setResult] = useState<PipelineResult | null>(null);
@@ -116,14 +116,14 @@ export default function App() {
     setPhase("processing");
     setStatus("running");
     setRunProgress(8);
-    setProgressLabel("Preparing candidate data");
+    setProgressLabel("Reading your candidates");
     setError(null);
     await delay(350);
     setRunProgress(24);
     setProgressLabel("Reading role parameters");
     await delay(350);
     setRunProgress(42);
-    setProgressLabel("Running screening gates");
+    setProgressLabel("Checking role fit");
     try {
       const response = await fetch(`${apiBase}/pipeline-runs`, {
         method: "POST",
@@ -138,7 +138,7 @@ export default function App() {
       if (!response.ok) {
         setStatus("error");
         setRunProgress(0);
-        setProgressLabel("pipeline stopped");
+        setProgressLabel("shortlist stopped");
         setError(readError(payload));
         return;
       }
@@ -150,13 +150,13 @@ export default function App() {
       setRunId(typed.runId);
       setSimulationScores({});
       setRunProgress(100);
-      setProgressLabel("Pipeline complete");
+      setProgressLabel("Shortlist ready");
       setStatus("complete");
       window.setTimeout(() => setRunProgress(0), 900);
     } catch (err) {
       setStatus("error");
       setRunProgress(0);
-      setProgressLabel("pipeline stopped");
+      setProgressLabel("shortlist stopped");
       setError(err instanceof Error ? err.message : "Could not reach local API");
     }
   }
@@ -309,15 +309,15 @@ export default function App() {
 
       <section className="hero-grid">
         <div className="hero-copy">
-          <div className="eyebrow">Recruitment operating console</div>
-          <h1>Simple, private & cheap candidate screening you can audit.</h1>
+          <div className="eyebrow">Recruiter shortlist helper</div>
+          <h1>Simple, private & cheap help to find your shortlist.</h1>
           <p>
-            Upload real CSV data, describe the role, run deterministic gates, prepare simulation prompts, and export the ranked shortlist.
+            Bring your candidate CSV, tell Sifter what you need, and leave with a shortlist you can explain to your team.
           </p>
         </div>
         <div className="hero-console" aria-label="Pipeline status">
           <div className="console-header">
-            <span>pipeline.status</span>
+            <span>sifter.status</span>
             <span>{status}</span>
           </div>
           <div className="progress-block">
@@ -337,7 +337,7 @@ export default function App() {
           </div>
           <div className="cost-meter">
             <span>{privacyMode === "local" ? "free local mode" : `AI capped at top ${aiReviewLimit}`}</span>
-            <strong>{result?.intelligence?.reviewedCandidates ?? 0} AI reviews used</strong>
+            <strong>{result?.intelligence?.reviewedCandidates ?? 0} extra reviews used</strong>
           </div>
         </div>
       </section>
@@ -513,8 +513,8 @@ export default function App() {
               </div>
               <div className="privacy-note">
                 {privacyMode === "local"
-                  ? "Candidate data stays in the local pipeline and uses deterministic scoring only."
-                  : "Recommended candidates are reviewed by the configured AI service for richer notes."}
+                  ? "Keep this run on your machine and get the shortlist without using AI."
+                  : "Use extra AI help only for the recommended candidates."}
               </div>
             </Field>
 
@@ -539,7 +539,7 @@ export default function App() {
 
             <label className="toggle-control setup-toggle">
               <input type="checkbox" checked={strictMode} onChange={(event) => setStrictMode(event.target.checked)} />
-              <span>Strict hard filter</span>
+              <span>Strict matching</span>
             </label>
 
             {error ? <div className="error-box">{error}</div> : null}
@@ -561,10 +561,10 @@ export default function App() {
               {setupReady ? (
                 <button className="btn btn-primary run-step-button" onClick={runPipeline} disabled={status === "running"}>
                   <Play size={16} />
-                  {status === "running" ? "Running" : "Run pipeline"}
+                  {status === "running" ? "Finding shortlist" : "Find shortlist"}
                 </button>
               ) : (
-                <div className="setup-waiting">Run appears after CSV is parsed and settings are ready.</div>
+                <div className="setup-waiting">The shortlist button appears after your CSV and settings are ready.</div>
               )}
             </div>
           </section>
@@ -631,7 +631,7 @@ export default function App() {
           <section className="panel audit-panel">
             <button className="audit-toggle" type="button" onClick={() => setShowAuditGates(!showAuditGates)}>
               <ShieldCheck size={16} />
-              {showAuditGates ? "Hide audit gates" : "Show audit gates"}
+              {showAuditGates ? "Hide full reasons" : "Show full reasons"}
             </button>
             {showAuditGates ? (
               <div className="audit-stack">
@@ -810,7 +810,7 @@ function Gate({ title, rows, kind }: { title: string; rows: GateCandidate[]; kin
     <section className="panel gate-panel">
       <PanelTitle title={title} meta={`${rows.length} rows`} />
       {!rows.length ? (
-        <div className="empty-state">Waiting for pipeline run.</div>
+        <div className="empty-state">Waiting for your shortlist.</div>
       ) : (
         <div className="table-frame">
           <table>
@@ -875,7 +875,7 @@ function Final({ rows }: { rows: GateCandidate[] }) {
     <section className="panel gate-panel">
       <PanelTitle title="Final Shortlist" meta={`${rows.length} ranked`} />
       {!rows.length ? (
-        <div className="empty-state">Run the pipeline to build the shortlist.</div>
+        <div className="empty-state">Find your shortlist to see the final list here.</div>
       ) : (
         <div className="table-frame">
           <table>
@@ -919,36 +919,36 @@ function TrustStrip({
   reviewedCandidates: number;
   resultReady?: boolean;
 }) {
-  const costLabel = privacyMode === "local" ? "Zero AI spend" : `AI capped at top ${aiReviewLimit}`;
+  const costLabel = privacyMode === "local" ? "No AI cost" : `AI help for top ${aiReviewLimit}`;
   const dataLabel =
     privacyMode === "local"
-      ? "Candidate data stays in the browser and local API for this run."
-      : "Only recommended candidates are sent to the configured reviewer.";
-  const runLabel = resultReady ? `${candidateCount} candidates processed` : candidateCount ? `${candidateCount} candidates ready` : "Waiting for candidate CSV";
+      ? "Your candidate list stays on this local setup for the run."
+      : "Only the recommended candidates get the extra review.";
+  const runLabel = resultReady ? `${candidateCount} candidates checked` : candidateCount ? `${candidateCount} candidates ready` : "Waiting for your CSV";
 
   return (
     <section className={resultReady ? "panel trust-panel" : "trust-panel trust-panel-inline"}>
-      <PanelTitle title="Trust & Cost Controls" meta={runLabel} />
+      <PanelTitle title="Your Hiring Guardrails" meta={runLabel} />
       <div className="trust-grid">
         <div>
-          <span>Cost guardrail</span>
+          <span>Keep costs calm</span>
           <strong>{costLabel}</strong>
-          <p>{privacyMode === "local" ? "Use this mode for free public access and large CSV runs." : `${reviewedCandidates} AI review${reviewedCandidates === 1 ? "" : "s"} used in the latest run.`}</p>
+          <p>{privacyMode === "local" ? "Best for everyday screening and larger CSV files." : `${reviewedCandidates} candidate${reviewedCandidates === 1 ? "" : "s"} got extra help in this run.`}</p>
         </div>
         <div>
-          <span>Data handling</span>
-          <strong>{privacyMode === "local" ? "Local-first" : "Limited sharing"}</strong>
+          <span>Respect privacy</span>
+          <strong>{privacyMode === "local" ? "Stays local" : "Shared carefully"}</strong>
           <p>{dataLabel}</p>
         </div>
         <div>
-          <span>Hiring safety</span>
-          <strong>Assistive report</strong>
-          <p>Sifter recommends who to review next. A human recruiter still makes the hiring decision.</p>
+          <span>Stay in control</span>
+          <strong>You decide</strong>
+          <p>Sifter helps you see who to review next. You still make the hiring call.</p>
         </div>
         <div>
-          <span>Audit trail</span>
-          <strong>Defensible shortlist</strong>
-          <p>Scores, hard gates, fields used, missing evidence, and interview questions stay visible.</p>
+          <span>Explain the choice</span>
+          <strong>Reasons included</strong>
+          <p>Each recommendation shows strengths, concerns, missing proof, and what to ask next.</p>
         </div>
       </div>
     </section>
@@ -1040,7 +1040,7 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
                       <ClipboardList size={14} />
                       {report.riskLevel} risk
                     </div>
-                    <div className="reviewer-pill">{report.reviewer === "local" ? "Local review" : "AI review"}</div>
+                    <div className="reviewer-pill">{report.reviewer === "local" ? "Local note" : "Extra note"}</div>
                   </div>
                 </div>
                 <p className="personal-note">{report.note}</p>
@@ -1147,7 +1147,7 @@ function buildCandidateReport(row: GateCandidate) {
   const weaknessPool = [
     row.redFlags && row.redFlags !== "none" ? row.redFlags : "",
     row.githubSignal !== "present" ? "Public project proof is thin; validate ownership live." : "",
-    row.hireConfidence === "provisional" ? "Final confidence still needs live simulation scoring." : "",
+    row.hireConfidence === "provisional" ? "Final confidence still needs a live exercise or recruiter score." : "",
     row.salary_expectation_lpa ? `Salary expectation is ${row.salary_expectation_lpa} LPA; confirm budget fit.` : "",
   ].filter(Boolean);
 
@@ -1164,13 +1164,13 @@ function buildCandidateReport(row: GateCandidate) {
     note:
       ai?.personalNote ??
       `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
-    strengths: ai?.strengths?.length ? ai.strengths : strengths.length ? strengths : ["Cleared the required gates and remained competitive on score."],
+    strengths: ai?.strengths?.length ? ai.strengths : strengths.length ? strengths : ["Matched the key role needs and stayed competitive."],
     weaknesses: ai?.weaknesses?.length ? ai.weaknesses : weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
     missingEvidence: ai?.missingEvidence?.length ? ai.missingEvidence : missingEvidence,
     interviewQuestion: ai?.interviewQuestion ?? interviewQuestion,
     nextAction: ai?.nextAction ?? nextAction,
     riskLevel: ai?.riskLevel ?? riskLevel,
-    confidenceNote: ai?.confidenceNote ?? "Deterministic review only; no AI reviewer note was attached.",
+    confidenceNote: ai?.confidenceNote ?? "Local note only; no extra AI note was added.",
     sourceFields: cleanSourceFields(ai?.sourceFields ?? ["skills", "summary", "profileScore", "deepScore", "ownershipScore"]),
     reviewer: ai?.provider ?? "local",
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
@@ -1277,7 +1277,7 @@ function buildMarkdownReport({
     `Privacy mode: ${privacyMode === "ai" ? "AI assisted" : "Local only"}`,
     `Strict filter: ${strictMode ? "on" : "off"}`,
     "",
-    `## Role Requirements`,
+    `## What You Asked For`,
     roleDescription,
     "",
     `## Summary`,
@@ -1285,11 +1285,11 @@ function buildMarkdownReport({
     `- Rejected: ${rejected.length}`,
     `- Invited: ${result.invited.length}`,
     `- Recommended: ${rows.length}`,
-    `- Review status: ${intelligenceMessage(result.intelligence)}`,
-    `- Cost guardrail: ${privacyMode === "local" ? "zero AI reviews used" : `AI review capped at top ${aiReviewLimit} recommended candidates`}`,
-    `- Hiring safety: Sifter is an assistive shortlist report; a human recruiter should make the final decision.`,
+    `- Extra help: ${intelligenceMessage(result.intelligence)}`,
+    `- Cost note: ${privacyMode === "local" ? "no extra AI help was used" : `extra help was limited to the top ${aiReviewLimit} recommended candidates`}`,
+    `- Your call: Sifter helps you choose who to review next. You still make the hiring decision.`,
     "",
-    `## Sifter Principles`,
+    `## How Sifter Helps`,
     ...productPrinciples.map((principle) => `- ${principle.title}: ${principle.body}`),
     "",
     `## Top Rejection Reasons`,
@@ -1318,18 +1318,18 @@ function outputFormatLabel(format: OutputFormat): string {
 }
 
 function intelligenceTitle(status?: NonNullable<PipelineResult["intelligence"]>["status"]): string {
-  if (status === "completed") return "AI review completed";
-  if (status === "fallback") return "AI fallback used";
+  if (status === "completed") return "Extra review added";
+  if (status === "fallback") return "Local report ready";
   return "Local review only";
 }
 
 function intelligenceMessage(intelligence?: PipelineResult["intelligence"]): string {
-  if (!intelligence) return "Local deterministic report is available.";
+  if (!intelligence) return "Your local shortlist is ready.";
   if (intelligence.status === "completed") {
-    return `AI reviewed ${intelligence.reviewedCandidates} recommended candidate${intelligence.reviewedCandidates === 1 ? "" : "s"}.`;
+    return `Extra notes were added for ${intelligence.reviewedCandidates} recommended candidate${intelligence.reviewedCandidates === 1 ? "" : "s"}.`;
   }
-  if (intelligence.status === "fallback") return "AI review was unavailable during this run; local deterministic report is available.";
-  return "AI review is disabled or not configured; local deterministic report is available.";
+  if (intelligence.status === "fallback") return "Extra review was not available, so Sifter kept the local shortlist ready.";
+  return "No AI help used. Your local shortlist is ready.";
 }
 
 function delay(ms: number) {
