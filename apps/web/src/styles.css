@@ -432,6 +432,35 @@ textarea {
   color: #c5c5be;
 }
 
+.cost-meter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  padding: 11px;
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.cost-meter span,
+.cost-meter strong {
+  overflow-wrap: anywhere;
+}
+
+.cost-meter span {
+  color: #c5c5be;
+  text-transform: uppercase;
+}
+
+.cost-meter strong {
+  text-align: right;
+}
+
 .workbench {
   position: relative;
   z-index: 1;
@@ -834,6 +863,58 @@ textarea {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
+}
+
+.trust-panel {
+  padding: 14px;
+}
+
+.trust-panel-inline {
+  margin: 14px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 12px;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.trust-grid > div {
+  min-height: 126px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 11px;
+}
+
+.trust-grid span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.trust-grid strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.trust-grid p {
+  margin: 0;
+  color: #30302c;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.4;
 }
 
 .intelligence-banner {
@@ -1394,8 +1475,18 @@ td {
   .console-metrics,
   .summary-grid,
   .settings-grid,
+  .trust-grid,
   .step-rail {
     grid-template-columns: 1fr;
+  }
+
+  .cost-meter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cost-meter strong {
+    text-align: left;
   }
 
   .workspace-summary,

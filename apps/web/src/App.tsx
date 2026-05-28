@@ -14,6 +14,7 @@ type PrivacyMode = "local" | "ai";
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 const softCandidateLimit = 500;
 const hardCandidateLimit = 2000;
+const aiReviewLimit = 5;
 
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -310,6 +311,10 @@ export default function App() {
             <Metric value={result?.invited.length ?? 0} label="invited" />
             <Metric value={finalWithScores.length} label="ranked" />
           </div>
+          <div className="cost-meter">
+            <span>{privacyMode === "local" ? "free local mode" : `AI capped at top ${aiReviewLimit}`}</span>
+            <strong>{result?.intelligence?.reviewedCandidates ?? 0} AI reviews used</strong>
+          </div>
         </div>
       </section>
 
@@ -489,6 +494,12 @@ export default function App() {
               </div>
             </Field>
 
+            <TrustStrip
+              privacyMode={privacyMode}
+              candidateCount={candidates.length}
+              reviewedCandidates={result?.intelligence?.reviewedCandidates ?? 0}
+            />
+
             {candidates.length ? (
               <div className={`candidate-limit ${candidateLimitState}`}>
                 <strong>{candidates.length} candidates loaded</strong>
@@ -582,6 +593,14 @@ export default function App() {
             {error ? <div className="error-box">{error}</div> : null}
           </section>
           {result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
+          {result ? (
+            <TrustStrip
+              privacyMode={privacyMode}
+              candidateCount={result.gate1.length}
+              reviewedCandidates={result.intelligence?.reviewedCandidates ?? 0}
+              resultReady
+            />
+          ) : null}
           {outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
           <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
           {outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
@@ -841,6 +860,53 @@ function Final({ rows }: { rows: GateCandidate[] }) {
           </table>
         </div>
       )}
+    </section>
+  );
+}
+
+function TrustStrip({
+  privacyMode,
+  candidateCount,
+  reviewedCandidates,
+  resultReady = false,
+}: {
+  privacyMode: PrivacyMode;
+  candidateCount: number;
+  reviewedCandidates: number;
+  resultReady?: boolean;
+}) {
+  const costLabel = privacyMode === "local" ? "Zero AI spend" : `AI capped at top ${aiReviewLimit}`;
+  const dataLabel =
+    privacyMode === "local"
+      ? "Candidate data stays in the browser and local API for this run."
+      : "Only recommended candidates are sent to the configured reviewer.";
+  const runLabel = resultReady ? `${candidateCount} candidates processed` : candidateCount ? `${candidateCount} candidates ready` : "Waiting for candidate CSV";
+
+  return (
+    <section className={resultReady ? "panel trust-panel" : "trust-panel trust-panel-inline"}>
+      <PanelTitle title="Trust & Cost Controls" meta={runLabel} />
+      <div className="trust-grid">
+        <div>
+          <span>Cost guardrail</span>
+          <strong>{costLabel}</strong>
+          <p>{privacyMode === "local" ? "Use this mode for free public access and large CSV runs." : `${reviewedCandidates} AI review${reviewedCandidates === 1 ? "" : "s"} used in the latest run.`}</p>
+        </div>
+        <div>
+          <span>Data handling</span>
+          <strong>{privacyMode === "local" ? "Local-first" : "Limited sharing"}</strong>
+          <p>{dataLabel}</p>
+        </div>
+        <div>
+          <span>Hiring safety</span>
+          <strong>Assistive report</strong>
+          <p>Sifter recommends who to review next. A human recruiter still makes the hiring decision.</p>
+        </div>
+        <div>
+          <span>Audit trail</span>
+          <strong>Defensible shortlist</strong>
+          <p>Scores, hard gates, fields used, missing evidence, and interview questions stay visible.</p>
+        </div>
+      </div>
     </section>
   );
 }
@@ -1176,6 +1242,8 @@ function buildMarkdownReport({
     `- Invited: ${result.invited.length}`,
     `- Recommended: ${rows.length}`,
     `- Review status: ${intelligenceMessage(result.intelligence)}`,
+    `- Cost guardrail: ${privacyMode === "local" ? "zero AI reviews used" : `AI review capped at top ${aiReviewLimit} recommended candidates`}`,
+    `- Hiring safety: Sifter is an assistive shortlist report; a human recruiter should make the final decision.`,
     "",
     `## Top Rejection Reasons`,
     ...(reasons.length ? reasons.map((reason) => `- ${reason.label}: ${reason.count}`) : ["- No dominant hard-filter rejection reason."]),
