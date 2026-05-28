@@ -310,7 +310,7 @@ export default function App() {
       <section className="hero-grid">
         <div className="hero-copy">
           <div className="eyebrow">Recruitment operating console</div>
-          <h1>Screen candidates with a pipeline you can audit.</h1>
+          <h1>Simple, private & cheap candidate screening you can audit.</h1>
           <p>
             Upload real CSV data, describe the role, run deterministic gates, prepare simulation prompts, and export the ranked shortlist.
           </p>
