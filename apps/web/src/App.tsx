@@ -10,11 +10,34 @@ type RunResponse = {
 type Phase = "role" | "setup" | "processing";
 type OutputFormat = "report_csv" | "report" | "csv";
 type PrivacyMode = "local" | "ai";
+type ProductPrinciple = "trust" | "cost" | "privacy" | "simplicity";
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 const softCandidateLimit = 500;
 const hardCandidateLimit = 2000;
 const aiReviewLimit = 5;
+const productPrinciples: Array<{ key: ProductPrinciple; title: string; body: string }> = [
+  {
+    key: "trust",
+    title: "Trust",
+    body: "Transparent scoring, visible gates, clear reasons. Every shortlist should be defensible.",
+  },
+  {
+    key: "cost",
+    title: "Cost Discipline",
+    body: "Local first, AI only where it matters, and capped so spend never runs silently.",
+  },
+  {
+    key: "privacy",
+    title: "Privacy",
+    body: "Candidate data is sensitive. Local processing is the default path.",
+  },
+  {
+    key: "simplicity",
+    title: "Recruiter Workflow Simplicity",
+    body: "Not a giant HR suite. Define role, upload CSV, shortlist, export report.",
+  },
+];
 
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -290,6 +313,7 @@ export default function App() {
           <p>
             Upload real CSV data, describe the role, run deterministic gates, prepare simulation prompts, and export the ranked shortlist.
           </p>
+          <PrincipleStrip active="trust" compact />
         </div>
         <div className="hero-console" aria-label="Pipeline status">
           <div className="console-header">
@@ -323,6 +347,7 @@ export default function App() {
           <section className="panel input-panel">
             <PanelTitle title="Step 1: Role Requirements" meta={roleReady ? "ready" : "required"} />
             <StepRail phase={phase} />
+            <PrincipleStrip active="simplicity" stage="Step focus: keep the recruiter input simple before any scoring starts." />
 
             <div className="role-builder">
               <Field label="Role title">
@@ -414,6 +439,7 @@ export default function App() {
           <section className="panel input-panel">
             <PanelTitle title="Step 2: CSV Upload & Output Setup" meta={candidates.length ? `${candidates.length} parsed` : "waiting"} />
             <StepRail phase={phase} />
+            <PrincipleStrip active={privacyMode === "local" ? "privacy" : "cost"} stage="Step focus: protect candidate data and keep AI spend intentional." />
 
             <div className="role-preview setup-role-preview">
               <span>Role locked for this run</span>
@@ -551,6 +577,7 @@ export default function App() {
           <section className="panel run-panel">
             <PanelTitle title="Step 3: Processing & Results" meta={ready ? `${candidates.length} candidates loaded` : "needs input"} />
             <StepRail phase={phase} />
+            <PrincipleStrip active="trust" stage="Step focus: make the shortlist easy to defend to a hiring manager." />
             <div className="workspace-summary">
               <div>
                 <span>Role</span>
@@ -660,6 +687,22 @@ function StepRail({ phase }: { phase: Phase }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function PrincipleStrip({ active, stage, compact = false }: { active: ProductPrinciple; stage?: string; compact?: boolean }) {
+  return (
+    <section className={compact ? "principle-strip principle-strip-compact" : "principle-strip"} aria-label="Sifter product principles">
+      {stage ? <div className="principle-stage">{stage}</div> : null}
+      <div className="principle-grid">
+        {productPrinciples.map((principle) => (
+          <div key={principle.key} className={principle.key === active ? "principle-card active" : "principle-card"}>
+            <span>{principle.title}</span>
+            <p>{principle.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -1244,6 +1287,9 @@ function buildMarkdownReport({
     `- Review status: ${intelligenceMessage(result.intelligence)}`,
     `- Cost guardrail: ${privacyMode === "local" ? "zero AI reviews used" : `AI review capped at top ${aiReviewLimit} recommended candidates`}`,
     `- Hiring safety: Sifter is an assistive shortlist report; a human recruiter should make the final decision.`,
+    "",
+    `## Sifter Principles`,
+    ...productPrinciples.map((principle) => `- ${principle.title}: ${principle.body}`),
     "",
     `## Top Rejection Reasons`,
     ...(reasons.length ? reasons.map((reason) => `- ${reason.label}: ${reason.count}`) : ["- No dominant hard-filter rejection reason."]),

@@ -339,6 +339,10 @@ textarea {
   line-height: 1.45;
 }
 
+.hero-copy .principle-strip {
+  margin-top: 18px;
+}
+
 .hero-console {
   display: flex;
   min-height: 310px;
@@ -612,6 +616,67 @@ textarea {
 .step-pill.done {
   background: #f7f7f3;
   color: #050505;
+}
+
+.principle-strip {
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 10px;
+}
+
+.principle-strip-compact {
+  max-width: 760px;
+  margin-bottom: 0;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.principle-stage {
+  margin-bottom: 9px;
+  color: #30302c;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.principle-card {
+  min-height: 112px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.principle-card.active {
+  background: #050505;
+  color: #ffffff;
+}
+
+.principle-card span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.principle-card p {
+  margin: 0;
+  color: #30302c;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.principle-card.active p {
+  color: #d7d7d1;
 }
 
 .field-label {
@@ -1425,6 +1490,10 @@ td {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .principle-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .vine-top-right {
     right: -110px;
     top: 112px;
@@ -1473,6 +1542,7 @@ td {
   }
 
   .console-metrics,
+  .principle-grid,
   .summary-grid,
   .settings-grid,
   .trust-grid,
