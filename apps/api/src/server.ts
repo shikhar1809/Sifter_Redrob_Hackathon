@@ -6,7 +6,7 @@ import { z } from "zod";
 import { registerAuth } from "./auth.js";
 import { config } from "./config.js";
 import { checkDatabase, savePipelineRun } from "./db.js";
-import { attachAiReviews, reviewCandidatesWithGemini } from "./gemini.js";
+import { attachAiReviews, geminiReviewCandidateLimit, reviewCandidatesWithGemini } from "./gemini.js";
 
 const app = Fastify({
   logger: {
@@ -79,7 +79,8 @@ app.post("/pipeline-runs", async (request, reply) => {
 
   if (body.data.options.aiReview) {
     try {
-      const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, result.final);
+      const candidatesForReview = result.final.slice(0, geminiReviewCandidateLimit);
+      const reviews = await reviewCandidatesWithGemini(body.data.roleDescription, candidatesForReview);
       result.invited = attachAiReviews(result.invited, reviews);
       result.simulation = attachAiReviews(result.simulation, reviews);
       result.final = attachAiReviews(result.final, reviews);
@@ -90,7 +91,9 @@ app.post("/pipeline-runs", async (request, reply) => {
         status: reviews.size ? "completed" : result.intelligence.status,
         model: config.geminiModel,
         reviewedCandidates: reviews.size,
-        message: reviews.size ? `AI reviewed ${reviews.size} recommended candidate${reviews.size === 1 ? "" : "s"}.` : result.intelligence.message,
+        message: reviews.size
+          ? `AI reviewed the top ${reviews.size} recommended candidate${reviews.size === 1 ? "" : "s"}.`
+          : result.intelligence.message,
       };
     } catch (error) {
       result.intelligence.message = "AI review failed during this run; local deterministic report is available.";

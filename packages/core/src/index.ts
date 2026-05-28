@@ -28,9 +28,9 @@ export const runPipelineInputSchema = z.object({
       strictMode: z.boolean().default(true),
       inviteCap: z.number().int().positive().default(5),
       githubMode: z.enum(["live", "fallback"]).default("fallback"),
-      aiReview: z.boolean().default(true),
+      aiReview: z.boolean().default(false),
     })
-    .default({ strictMode: true, inviteCap: 5, githubMode: "fallback", aiReview: true }),
+    .default({ strictMode: true, inviteCap: 5, githubMode: "fallback", aiReview: false }),
 });
 
 export type CandidateInput = z.infer<typeof candidateSchema>;

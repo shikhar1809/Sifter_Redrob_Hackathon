@@ -4,6 +4,7 @@ import { config } from "./config.js";
 
 const stringListSchema = z.preprocess(normalizeStringList, z.array(z.string()).min(1).max(8));
 const riskLevelSchema = z.preprocess(normalizeRiskLevel, z.enum(["Low", "Medium", "High"]));
+export const geminiReviewCandidateLimit = 5;
 
 const reviewSchema = z.object({
   reviews: z.array(
@@ -34,7 +35,7 @@ export async function reviewCandidatesWithGemini(roleDescription: string, candid
         role: "user",
         parts: [
           {
-            text: buildPrompt(roleDescription, candidates.slice(0, 8)),
+            text: buildPrompt(roleDescription, candidates.slice(0, geminiReviewCandidateLimit)),
           },
         ],
       },

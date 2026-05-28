@@ -42,7 +42,7 @@ export default function App() {
   const [phase, setPhase] = useState<Phase>("role");
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("report_csv");
   const [showAuditGates, setShowAuditGates] = useState(false);
-  const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("ai");
+  const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("local");
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
