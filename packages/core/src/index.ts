@@ -12,6 +12,7 @@ export const requiredCandidateColumns = [
 
 export const candidateSchema = z.object({
   name: z.string().min(1),
+  email: z.string().default(""),
   experience_years: z.coerce.number().min(0).default(0),
   location: z.string().default(""),
   skills: z.string().default(""),

@@ -11,6 +11,22 @@ type Phase = "role" | "setup" | "processing";
 type OutputFormat = "report_csv" | "report" | "csv";
 type PrivacyMode = "local" | "ai";
 type ProductPrinciple = "trust" | "cost" | "privacy" | "simplicity";
+type RoleTemplate = {
+  title: string;
+  years: [number, number];
+  stack: string;
+  workMode: "remote" | "location";
+  location: string;
+  salary: [number, number];
+  wantsProject: boolean;
+  notes: string;
+};
+type EmailRow = {
+  name: string;
+  email: string;
+  subject: string;
+  body: string;
+};
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 const softCandidateLimit = 500;
@@ -35,8 +51,35 @@ const productPrinciples: Array<{ key: ProductPrinciple; title: string; body: str
   {
     key: "simplicity",
     title: "Easy daily flow",
-    body: "Upload your CSV, describe the role, get a shortlist, and share the report.",
+    body: "Add candidate data, describe the role, get a shortlist, and share the report.",
   },
+];
+const roleTemplates: RoleTemplate[] = [
+  { title: "Sales Development Representative", years: [0, 2], stack: "Cold outreach, CRM, email writing, discovery calls", workMode: "location", location: "Mumbai onsite", salary: [4, 8], wantsProject: false, notes: "Look for clear communication, persistence, CRM hygiene, and comfort with daily targets." },
+  { title: "Account Executive", years: [2, 6], stack: "B2B sales, demos, negotiation, CRM, pipeline ownership", workMode: "location", location: "Bengaluru hybrid", salary: [8, 18], wantsProject: false, notes: "Prefer people who can own a sales cycle, handle objections, and close with discipline." },
+  { title: "Customer Support Executive", years: [0, 3], stack: "Ticketing, chat support, email support, empathy, escalation handling", workMode: "remote", location: "", salary: [3, 7], wantsProject: false, notes: "Look for patient communication, clear writing, and calm issue ownership." },
+  { title: "Customer Success Manager", years: [3, 7], stack: "Onboarding, renewals, account health, customer training, CRM", workMode: "location", location: "Bengaluru hybrid", salary: [10, 22], wantsProject: false, notes: "Prefer people who can retain customers, spot risks early, and build trust with accounts." },
+  { title: "Recruiter", years: [1, 5], stack: "Sourcing, screening, scheduling, stakeholder updates, ATS", workMode: "location", location: "Delhi NCR hybrid", salary: [5, 12], wantsProject: false, notes: "Look for fast follow-up, strong candidate judgement, and clean hiring communication." },
+  { title: "HR Generalist", years: [2, 6], stack: "Employee relations, onboarding, payroll coordination, HR operations", workMode: "location", location: "Mumbai onsite", salary: [6, 14], wantsProject: false, notes: "Prefer practical HR ownership, policy comfort, and people-first communication." },
+  { title: "Operations Executive", years: [1, 4], stack: "Vendor coordination, reporting, SOPs, Excel, daily operations", workMode: "location", location: "Pune onsite", salary: [4, 9], wantsProject: false, notes: "Look for reliable execution, ownership of follow-ups, and comfort with operational details." },
+  { title: "Operations Manager", years: [4, 9], stack: "Process design, team management, vendor management, reporting", workMode: "location", location: "Bengaluru onsite", salary: [12, 26], wantsProject: false, notes: "Prefer people who improved processes, managed teams, and owned outcomes." },
+  { title: "Marketing Manager", years: [3, 7], stack: "Campaigns, content, performance marketing, analytics, brand", workMode: "location", location: "Mumbai hybrid", salary: [10, 24], wantsProject: true, notes: "Look for campaign ownership, clear metrics, and practical creative judgement." },
+  { title: "Content Writer", years: [1, 5], stack: "Blogs, landing pages, SEO, editing, research", workMode: "remote", location: "", salary: [4, 12], wantsProject: true, notes: "Prefer strong writing samples, research depth, and ability to match brand voice." },
+  { title: "SEO Specialist", years: [2, 6], stack: "Keyword research, technical SEO, content briefs, Search Console, analytics", workMode: "remote", location: "", salary: [6, 16], wantsProject: true, notes: "Look for ranking improvements, site audits, and practical SEO execution." },
+  { title: "Performance Marketer", years: [2, 6], stack: "Google Ads, Meta Ads, landing pages, CAC, ROAS, analytics", workMode: "location", location: "Bengaluru hybrid", salary: [8, 20], wantsProject: true, notes: "Prefer people who managed budgets, improved conversion, and explain tradeoffs clearly." },
+  { title: "Product Manager", years: [3, 8], stack: "Roadmaps, user research, PRDs, analytics, stakeholder management", workMode: "location", location: "Bengaluru hybrid", salary: [18, 40], wantsProject: true, notes: "Look for customer judgement, prioritization, shipping history, and clear product thinking." },
+  { title: "UX Designer", years: [2, 7], stack: "Figma, user flows, wireframes, prototypes, usability testing", workMode: "remote", location: "", salary: [10, 28], wantsProject: true, notes: "Prefer strong portfolio proof, thoughtful flows, and practical product judgement." },
+  { title: "UI Designer", years: [1, 5], stack: "Figma, visual design, components, responsive layouts, design systems", workMode: "remote", location: "", salary: [6, 18], wantsProject: true, notes: "Look for polished screens, consistency, and clean component thinking." },
+  { title: "Frontend Developer", years: [2, 6], stack: "React, TypeScript, CSS, API integration, responsive UI", workMode: "remote", location: "", salary: [10, 28], wantsProject: true, notes: "Prefer shipped UI work, clean code habits, and comfort with real user flows." },
+  { title: "Backend Developer", years: [2, 7], stack: "Node.js, APIs, SQL, queues, auth, cloud basics", workMode: "location", location: "Bengaluru hybrid", salary: [12, 32], wantsProject: true, notes: "Look for API ownership, database comfort, reliability thinking, and debugging ability." },
+  { title: "Full Stack Developer", years: [2, 7], stack: "React, Node.js, TypeScript, SQL, APIs, cloud deployment", workMode: "remote", location: "", salary: [12, 34], wantsProject: true, notes: "Prefer people who can ship end to end and communicate tradeoffs clearly." },
+  { title: "Data Analyst", years: [1, 5], stack: "SQL, Excel, dashboards, BI tools, stakeholder reporting", workMode: "location", location: "Bengaluru hybrid", salary: [6, 18], wantsProject: true, notes: "Look for clear analysis, business context, and useful dashboard/report examples." },
+  { title: "Data Engineer", years: [3, 8], stack: "Python, SQL, Spark, Airflow, Kafka, AWS or GCP", workMode: "location", location: "Bengaluru hybrid", salary: [18, 38], wantsProject: true, notes: "Prefer production pipeline ownership, data quality thinking, and incident handling." },
+  { title: "Machine Learning Engineer", years: [3, 8], stack: "Python, ML pipelines, model serving, feature engineering, cloud", workMode: "remote", location: "", salary: [20, 45], wantsProject: true, notes: "Look for shipped ML systems, not only notebooks. Prefer measurable model impact." },
+  { title: "DevOps Engineer", years: [3, 8], stack: "AWS, Docker, Kubernetes, CI/CD, monitoring, Terraform", workMode: "location", location: "Pune hybrid", salary: [16, 38], wantsProject: true, notes: "Prefer people who improved reliability, automated deployments, and handled incidents calmly." },
+  { title: "QA Engineer", years: [1, 6], stack: "Manual testing, automation, Playwright or Selenium, API testing, bug reports", workMode: "remote", location: "", salary: [5, 18], wantsProject: true, notes: "Look for careful testing habits, clear bug writing, and ownership of release quality." },
+  { title: "Finance Executive", years: [1, 5], stack: "Tally, Excel, invoicing, reconciliation, GST, reporting", workMode: "location", location: "Mumbai onsite", salary: [4, 12], wantsProject: false, notes: "Prefer accurate reporting, clean documentation, and comfort with month-end work." },
+  { title: "Business Analyst", years: [2, 6], stack: "Requirements, Excel, SQL basics, dashboards, stakeholder communication", workMode: "location", location: "Bengaluru hybrid", salary: [8, 20], wantsProject: true, notes: "Look for clear requirements, business sense, and ability to turn messy asks into action." },
 ];
 
 export default function App() {
@@ -69,6 +112,7 @@ export default function App() {
   const [showAuditGates, setShowAuditGates] = useState(false);
   const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("local");
   const [showVisionNotes, setShowVisionNotes] = useState(false);
+  const [inviteLink, setInviteLink] = useState("https://cal.com/your-team/interview");
 
   const finalWithScores = useMemo(() => {
     if (!result) return [];
@@ -114,7 +158,7 @@ export default function App() {
 
   async function parseCsvText(nextCsv = csv) {
     setError(null);
-    setStatus("parsing CSV");
+    setStatus("reading candidate data");
     const response = await fetch(`${apiBase}/csv/parse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,7 +175,7 @@ export default function App() {
 
   async function runPipeline() {
     if (!ready) {
-      setError("Complete role requirements, parse candidate CSV, choose output format, and set invite cap before running.");
+      setError("Complete role requirements, add candidate data, choose output format, and set invite cap before running.");
       return;
     }
     setPhase("processing");
@@ -196,12 +240,12 @@ export default function App() {
     } catch (err) {
       setStatus("error");
       setCandidates([]);
-      setError(err instanceof Error ? err.message : "Could not parse CSV file");
+      setError(err instanceof Error ? err.message : "Could not read candidate data");
     }
   }
 
   function downloadTemplate() {
-    const template = "name,experience_years,location,skills,github_url,salary_expectation_lpa,summary\n";
+    const template = "name,email,experience_years,location,skills,github_url,salary_expectation_lpa,summary\n";
     const blob = new Blob([template], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -216,6 +260,7 @@ export default function App() {
     const columns = [
       "rank",
       "name",
+      "email",
       "finalScore",
       "hireConfidence",
       "nextAction",
@@ -245,6 +290,37 @@ export default function App() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "seederpro_shortlist.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function applyRoleTemplate(title: string) {
+    const template = roleTemplates.find((item) => item.title === title);
+    if (!template) return;
+    setRoleTitle(template.title);
+    setExperienceMin(template.years[0]);
+    setExperienceMax(template.years[1]);
+    setKeyLanguages(template.stack);
+    setWorkMode(template.workMode);
+    setLocation(template.location);
+    setSalaryMin(template.salary[0]);
+    setSalaryMax(template.salary[1]);
+    setWantsProject(template.wantsProject);
+    setRoleNotes(template.notes);
+    setError(null);
+  }
+
+  function exportEmailCsv(type: "invite" | "sorry") {
+    if (!result) return;
+    const rows = buildEmailRows(type, finalWithScores, result.gate1, roleTitle, inviteLink);
+    if (!rows.length) return;
+    const columns = ["name", "email", "subject", "body"];
+    const body = rows.map((row) => columns.map((column) => quoteCsv(String(row[column as keyof EmailRow] ?? ""))).join(","));
+    const blob = new Blob([[columns.join(","), ...body].join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = type === "invite" ? "sifter_invite_emails.csv" : "sifter_sorry_emails.csv";
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -332,7 +408,7 @@ export default function App() {
           <div className="eyebrow">Recruiter shortlist helper</div>
           <h1>Simple, private & cheap help to find your shortlist.</h1>
           <p>
-            Bring your candidate CSV, tell Sifter what you need, and leave with a shortlist you can explain to your team.
+            Bring your candidate data, tell Sifter what you need, and leave with a shortlist you can explain to your team.
           </p>
         </div>
         <div className="hero-console" aria-label="Pipeline status">
@@ -370,6 +446,19 @@ export default function App() {
             <StepRail phase={phase} />
 
             <div className="role-builder">
+              <Field label="Start from template">
+                <select className="field-control compact-control" defaultValue="" onChange={(event) => applyRoleTemplate(event.target.value)}>
+                  <option value="" disabled>
+                    Choose a common role
+                  </option>
+                  {roleTemplates.map((template) => (
+                    <option key={template.title} value={template.title}>
+                      {template.title}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+
               <Field label="Role title">
                 <input className="field-control compact-control" value={roleTitle} onChange={(event) => setRoleTitle(event.target.value)} />
               </Field>
@@ -457,7 +546,7 @@ export default function App() {
 
         {phase === "setup" ? (
           <section className="panel input-panel">
-            <PanelTitle title="Step 2: CSV Upload & Output Setup" meta={candidates.length ? `${candidates.length} parsed` : "waiting"} />
+            <PanelTitle title="Step 2: Candidate Data & Output Setup" meta={candidates.length ? `${candidates.length} ready` : "waiting"} />
             <StepRail phase={phase} />
 
             <div className="role-preview setup-role-preview">
@@ -465,11 +554,11 @@ export default function App() {
               <p>{roleDescription}</p>
             </div>
 
-            <Field label="Candidate CSV">
+            <Field label="Candidate data">
               <div className="button-row">
                 <button className="btn btn-secondary" type="button" onClick={() => fileInputRef.current?.click()}>
                   <Upload size={16} />
-                  Upload CSV
+                  Upload candidate data
                 </button>
                 <input
                   ref={fileInputRef}
@@ -488,9 +577,9 @@ export default function App() {
               </div>
               <div className="file-state">
                 <span>{uploadedFileName ? `Uploaded: ${uploadedFileName}` : "No file uploaded yet"}</span>
-                <span>{candidates.length ? `${candidates.length} candidates parsed` : "0 candidates parsed"}</span>
+                <span>{candidates.length ? `${candidates.length} candidates ready` : "0 candidates ready"}</span>
               </div>
-              <textarea className="field-control csv-box" value={csv} onChange={(event) => setCsv(event.target.value)} placeholder="Paste candidate CSV here" />
+              <textarea className="field-control csv-box" value={csv} onChange={(event) => setCsv(event.target.value)} placeholder="Paste candidate data here" />
               <button
                 className="btn btn-secondary full-width"
                 type="button"
@@ -502,16 +591,16 @@ export default function App() {
                   })
                 }
               >
-                Parse CSV
+                Read candidate data
               </button>
             </Field>
 
             <div className="settings-grid">
               <Field label="Output format">
                 <select className="field-control compact-control" value={outputFormat} onChange={(event) => setOutputFormat(event.target.value as OutputFormat)}>
-                  <option value="report_csv">Report + CSV</option>
+                  <option value="report_csv">Report + data file</option>
                   <option value="report">Report only</option>
-                  <option value="csv">CSV only</option>
+                  <option value="csv">Data file only</option>
                 </select>
               </Field>
               <Field label="Invite cap">
@@ -522,6 +611,15 @@ export default function App() {
                 </select>
               </Field>
             </div>
+
+            <Field label="Interview invite link">
+              <input
+                className="field-control compact-control"
+                value={inviteLink}
+                onChange={(event) => setInviteLink(event.target.value)}
+                placeholder="Paste Calendly, Google Meet, or scheduling link"
+              />
+            </Field>
 
             <Field label="Privacy mode">
               <div className="segmented-control">
@@ -550,10 +648,10 @@ export default function App() {
                 <strong>{candidates.length} candidates loaded</strong>
                 <span>
                   {candidateLimitState === "hard"
-                    ? `Hard limit is ${hardCandidateLimit}. Split the CSV before running.`
+                    ? `Hard limit is ${hardCandidateLimit}. Split the candidate data before running.`
                     : candidateLimitState === "soft"
                       ? `Large file warning: above ${softCandidateLimit}, review may take longer.`
-                      : "CSV size is within the recommended local range."}
+                      : "Candidate data size is within the recommended local range."}
                 </span>
               </div>
             ) : null}
@@ -567,7 +665,7 @@ export default function App() {
 
             <div className="danger-actions">
               <button className="btn btn-secondary" type="button" onClick={clearCsvData} disabled={!csv && !candidates.length && !result}>
-                Clear CSV
+                Clear candidate data
               </button>
               <button className="btn btn-secondary" type="button" onClick={clearCurrentRun} disabled={!result}>
                 Clear run
@@ -585,7 +683,7 @@ export default function App() {
                   {status === "running" ? "Finding shortlist" : "Find shortlist"}
                 </button>
               ) : (
-                <div className="setup-waiting">The shortlist button appears after your CSV and settings are ready.</div>
+                <div className="setup-waiting">The shortlist button appears after your candidate data and settings are ready.</div>
               )}
             </div>
           </section>
@@ -615,7 +713,7 @@ export default function App() {
               </div>
               <div>
                 <span>Source</span>
-                <strong>{uploadedFileName ?? "Pasted CSV"}</strong>
+                <strong>{uploadedFileName ?? "Pasted candidate data"}</strong>
               </div>
               <div>
                 <span>Output</span>
@@ -647,6 +745,7 @@ export default function App() {
             />
           ) : null}
           {outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
+          {result ? <EmailConnector rows={finalWithScores} allRows={result.gate1} roleTitle={roleTitle} inviteLink={inviteLink} onExport={exportEmailCsv} /> : null}
           <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
           {outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
           <section className="panel audit-panel">
@@ -691,7 +790,7 @@ function PanelTitle({ title, meta }: { title: string; meta: string }) {
 function StepRail({ phase }: { phase: Phase }) {
   const steps: { id: Phase; label: string }[] = [
     { id: "role", label: "Role" },
-    { id: "setup", label: "CSV & Output" },
+    { id: "setup", label: "Data & Output" },
     { id: "processing", label: "Processing" },
   ];
   const current = steps.findIndex((step) => step.id === phase);
@@ -929,6 +1028,64 @@ function Final({ rows }: { rows: GateCandidate[] }) {
   );
 }
 
+function EmailConnector({
+  rows,
+  allRows,
+  roleTitle,
+  inviteLink,
+  onExport,
+}: {
+  rows: GateCandidate[];
+  allRows: GateCandidate[];
+  roleTitle: string;
+  inviteLink: string;
+  onExport: (type: "invite" | "sorry") => void;
+}) {
+  const inviteRows = buildEmailRows("invite", rows, allRows, roleTitle, inviteLink);
+  const sorryRows = buildEmailRows("sorry", rows, allRows, roleTitle, inviteLink);
+  const firstInvite = inviteRows.find((row) => row.email) ?? inviteRows[0];
+  const firstSorry = sorryRows.find((row) => row.email) ?? sorryRows[0];
+
+  return (
+    <section className="panel email-panel">
+      <PanelTitle title="Email Connector" meta={`${inviteRows.length} invites, ${sorryRows.length} sorry notes`} />
+      <div className="email-grid">
+        <div className="email-card">
+          <span>Selected candidates</span>
+          <strong>Invite to interview</strong>
+          <p>Open a ready email draft with your interview link, or export all invite emails for mail merge.</p>
+          <div className="email-actions">
+            <a className={`btn btn-secondary ${firstInvite ? "" : "is-disabled"}`} href={firstInvite ? mailtoLink(firstInvite) : undefined}>
+              Open invite draft
+            </a>
+            <button className="btn btn-secondary" type="button" onClick={() => onExport("invite")} disabled={!inviteRows.length}>
+              Export invites
+            </button>
+          </div>
+        </div>
+        <div className="email-card">
+          <span>Not selected</span>
+          <strong>Send kind update</strong>
+          <p>Give every other applicant a respectful note instead of leaving them waiting.</p>
+          <div className="email-actions">
+            <a className={`btn btn-secondary ${firstSorry ? "" : "is-disabled"}`} href={firstSorry ? mailtoLink(firstSorry) : undefined}>
+              Open sorry draft
+            </a>
+            <button className="btn btn-secondary" type="button" onClick={() => onExport("sorry")} disabled={!sorryRows.length}>
+              Export sorry notes
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="email-preview">
+        <span>Preview</span>
+        <strong>{firstInvite?.subject ?? "No invite draft yet"}</strong>
+        <p>{firstInvite?.body ?? "Run the shortlist to create invite and sorry email drafts."}</p>
+      </div>
+    </section>
+  );
+}
+
 function TrustStrip({
   privacyMode,
   candidateCount,
@@ -945,7 +1102,7 @@ function TrustStrip({
     privacyMode === "local"
       ? "Your candidate list stays on this local setup for the run."
       : "Only the recommended candidates get the extra review.";
-  const runLabel = resultReady ? `${candidateCount} candidates checked` : candidateCount ? `${candidateCount} candidates ready` : "Waiting for your CSV";
+  const runLabel = resultReady ? `${candidateCount} candidates checked` : candidateCount ? `${candidateCount} candidates ready` : "Waiting for candidate data";
 
   return (
     <section className={resultReady ? "panel trust-panel" : "trust-panel trust-panel-inline"}>
@@ -954,7 +1111,7 @@ function TrustStrip({
         <div>
           <span>Keep costs calm</span>
           <strong>{costLabel}</strong>
-          <p>{privacyMode === "local" ? "Best for everyday screening and larger CSV files." : `${reviewedCandidates} candidate${reviewedCandidates === 1 ? "" : "s"} got extra help in this run.`}</p>
+          <p>{privacyMode === "local" ? "Best for everyday screening and larger candidate lists." : `${reviewedCandidates} candidate${reviewedCandidates === 1 ? "" : "s"} got extra help in this run.`}</p>
         </div>
         <div>
           <span>Respect privacy</span>
@@ -1186,7 +1343,7 @@ function buildCandidateReport(row: GateCandidate) {
       ai?.personalNote ??
       `${row.name} looks strongest around ${skillText}, with ${row.experience_years} years in ${row.location || "the listed market"}. ${row.careerCoherence ?? "Profile continuity needs interview validation."}`,
     strengths: ai?.strengths?.length ? ai.strengths : strengths.length ? strengths : ["Matched the key role needs and stayed competitive."],
-    weaknesses: ai?.weaknesses?.length ? ai.weaknesses : weaknesses.length ? weaknesses : ["No major weakness found from CSV signals; still verify live examples."],
+    weaknesses: ai?.weaknesses?.length ? ai.weaknesses : weaknesses.length ? weaknesses : ["No major concern found in the candidate data; still verify live examples."],
     missingEvidence: ai?.missingEvidence?.length ? ai.missingEvidence : missingEvidence,
     interviewQuestion: ai?.interviewQuestion ?? interviewQuestion,
     nextAction: ai?.nextAction ?? nextAction,
@@ -1214,7 +1371,7 @@ function buildMissingEvidence(row: GateCandidate): string[] {
   if (row.simulationScore == null) missing.push("Live simulation score.");
   if (!row.summary.toLowerCase().includes("owned") && !row.summary.toLowerCase().includes("led")) missing.push("Clear ownership example.");
   if (row.redFlags && row.redFlags !== "none") missing.push(`Clarification on ${row.redFlags}.`);
-  return missing.length ? missing.slice(0, 3) : ["No major missing evidence from CSV; verify examples in interview."];
+  return missing.length ? missing.slice(0, 3) : ["No major missing evidence in the candidate data; verify examples in interview."];
 }
 
 function candidateRisk(row: GateCandidate): "Low" | "Medium" | "High" {
@@ -1241,6 +1398,49 @@ function countReasons(reasons: string[]): { label: string; count: number }[] {
     .filter(Boolean)
     .forEach((reason) => counts.set(reason, (counts.get(reason) ?? 0) + 1));
   return Array.from(counts, ([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count);
+}
+
+function buildEmailRows(type: "invite" | "sorry", selectedRows: GateCandidate[], allRows: GateCandidate[], roleTitle: string, inviteLink: string): EmailRow[] {
+  const selectedIds = new Set(selectedRows.map((row) => row.id));
+  const sourceRows = type === "invite" ? selectedRows : allRows.filter((row) => !selectedIds.has(row.id));
+  return sourceRows.map((row) => {
+    const firstName = row.name.split(" ")[0] || row.name;
+    if (type === "invite") {
+      return {
+        name: row.name,
+        email: row.email,
+        subject: `Next step for ${roleTitle || "the role"}`,
+        body: [
+          `Hi ${firstName},`,
+          "",
+          `Thanks for your interest in ${roleTitle || "the role"}. We liked your profile and would like to invite you for the next step.`,
+          inviteLink ? `You can pick a time here: ${inviteLink}` : "Please reply with a few times that work for you this week.",
+          "",
+          "Best,",
+          "Hiring team",
+        ].join("\n"),
+      };
+    }
+    return {
+      name: row.name,
+      email: row.email,
+      subject: `Update on ${roleTitle || "your application"}`,
+      body: [
+        `Hi ${firstName},`,
+        "",
+        `Thank you for taking the time to apply for ${roleTitle || "the role"}. We reviewed your profile carefully, but we will not be moving ahead this time.`,
+        "We appreciate your interest and wish you the best with your search.",
+        "",
+        "Best,",
+        "Hiring team",
+      ].join("\n"),
+    };
+  });
+}
+
+function mailtoLink(row: EmailRow): string {
+  const params = new URLSearchParams({ subject: row.subject, body: row.body });
+  return `mailto:${encodeURIComponent(row.email)}?${params.toString()}`;
 }
 
 function buildMarkdownReport({
@@ -1334,8 +1534,8 @@ function quoteCsv(value: string): string {
 
 function outputFormatLabel(format: OutputFormat): string {
   if (format === "report") return "Report only";
-  if (format === "csv") return "CSV only";
-  return "Report + CSV";
+  if (format === "csv") return "Data file only";
+  return "Report + data file";
 }
 
 function intelligenceTitle(status?: NonNullable<PipelineResult["intelligence"]>["status"]): string {

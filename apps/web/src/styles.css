@@ -1050,6 +1050,75 @@ textarea {
   line-height: 1.4;
 }
 
+.email-panel {
+  padding: 14px;
+}
+
+.email-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.email-card,
+.email-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.email-card span,
+.email-preview span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.email-card strong,
+.email-preview strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.email-card p,
+.email-preview p {
+  margin: 0;
+  color: #30302c;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.42;
+  white-space: pre-wrap;
+}
+
+.email-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.email-actions a {
+  text-decoration: none;
+}
+
+.is-disabled {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.email-preview {
+  margin-top: 10px;
+  background: #f7f7f3;
+}
+
 .intelligence-banner {
   display: flex;
   align-items: flex-start;
