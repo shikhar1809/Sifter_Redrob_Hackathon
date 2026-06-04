@@ -1,82 +1,177 @@
 # Sifter
 
-Sifter is a local-first candidate screening tool for recruiters and hiring teams who need a shortlist they can explain. It supports the original CSV-based recruiter workflow and a new Redrob challenge workflow for ranking JSON/JSONL candidate profiles against a specific Senior AI Engineer job description.
+Sifter helps recruiters turn a messy candidate list into a clear, explainable shortlist.
 
-Sifter assists screening. It does not make final hiring decisions.
+Instead of saying “trust the AI,” Sifter shows why each person was ranked, what evidence was used, and what still needs to be checked by a human. It is built to stay cheap, private, and useful for real hiring work.
 
-## What Is Implemented
+## What We Built
 
-- CSV candidate parsing for the regular Sifter recruiter flow.
-- Role requirement builder in the web app.
-- Deterministic local scoring gates for ordinary candidate CSVs.
-- Optional Gemini-assisted review for top recommended candidates when configured.
-- Markdown recruiter report export.
-- CSV export for regular Sifter shortlist results.
-- Redrob JSON and JSONL candidate parsing.
-- Redrob challenge ranker for the bundled Senior AI Engineer role.
-- Validator-ready Redrob submission CSV export with exactly:
-  - `candidate_id`
-  - `rank`
-  - `score`
-  - `reasoning`
-- Streaming CLI ranker for large `candidates.jsonl` files.
-- Browser UI mode switch between regular `CSV` and `Redrob` candidate data.
-- Generated challenge output file: `redrob_submission.csv`.
+This project now does two important things:
 
-## Redrob Challenge Work
+1. Regular recruiter screening  
+   Upload a simple CSV, describe the role, and Sifter creates a shortlist with reasons, risks, missing evidence, and interview questions.
 
-The challenge bundle in `Challenge/` contains the job description, candidate schema, Redrob behavioral signal reference, sample candidates, validator, and the large candidate pool. The folder is intentionally ignored by git because it contains a large local dataset. Put the official bundle in `Challenge/` locally before running the full ranker.
+2. Redrob Hackathon ranking  
+   Take the Redrob challenge candidate files, rank the best 100 candidates for the Senior AI Engineer job, and export a valid submission CSV.
 
-The challenge ranker is designed for the released Senior AI Engineer role at Redrob AI. It focuses on evidence tied to the job description:
+## Screenshots
 
-- Production retrieval and ranking systems.
-- Embeddings, vector search, hybrid retrieval, and search relevance.
-- Evaluation frameworks such as NDCG, MRR, MAP, offline benchmarks, A/B tests, and feedback loops.
-- Strong Python and hands-on ML systems work.
-- Shipper mindset and production ownership.
-- Redrob behavioral signals such as recency, recruiter response rate, notice period, verification, work mode, and relocation fit.
+### Sifter App
 
-The scorer avoids using candidate name as a signal and does not reward school prestige as a scoring boost. Education fields are parsed for compatibility but are not used to inflate rank.
+![Sifter app home screen](docs/screenshots/sifter-home.png)
+
+### Redrob Challenge Output
+
+![Redrob submission preview](docs/screenshots/redrob-output.png)
+
+## The Hero Work
+
+- Added a Redrob challenge ranker that reads JSON, JSONL, and gzipped JSONL candidate files.
+- Ranked the full `100,000` candidate challenge file locally.
+- Produced a validator-ready `redrob_submission.csv`.
+- Passed the official Redrob submission validator.
+- Finished the full ranking run in `248.7s`, under the 5-minute challenge limit.
+- Added a streaming CLI so huge files do not need to be loaded into the browser.
+- Added a web UI mode switch between normal `CSV` screening and `Redrob` challenge data.
+- Added clear ranking reasons for every selected candidate.
+- Avoided hosted AI calls during challenge ranking.
+- Avoided using candidate names or school prestige as scoring boosts.
+- Updated documentation so the project can be understood and run by someone new.
+
+## In Plain English
+
+The Redrob challenge asks:
+
+> “Out of 100,000 people, who are the best 100 for this Senior AI Engineer role?”
+
+Sifter answers that by looking for real evidence from the job description:
+
+- Have they built AI systems used in production?
+- Do they know retrieval, embeddings, vector search, and ranking?
+- Have they worked with evaluation metrics like NDCG, MRR, MAP, A/B tests, or feedback loops?
+- Are they strong with Python and hands-on ML systems?
+- Do they look like someone who ships product, not just experiments?
+- Are they recently active and likely to respond to recruiters?
+- Is their notice period, work mode, and location realistic for the role?
+
+Then Sifter creates a CSV with:
+
+- candidate ID
+- rank
+- score
+- plain-English reasoning
+
+## Current Result
+
+Generated file:
+
+```text
+redrob_submission.csv
+```
+
+Validation result:
+
+```text
+Submission is valid.
+```
+
+Recent full run:
+
+- Candidates ranked: `100,000`
+- Output rows: `100`
+- Runtime: `248.7s`
+- Top candidate: `CAND_0081846`
+
+## What Is Done
+
+- Regular CSV candidate screening flow.
+- Role requirement builder.
+- Deterministic local scoring for normal recruiter CSVs.
+- Redrob candidate schema parsing.
+- Redrob challenge ranking logic.
+- Top-100 CSV export in the exact challenge format.
+- CLI command for large challenge files.
+- API endpoints for Redrob parsing and ranking.
+- Web UI support for smaller Redrob JSON/JSONL samples.
+- README screenshots and plain-language handoff.
 
 ## What Is Not Done Yet
 
-- No hidden-label training or learned model. The current ranker is deterministic and feature/rule based.
-- No hosted LLM calls during challenge ranking. This is intentional to satisfy the challenge's CPU-only, no-network ranking constraint.
-- No GPU or embedding model inference during the ranking step.
-- No guarantee that the heuristic ranking matches the hidden ground truth perfectly.
-- No automated fairness audit report yet beyond the current scoring design choices.
-- No resume/PDF extraction for arbitrary recruiter inputs.
-- No frontend upload path for the full 487 MB `candidates.jsonl`; use the streaming CLI for the full challenge file.
-- No production auth hardening beyond the existing local prototype setup.
+- No trained ML model yet. The current Redrob ranker is deterministic and rule/feature based.
+- No guarantee that the ranking perfectly matches Redrob’s hidden ground truth.
+- No hosted LLM calls during the challenge ranking step. This is intentional for the rules.
+- No GPU ranking path. Also intentional for the rules.
+- No browser upload for the full 487 MB challenge file. Use the CLI for that.
+- No resume/PDF parsing yet.
+- No full fairness audit dashboard yet.
+- No production-grade auth hardening yet.
+- No automated test suite for every scoring edge case yet.
 
-## Run Locally
+## How To Run The App
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Start the app:
+
+```bash
 npm run dev
 ```
 
-Web app:
+Open:
 
 ```text
 http://127.0.0.1:3000
 ```
 
-API health:
+API health check:
 
 ```text
 http://127.0.0.1:4000/health
 ```
 
-Docker services are available for future production-like setup:
+## How To Run The Redrob Challenge Ranker
+
+Put the official challenge bundle in the local `Challenge/` folder.
+
+Then run:
 
 ```bash
-docker compose up -d postgres valkey nats minio keycloak
+npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv
 ```
 
-## Regular CSV Flow
+PowerShell version:
 
-Sifter expects these CSV columns:
+```powershell
+npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv
+```
+
+Run on the sample file:
+
+```bash
+npm run challenge:rank -- --input sample_candidates.json --output sample_submission.csv --limit 50
+```
+
+## Validate The Submission
+
+Use the official validator from the challenge bundle:
+
+```powershell
+python validate_submission.py redrob_submission.csv
+```
+
+Expected result:
+
+```text
+Submission is valid.
+```
+
+## Normal CSV Format
+
+For the regular recruiter flow, Sifter expects:
 
 - `name`
 - `experience_years`
@@ -86,119 +181,54 @@ Sifter expects these CSV columns:
 - `salary_expectation_lpa`
 - `summary`
 
-Optional but supported:
+Optional:
 
 - `email`
 
-The web app includes a template download button.
-
-## Redrob Challenge CLI
-
-Run the full challenge ranker from the repo root:
-
-```bash
-npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv
-```
-
-For Windows PowerShell, the same command works with backslashes:
-
-```powershell
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv
-```
-
-The CLI also supports `.json` sample files and `.jsonl.gz` files:
-
-```bash
-npm run challenge:rank -- --input sample_candidates.json --output sample_submission.csv --limit 50
-```
-
-## Validation
-
-The generated file was validated with the official challenge validator:
-
-```powershell
-python validate_submission.py redrob_submission.csv
-```
-
-Result:
-
-```text
-Submission is valid.
-```
-
-Recent full run:
-
-- Input: `100000` candidates.
-- Runtime: `248.7s`.
-- Output rows: `100`.
-- Top candidate in the generated file: `CAND_0081846`.
-
 ## API Endpoints
 
-Regular CSV:
+Regular Sifter flow:
 
 - `POST /csv/parse`
 - `POST /pipeline-runs`
 
-Redrob challenge:
+Redrob challenge flow:
 
 - `POST /redrob/parse`
 - `POST /redrob/rank`
 
-Example Redrob rank request:
+## Privacy And Cost
 
-```json
-{
-  "text": "{\"candidate_id\":\"CAND_0000001\", ...}",
-  "limit": 100
-}
-```
+- Local-only mode is the default.
+- The Redrob ranker runs locally.
+- The challenge ranking step does not call OpenAI, Gemini, Anthropic, or any hosted AI API.
+- Optional Gemini review exists only for the regular recruiter flow and is capped.
+- Candidate data should be treated as sensitive.
 
-The endpoint returns both structured rows and CSV text.
-
-## Web UI Notes
-
-The candidate upload section now has two modes:
-
-- `CSV`: regular Sifter recruiter workflow.
-- `Redrob`: JSON/JSONL challenge workflow for smaller samples.
-
-Large Redrob files should be ranked through the CLI. The browser path intentionally refuses oversized files instead of trying to load hundreds of MB into the client.
-
-## Cost And Privacy Model
-
-- `Local only` remains the default mode.
-- The Redrob challenge ranker is local and deterministic.
-- No network API calls are made during challenge ranking.
-- Optional AI review is only for the regular recruiter flow and remains capped.
-- Candidate data should be treated as sensitive hiring data.
-
-## Development Commands
+## Developer Checks
 
 ```bash
 npm run typecheck
 npm run build
-npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv
 ```
 
-## Verification Performed
+Already verified:
 
 - `npm.cmd run typecheck`
 - `npm.cmd run build`
-- `npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv`
-- Official validator on `redrob_submission.csv`
+- full Redrob challenge rank
+- official validator on `redrob_submission.csv`
 
-One local UI smoke test could not be completed through the Codex in-app browser because the browser bridge crashed with a Windows sandbox startup error. The TypeScript checks and production build both passed.
+One UI smoke test through the Codex in-app browser could not be completed because the browser bridge crashed with a Windows sandbox startup error. The screenshots in this README were captured from the production build using local Chrome headless.
 
-## Product Direction
+## Next Best Improvements
 
-Useful next steps:
+- Add tests for Redrob scoring and CSV tie-breaking.
+- Add a fairness audit view.
+- Add clearer score breakdowns per candidate.
+- Add resume and PDF parsing.
+- Add a hosted demo with a small public sample.
+- Add a PDF report export.
+- Improve ranking with real feedback or labels if available.
 
-- Add a compact fairness audit view for challenge and recruiter rankings.
-- Add tests around Redrob scoring edge cases and validator sorting rules.
-- Add resume/PDF extraction for real recruiter inputs.
-- Add one-click PDF report export.
-- Add a hosted sandbox/demo mode with a small sample candidate set.
-- Improve the ranker with offline evaluation once labels or feedback data exist.
-
-Sifter should stay focused: it is a transparent screening report tool, not a bloated ATS.
+Sifter should stay focused: shortlist candidates clearly, cheaply, privately, and honestly.
