@@ -22,7 +22,21 @@ https://sifter1011.firebaseapp.com
 
 Note: Firebase's free `web.app` URL is tied to the Firebase project id. Because this project id is `sifter1011`, the default domain is `sifter1011.web.app`. The typed domain `sifter.web,app` is not valid because of the comma, and `sifter.web.app` would require a Firebase project id of `sifter`.
 
-This deploy hosts the web app. The **Redrob Challenge** button works live by loading the full-run top-100 output that was produced after ranking all 100,000 candidates locally. API-backed fresh ranking still needs the local API server or a separate hosted API deployment.
+This deploy hosts the web app. The **Redrob Challenge** button works live by loading the full-run challenge data state that was produced after ranking all 100,000 candidates locally. It does **not** auto-run the result screen; it fills the app, waits on the setup step, and lets the user click **Rank challenge** when they are ready. API-backed fresh ranking still needs the local API server or a separate hosted API deployment.
+
+## Redrob Challenge Button
+
+The live app has a **Redrob Challenge** button in Step 1.
+
+In plain English, it does this:
+
+1. Sets the role to the Redrob Senior AI Engineer challenge.
+2. Loads the prepared 100,000-candidate challenge state.
+3. Shows that the Redrob candidates are ready.
+4. Waits for the user to click **Rank challenge**.
+5. Then shows the top-100 challenge output, export CSV, and bias audit.
+
+This is intentional. We do not want a button to silently process or jump ahead without user control.
 
 ## Why This Exists
 
@@ -100,7 +114,7 @@ This project now has two major workflows.
 - Finished the optimized full ranking run in `289.7s`, under the 5-minute challenge limit.
 - Added a streaming CLI so huge files do not need to be loaded into the browser.
 - Added a web UI mode switch between normal `CSV` screening and `Redrob` challenge data.
-- Added a live `Redrob Challenge` button for the hosted app, so anyone can inspect and export the full-run challenge output without setting up the repo first.
+- Added a live `Redrob Challenge` button for the hosted app, so anyone can load the challenge, review the setup, then run and export the full-run challenge output without setting up the repo first.
 - Added a visible bias guardrail that removes protected/proxy signals from scoring, caps logistics lift, and shows proxy-distribution warnings.
 - Added clear ranking reasons for every selected candidate.
 - Kept challenge ranking local, CPU-only, and no-network.
@@ -163,7 +177,7 @@ Yes, the challenge submission was produced by processing the full `candidates.js
 
 The hosted Firebase app does **not** bundle the raw 487 MB file into every visitor's browser. That would be slow, expensive, and unnecessary for public testing. Instead, the live `Redrob Challenge` button loads the validator-ready top-100 output created from the full run.
 
-That is also how the app stays usable on almost any device. Phones, tablets, and older laptops do not need to score 100,000 profiles in the browser. The heavy ranking path is the compiled local CLI, while the live demo loads a small static result file with the same top-100 output and bias audit.
+That is also how the app stays usable on almost any device. Phones, tablets, and older laptops do not need to score 100,000 profiles in the browser. The heavy ranking path is the compiled local CLI, while the live demo loads a small static result file with the same top-100 output and bias audit, then waits for the user to choose when to show it.
 
 ## What Is Innovative Here?
 
@@ -182,6 +196,10 @@ What is not live yet is a real learning loop. The current version is determinist
 ## Bias Guardrail
 
 Bias is a real risk in hiring tools, especially when AI or platform signals are involved. Sifter now has an explicit guardrail:
+
+Layman version:
+
+Sifter should not say someone is better or worse because of identity clues. So it tries to judge candidates by job proof: skills, shipped work, production experience, ranking/retrieval evidence, and availability for the actual role. It ignores things like names and school prestige. It also checks whether the shortlist is leaning too much toward proxy groups, such as one location or notice-period band. If something looks uneven, it marks it for human review instead of pretending the algorithm is automatically fair.
 
 - Protected traits are not requested and are not used for scoring.
 - Names, anonymized names, education institution, education tier, language, and school prestige are excluded from Redrob scoring.
@@ -341,6 +359,16 @@ This repository includes Firebase Hosting config for the web app:
 - Project id: `sifter1011`
 - Hosting folder: `apps/web/dist`
 - Default URL: `https://sifter1011.web.app`
+- Mirror URL: `https://sifter1011.firebaseapp.com`
+- The deployed site includes the Redrob Challenge button, top-100 static challenge asset, and visible bias guardrail.
+
+Why Firebase:
+
+- It gives a simple public URL anyone can open.
+- It serves the static web app quickly.
+- It keeps the demo cheap and easy to share.
+- It avoids forcing visitors to download the 487 MB raw Redrob file.
+- It keeps the heavy 100,000-candidate run on the local/CLI path where it belongs.
 
 Deploy command:
 
