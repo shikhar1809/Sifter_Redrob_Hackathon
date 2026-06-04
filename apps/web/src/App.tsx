@@ -621,7 +621,16 @@ export default function App() {
       <div ref={workAreaRef} className={phase === "processing" ? "workbench pipeline-stage" : "input-stage"}>
         {phase === "role" ? (
           <section className="panel input-panel">
-            <PanelTitle title="Step 1: Role Requirements" meta={roleReady ? "ready" : "required"} />
+            <PanelTitle
+              title="Step 1: Role Requirements"
+              meta={roleReady ? "ready" : "required"}
+              action={
+                <button className="btn btn-primary panel-title-button" type="button" onClick={loadRedrobChallengeOutput} disabled={status === "running"}>
+                  <Database size={15} />
+                  Redrob Challenge
+                </button>
+              }
+            />
             <StepRail phase={phase} />
 
             <div className="role-builder">
@@ -990,11 +999,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function PanelTitle({ title, meta }: { title: string; meta: string }) {
+function PanelTitle({ title, meta, action }: { title: string; meta: string; action?: React.ReactNode }) {
   return (
     <div className="panel-title">
-      <span>{title}</span>
-      <span>{meta}</span>
+      <div className="panel-title-main">
+        <span>{title}</span>
+        {action}
+      </div>
+      <span className="panel-title-meta">{meta}</span>
     </div>
   );
 }

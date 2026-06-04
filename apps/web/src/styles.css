@@ -640,7 +640,28 @@ textarea {
   font-weight: 950;
 }
 
-.panel-title span:last-child {
+.panel-title-main {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.panel-title-main > span {
+  overflow-wrap: anywhere;
+}
+
+.panel-title-button {
+  min-height: 34px;
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  font-size: 12px;
+}
+
+.panel-title-meta {
+  flex: 0 0 auto;
   color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 11px;
@@ -1767,6 +1788,20 @@ td {
   .topbar {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .panel-title {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .panel-title-main {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .panel-title-button {
+    width: 100%;
   }
 
   .brand-logo {
