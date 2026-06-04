@@ -55,7 +55,7 @@ Local first also makes the tool cheaper and more reproducible:
 
 ### Mobile Friendly Layout
 
-![Sifter mobile layout](docs/screenshots/sifter-mobile.png)
+<img src="docs/screenshots/sifter-mobile.png" alt="Sifter mobile layout" width="320">
 
 ### Simple Workflow
 
