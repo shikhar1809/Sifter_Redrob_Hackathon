@@ -6,6 +6,24 @@ The goal is simple: anyone should be able to use it, even if they do not have a 
 
 Sifter does not ask people to blindly trust a black-box score. It shows the evidence, the risks, the missing proof, and the next question to ask. That makes hiring review easier to understand, easier to challenge, and easier to share with a team.
 
+## Live Demo
+
+The Firebase Hosting deployment is here:
+
+```text
+https://sifter1011.web.app
+```
+
+Firebase also serves the same build here:
+
+```text
+https://sifter1011.firebaseapp.com
+```
+
+Note: Firebase's free `web.app` URL is tied to the Firebase project id. Because this project id is `sifter1011`, the default domain is `sifter1011.web.app`. The typed domain `sifter.web,app` is not valid because of the comma, and `sifter.web.app` would require a Firebase project id of `sifter`.
+
+This deploy hosts the web app. The API-backed ranking actions still need the local API server or a separate hosted API deployment.
+
 ## Why This Exists
 
 Most hiring tools are either expensive, too opaque, or too heavy for small teams. Sifter is built for the opposite kind of user:
@@ -263,10 +281,25 @@ npm run typecheck
 npm run build
 ```
 
+## Firebase Hosting
+
+This repository includes Firebase Hosting config for the web app:
+
+- Project id: `sifter1011`
+- Hosting folder: `apps/web/dist`
+- Default URL: `https://sifter1011.web.app`
+
+Deploy command:
+
+```bash
+npx firebase-tools deploy --only hosting --project sifter1011
+```
+
 Already verified:
 
 - `npm.cmd run typecheck`
 - `npm.cmd run build`
+- Firebase Hosting deploy to `sifter1011`
 - full Redrob challenge rank
 - official validator on `redrob_submission.csv`
 
