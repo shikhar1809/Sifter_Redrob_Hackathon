@@ -1695,7 +1695,15 @@ td {
   }
 
   .hero-copy h1 {
-    font-size: clamp(38px, 14vw, 56px);
+    font-size: clamp(30px, 9.5vw, 38px);
+    line-height: 1.04;
+    overflow-wrap: break-word;
+  }
+
+  .hero-copy p {
+    max-width: 300px;
+    font-size: 14px;
+    overflow-wrap: break-word;
   }
 
   .console-metrics,

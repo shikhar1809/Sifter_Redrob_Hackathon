@@ -2,51 +2,105 @@
 
 Sifter helps recruiters turn a messy candidate list into a clear, explainable shortlist.
 
-Instead of saying “trust the AI,” Sifter shows why each person was ranked, what evidence was used, and what still needs to be checked by a human. It is built to stay cheap, private, and useful for real hiring work.
+The goal is simple: anyone should be able to use it, even if they do not have a big hiring budget, a paid AI account, a GPU, or a technical team sitting beside them.
 
-## What We Built
+Sifter does not ask people to blindly trust a black-box score. It shows the evidence, the risks, the missing proof, and the next question to ask. That makes hiring review easier to understand, easier to challenge, and easier to share with a team.
 
-This project now does two important things:
+## Why This Exists
 
-1. Regular recruiter screening  
-   Upload a simple CSV, describe the role, and Sifter creates a shortlist with reasons, risks, missing evidence, and interview questions.
+Most hiring tools are either expensive, too opaque, or too heavy for small teams. Sifter is built for the opposite kind of user:
 
-2. Redrob Hackathon ranking  
-   Take the Redrob challenge candidate files, rank the best 100 candidates for the Senior AI Engineer job, and export a valid submission CSV.
+- A founder screening candidates alone.
+- A recruiter with a spreadsheet and limited time.
+- A small team that cannot afford expensive AI calls.
+- A hackathon participant who needs a reproducible local ranker.
+- Anyone who wants a shortlist with reasons, not just a mystery score.
+
+## Built So Anyone Can Use It
+
+We focused on access from the start:
+
+- No paid AI account required for the main ranking flow.
+- No GPU required.
+- No external API calls during Redrob challenge ranking.
+- Works with simple files like CSV, JSON, and JSONL.
+- Runs locally on an ordinary machine.
+- Uses plain-English explanations.
+- Has a browser UI for smaller files and a CLI for huge files.
+- Keeps candidate data under the user's control.
+- Avoids using candidate names or school prestige as scoring boosts.
+- Uses readable controls, large buttons, labels, and a step-by-step flow.
+- Includes responsive screens so the product is usable on smaller devices too.
+
+## Why Local First
+
+Local first means the ranking can happen on your own machine before anything is sent anywhere else.
+
+That matters because candidate data is sensitive. A candidate list can include names, work history, salary expectations, contact details, and private career signals. Sifter's default path keeps that data local and deterministic.
+
+Local first also makes the tool cheaper and more reproducible:
+
+- No per-candidate AI bill.
+- No waiting on hosted LLM APIs.
+- No network dependency during the Redrob challenge ranking step.
+- Easier to rerun and audit.
+- Easier to explain how a result was produced.
+- Better fit for challenge rules that require CPU-only, no-network ranking.
 
 ## Screenshots
 
-### Sifter App
+### Desktop App
 
-![Sifter app home screen](docs/screenshots/sifter-home.png)
+![Sifter desktop app](docs/screenshots/sifter-home.png)
+
+### Mobile Friendly Layout
+
+![Sifter mobile layout](docs/screenshots/sifter-mobile.png)
+
+### Simple Workflow
+
+![Sifter workflow](docs/screenshots/sifter-workflow.png)
 
 ### Redrob Challenge Output
 
 ![Redrob submission preview](docs/screenshots/redrob-output.png)
 
+## What We Built
+
+This project now has two major workflows.
+
+1. Regular recruiter screening
+
+   Upload a simple CSV, describe the role, and Sifter creates a shortlist with reasons, risks, missing evidence, and interview questions.
+
+2. Redrob Hackathon ranking
+
+   Take the Redrob challenge candidate files, rank the best 100 candidates for the Senior AI Engineer job, and export a valid submission CSV.
+
 ## The Hero Work
 
-- Added a Redrob challenge ranker that reads JSON, JSONL, and gzipped JSONL candidate files.
-- Ranked the full `100,000` candidate challenge file locally.
+- Built a Redrob challenge ranker that reads JSON, JSONL, and gzipped JSONL candidate files.
+- Ranked the full 100,000 candidate challenge file locally.
 - Produced a validator-ready `redrob_submission.csv`.
 - Passed the official Redrob submission validator.
 - Finished the full ranking run in `248.7s`, under the 5-minute challenge limit.
 - Added a streaming CLI so huge files do not need to be loaded into the browser.
 - Added a web UI mode switch between normal `CSV` screening and `Redrob` challenge data.
 - Added clear ranking reasons for every selected candidate.
-- Avoided hosted AI calls during challenge ranking.
+- Kept challenge ranking local, CPU-only, and no-network.
 - Avoided using candidate names or school prestige as scoring boosts.
-- Updated documentation so the project can be understood and run by someone new.
+- Improved mobile readability after screenshot review found narrow-screen overflow.
+- Added README screenshots and a plain-language handoff.
 
 ## In Plain English
 
 The Redrob challenge asks:
 
-> “Out of 100,000 people, who are the best 100 for this Senior AI Engineer role?”
+> Out of 100,000 people, who are the best 100 for this Senior AI Engineer role?
 
-Sifter answers that by looking for real evidence from the job description:
+Sifter answers that by looking for evidence from the actual job description:
 
-- Have they built AI systems used in production?
+- Has this person built AI systems used in production?
 - Do they know retrieval, embeddings, vector search, and ranking?
 - Have they worked with evaluation metrics like NDCG, MRR, MAP, A/B tests, or feedback loops?
 - Are they strong with Python and hands-on ML systems?
@@ -93,12 +147,13 @@ Recent full run:
 - CLI command for large challenge files.
 - API endpoints for Redrob parsing and ranking.
 - Web UI support for smaller Redrob JSON/JSONL samples.
-- README screenshots and plain-language handoff.
+- Mobile readability fix for the main hero screen.
+- README screenshots and plain-language documentation.
 
 ## What Is Not Done Yet
 
 - No trained ML model yet. The current Redrob ranker is deterministic and rule/feature based.
-- No guarantee that the ranking perfectly matches Redrob’s hidden ground truth.
+- No guarantee that the ranking perfectly matches Redrob's hidden ground truth.
 - No hosted LLM calls during the challenge ranking step. This is intentional for the rules.
 - No GPU ranking path. Also intentional for the rules.
 - No browser upload for the full 487 MB challenge file. Use the CLI for that.
