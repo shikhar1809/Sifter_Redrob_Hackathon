@@ -1045,6 +1045,17 @@ textarea {
   font-weight: 800;
 }
 
+.bias-plain-note {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 11px;
+  color: #20201d;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.42;
+}
+
 .bias-grid,
 .bias-table {
   display: grid;

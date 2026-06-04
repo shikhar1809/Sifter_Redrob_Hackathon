@@ -362,11 +362,10 @@ export default function App() {
       setRunId(null);
       setUploadedFileName("Full Redrob challenge output");
       setOutputFormat("report_csv");
-      setRunProgress(100);
-      setProgressLabel(`Loaded ${payload.rows.length} rows from ${payload.processedCandidates.toLocaleString()} candidates`);
-      setStatus("complete");
-      setPhase("processing");
-      window.setTimeout(() => setRunProgress(0), 900);
+      setRunProgress(0);
+      setProgressLabel(`Ready: ${payload.processedCandidates.toLocaleString()} Redrob candidates`);
+      setStatus("challenge ready");
+      setPhase("setup");
     } catch (err) {
       setStatus("error");
       setRunProgress(0);
@@ -1283,6 +1282,12 @@ function BiasAuditPanel({ audit }: { audit: BiasAudit }) {
           <strong>{audit.summary}</strong>
           <span>Protected attributes used for scoring: {audit.protectedAttributesUsed.length}</span>
         </div>
+      </div>
+      <div className="bias-plain-note">
+        In simple words: Sifter tries to judge people by job proof, not identity clues. It ignores names, school prestige,
+        and similar signals, then checks whether the shortlist is leaning too heavily toward proxy groups like location,
+        notice period, or experience band. If something looks uneven, it marks it for human review instead of pretending
+        the score is automatically fair.
       </div>
       <div className="bias-grid">
         <div>
