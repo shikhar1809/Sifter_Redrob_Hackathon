@@ -839,6 +839,10 @@ textarea {
   color: #ffffff;
 }
 
+.data-mode-control {
+  min-width: 188px;
+}
+
 .range-head {
   display: flex;
   align-items: center;
@@ -1308,6 +1312,10 @@ table {
   min-width: 760px;
   border-collapse: collapse;
   font-size: 12px;
+}
+
+.challenge-table {
+  min-width: 920px;
 }
 
 th,

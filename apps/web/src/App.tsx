@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Brain, ClipboardList, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
-import type { CandidateInput, GateCandidate, PipelineResult } from "@seederpro/core";
+import type { CandidateInput, GateCandidate, PipelineResult, RedrobRankingRow } from "@seederpro/core";
 
 type RunResponse = {
   runId: string | null;
@@ -10,6 +10,7 @@ type RunResponse = {
 type Phase = "role" | "setup" | "processing";
 type OutputFormat = "report_csv" | "report" | "csv";
 type PrivacyMode = "local" | "ai";
+type CandidateDataMode = "standard" | "redrob";
 type ProductPrinciple = "trust" | "cost" | "privacy" | "simplicity";
 type RoleTemplate = {
   title: string;
@@ -26,6 +27,11 @@ type EmailRow = {
   email: string;
   subject: string;
   body: string;
+};
+type RedrobRankResponse = {
+  rows: RedrobRankingRow[];
+  csv: string;
+  count: number;
 };
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
@@ -55,6 +61,7 @@ const productPrinciples: Array<{ key: ProductPrinciple; title: string; body: str
   },
 ];
 const roleTemplates: RoleTemplate[] = [
+  { title: "Senior AI Engineer", years: [5, 9], stack: "Python, embeddings, retrieval, vector databases, ranking, evaluation frameworks, LLMs", workMode: "location", location: "Pune or Noida hybrid, open to Tier-1 Indian cities", salary: [0, 100], wantsProject: true, notes: "Founding-team role. Require production retrieval/ranking systems, evaluation depth, strong Python, and a shipper mindset. Penalize pure research, shallow LangChain-only work, stale coding, and title-chasing." },
   { title: "Sales Development Representative", years: [0, 2], stack: "Cold outreach, CRM, email writing, discovery calls", workMode: "location", location: "Mumbai onsite", salary: [4, 8], wantsProject: false, notes: "Look for clear communication, persistence, CRM hygiene, and comfort with daily targets." },
   { title: "Account Executive", years: [2, 6], stack: "B2B sales, demos, negotiation, CRM, pipeline ownership", workMode: "location", location: "Bengaluru hybrid", salary: [8, 18], wantsProject: false, notes: "Prefer people who can own a sales cycle, handle objections, and close with discipline." },
   { title: "Customer Support Executive", years: [0, 3], stack: "Ticketing, chat support, email support, empathy, escalation handling", workMode: "remote", location: "", salary: [3, 7], wantsProject: false, notes: "Look for patient communication, clear writing, and calm issue ownership." },
@@ -97,6 +104,10 @@ export default function App() {
   const [roleNotes, setRoleNotes] = useState("Prefer people who have owned real projects and worked well with a team.");
   const [csv, setCsv] = useState("");
   const [candidates, setCandidates] = useState<CandidateInput[]>([]);
+  const [dataMode, setDataMode] = useState<CandidateDataMode>("standard");
+  const [redrobCandidateCount, setRedrobCandidateCount] = useState(0);
+  const [redrobRows, setRedrobRows] = useState<RedrobRankingRow[]>([]);
+  const [redrobCsv, setRedrobCsv] = useState("");
   const [result, setResult] = useState<PipelineResult | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -134,7 +145,12 @@ export default function App() {
 
   const roleReady = roleDescription.trim().length >= 12 && roleTitle.trim().length > 0;
   const candidateLimitState = candidates.length > hardCandidateLimit ? "hard" : candidates.length > softCandidateLimit ? "soft" : "ok";
-  const setupReady = roleReady && candidates.length > 0 && candidates.length <= hardCandidateLimit && inviteCap > 0 && Boolean(outputFormat);
+  const loadedCandidateCount = dataMode === "redrob" ? redrobCandidateCount : candidates.length;
+  const rankedCount = dataMode === "redrob" ? redrobRows.length : finalWithScores.length;
+  const setupReady =
+    dataMode === "redrob"
+      ? roleReady && redrobCandidateCount > 0 && Boolean(outputFormat)
+      : roleReady && candidates.length > 0 && candidates.length <= hardCandidateLimit && inviteCap > 0 && Boolean(outputFormat);
   const ready = setupReady;
 
   useEffect(() => {
@@ -156,9 +172,13 @@ export default function App() {
     };
   }, [phase]);
 
-  async function parseCsvText(nextCsv = csv) {
+  async function parseCsvText(nextCsv = csv, nextMode: CandidateDataMode = dataMode) {
     setError(null);
     setStatus("reading candidate data");
+    if (nextMode === "redrob" || looksLikeRedrobData(nextCsv)) {
+      await parseRedrobText(nextCsv);
+      return;
+    }
     const response = await fetch(`${apiBase}/csv/parse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -167,15 +187,44 @@ export default function App() {
     const payload = await response.json();
     if (!response.ok) throw new Error(readError(payload));
     setCandidates(payload.candidates);
+    setDataMode("standard");
+    setRedrobCandidateCount(0);
+    setRedrobRows([]);
+    setRedrobCsv("");
     setResult(null);
     setRunId(null);
     setPhase("setup");
     setStatus(`parsed ${payload.candidates.length} candidates`);
   }
 
+  async function parseRedrobText(nextText = csv) {
+    setError(null);
+    setStatus("reading Redrob candidates");
+    const response = await fetch(`${apiBase}/redrob/parse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: nextText }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(readError(payload));
+    setDataMode("redrob");
+    setCandidates([]);
+    setRedrobCandidateCount(payload.count);
+    setRedrobRows([]);
+    setRedrobCsv("");
+    setResult(null);
+    setRunId(null);
+    setPhase("setup");
+    setStatus(`parsed ${payload.count} Redrob candidates`);
+  }
+
   async function runPipeline() {
     if (!ready) {
       setError("Complete role requirements, add candidate data, choose output format, and set invite cap before running.");
+      return;
+    }
+    if (dataMode === "redrob") {
+      await runRedrobRanking();
       return;
     }
     setPhase("processing");
@@ -226,20 +275,72 @@ export default function App() {
     }
   }
 
+  async function runRedrobRanking() {
+    setPhase("processing");
+    setStatus("running");
+    setRunProgress(8);
+    setProgressLabel("Reading Redrob candidate profiles");
+    setError(null);
+    await delay(350);
+    setRunProgress(34);
+    setProgressLabel("Scoring against the Senior AI Engineer JD");
+    try {
+      const response = await fetch(`${apiBase}/redrob/rank`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: csv, limit: 100 }),
+      });
+      const payload: RedrobRankResponse | { error: unknown } = await response.json();
+      if (!response.ok) {
+        setStatus("error");
+        setRunProgress(0);
+        setProgressLabel("ranking stopped");
+        setError(readError(payload));
+        return;
+      }
+      setRunProgress(78);
+      setProgressLabel("Building validator-ready CSV");
+      await delay(350);
+      const typed = payload as RedrobRankResponse;
+      setRedrobRows(typed.rows);
+      setRedrobCsv(typed.csv);
+      setRedrobCandidateCount(typed.count);
+      setResult(null);
+      setRunId(null);
+      setSimulationScores({});
+      setRunProgress(100);
+      setProgressLabel("Challenge CSV ready");
+      setStatus("complete");
+      window.setTimeout(() => setRunProgress(0), 900);
+    } catch (err) {
+      setStatus("error");
+      setRunProgress(0);
+      setProgressLabel("ranking stopped");
+      setError(err instanceof Error ? err.message : "Could not reach local API");
+    }
+  }
+
   async function importCsvFile(file: File | null) {
     if (!file) return;
     setUploadedFileName(file.name);
     setStatus(`reading ${file.name}`);
     setError(null);
+    if (file.name.endsWith(".gz") || file.size > 8 * 1024 * 1024) {
+      setDataMode(file.name.includes("json") || file.name.endsWith(".gz") ? "redrob" : "standard");
+      setStatus("use streaming ranker");
+      setError("This file is too large for the browser upload path. Use the local challenge:rank command for the full candidates.jsonl file.");
+      return;
+    }
     const text = await file.text();
     setCsv(text);
     setStatus(`loaded ${file.name}`);
     try {
-      await parseCsvText(text);
+      await parseCsvText(text, candidateModeFromFile(file.name, text));
       setStatus(`parsed ${file.name}`);
     } catch (err) {
       setStatus("error");
       setCandidates([]);
+      setRedrobCandidateCount(0);
       setError(err instanceof Error ? err.message : "Could not read candidate data");
     }
   }
@@ -256,6 +357,10 @@ export default function App() {
   }
 
   function exportCsv() {
+    if (dataMode === "redrob") {
+      exportRedrobCsv();
+      return;
+    }
     if (!finalWithScores.length) return;
     const columns = [
       "rank",
@@ -290,6 +395,17 @@ export default function App() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "seederpro_shortlist.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportRedrobCsv() {
+    if (!redrobCsv) return;
+    const blob = new Blob([redrobCsv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "redrob_submission.csv";
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -348,6 +464,10 @@ export default function App() {
   function clearCsvData() {
     setCsv("");
     setCandidates([]);
+    setDataMode("standard");
+    setRedrobCandidateCount(0);
+    setRedrobRows([]);
+    setRedrobCsv("");
     setUploadedFileName(null);
     setResult(null);
     setRunId(null);
@@ -361,8 +481,10 @@ export default function App() {
   function clearCurrentRun() {
     setResult(null);
     setRunId(null);
+    setRedrobRows([]);
+    setRedrobCsv("");
     setSimulationScores({});
-    setStatus(candidates.length ? `parsed ${candidates.length} candidates` : "idle");
+    setStatus(loadedCandidateCount ? `parsed ${loadedCandidateCount} candidates` : "idle");
     setProgressLabel("waiting for inputs");
     setRunProgress(0);
     setError(null);
@@ -384,9 +506,9 @@ export default function App() {
             <Download size={16} />
             Report
           </button>
-          <button className="btn btn-secondary" onClick={exportCsv} disabled={!finalWithScores.length || outputFormat === "report"}>
+          <button className="btn btn-secondary" onClick={exportCsv} disabled={!rankedCount || outputFormat === "report"}>
             <FileDown size={16} />
-            Export
+            {dataMode === "redrob" ? "Challenge CSV" : "Export"}
           </button>
           {phase === "setup" ? (
             <button className="btn btn-secondary" onClick={() => setPhase("role")}>
@@ -426,10 +548,10 @@ export default function App() {
             </div>
           </div>
           <div className="console-metrics">
-            <Metric value={candidates.length} label="candidates" />
-            <Metric value={result?.gate1.filter((candidate) => candidate.hardPass).length ?? 0} label="passed gate 1" />
-            <Metric value={result?.invited.length ?? 0} label="invited" />
-            <Metric value={finalWithScores.length} label="ranked" />
+            <Metric value={loadedCandidateCount} label="candidates" />
+            <Metric value={dataMode === "redrob" ? redrobRows.slice(0, 10).length : result?.gate1.filter((candidate) => candidate.hardPass).length ?? 0} label={dataMode === "redrob" ? "top 10" : "passed gate 1"} />
+            <Metric value={dataMode === "redrob" ? 100 : result?.invited.length ?? 0} label={dataMode === "redrob" ? "target rows" : "invited"} />
+            <Metric value={rankedCount} label="ranked" />
           </div>
           <div className="cost-meter">
             <span>{privacyMode === "local" ? "free local mode" : `AI capped at top ${aiReviewLimit}`}</span>
@@ -556,6 +678,14 @@ export default function App() {
 
             <Field label="Candidate data">
               <div className="button-row">
+                <div className="segmented-control data-mode-control">
+                  <button type="button" className={dataMode === "standard" ? "active" : ""} onClick={() => setDataMode("standard")}>
+                    CSV
+                  </button>
+                  <button type="button" className={dataMode === "redrob" ? "active" : ""} onClick={() => setDataMode("redrob")}>
+                    Redrob
+                  </button>
+                </div>
                 <button className="btn btn-secondary" type="button" onClick={() => fileInputRef.current?.click()}>
                   <Upload size={16} />
                   Upload candidate data
@@ -564,7 +694,7 @@ export default function App() {
                   ref={fileInputRef}
                   className="hidden-input"
                   type="file"
-                  accept=".csv,text/csv"
+                  accept=".csv,text/csv,.json,.jsonl,application/json"
                   onClick={(event) => {
                     event.currentTarget.value = "";
                   }}
@@ -577,16 +707,22 @@ export default function App() {
               </div>
               <div className="file-state">
                 <span>{uploadedFileName ? `Uploaded: ${uploadedFileName}` : "No file uploaded yet"}</span>
-                <span>{candidates.length ? `${candidates.length} candidates ready` : "0 candidates ready"}</span>
+                <span>{loadedCandidateCount ? `${loadedCandidateCount} candidates ready` : "0 candidates ready"}</span>
               </div>
-              <textarea className="field-control csv-box" value={csv} onChange={(event) => setCsv(event.target.value)} placeholder="Paste candidate data here" />
+              <textarea
+                className="field-control csv-box"
+                value={csv}
+                onChange={(event) => setCsv(event.target.value)}
+                placeholder={dataMode === "redrob" ? "Paste Redrob JSON array or JSONL here" : "Paste candidate CSV here"}
+              />
               <button
                 className="btn btn-secondary full-width"
                 type="button"
                 onClick={() =>
-                  parseCsvText().catch((err: Error) => {
+                  parseCsvText(csv, dataMode).catch((err: Error) => {
                     setStatus("error");
                     setCandidates([]);
+                    setRedrobCandidateCount(0);
                     setError(err.message);
                   })
                 }
@@ -639,11 +775,11 @@ export default function App() {
 
             <TrustStrip
               privacyMode={privacyMode}
-              candidateCount={candidates.length}
+              candidateCount={loadedCandidateCount}
               reviewedCandidates={result?.intelligence?.reviewedCandidates ?? 0}
             />
 
-            {candidates.length ? (
+            {dataMode === "standard" && candidates.length ? (
               <div className={`candidate-limit ${candidateLimitState}`}>
                 <strong>{candidates.length} candidates loaded</strong>
                 <span>
@@ -656,6 +792,13 @@ export default function App() {
               </div>
             ) : null}
 
+            {dataMode === "redrob" && redrobCandidateCount ? (
+              <div className="candidate-limit">
+                <strong>{redrobCandidateCount} Redrob candidates loaded</strong>
+                <span>Challenge mode ranks against the bundled Senior AI Engineer JD and exports the required top-100 CSV.</span>
+              </div>
+            ) : null}
+
             <label className="toggle-control setup-toggle">
               <input type="checkbox" checked={strictMode} onChange={(event) => setStrictMode(event.target.checked)} />
               <span>Strict matching</span>
@@ -664,10 +807,10 @@ export default function App() {
             {error ? <div className="error-box">{error}</div> : null}
 
             <div className="danger-actions">
-              <button className="btn btn-secondary" type="button" onClick={clearCsvData} disabled={!csv && !candidates.length && !result}>
+              <button className="btn btn-secondary" type="button" onClick={clearCsvData} disabled={!csv && !loadedCandidateCount && !result && !redrobRows.length}>
                 Clear candidate data
               </button>
-              <button className="btn btn-secondary" type="button" onClick={clearCurrentRun} disabled={!result}>
+              <button className="btn btn-secondary" type="button" onClick={clearCurrentRun} disabled={!result && !redrobRows.length}>
                 Clear run
               </button>
             </div>
@@ -680,7 +823,7 @@ export default function App() {
               {setupReady ? (
                 <button className="btn btn-primary run-step-button" onClick={runPipeline} disabled={status === "running"}>
                   <Play size={16} />
-                  {status === "running" ? "Finding shortlist" : "Find shortlist"}
+                  {status === "running" ? "Finding shortlist" : dataMode === "redrob" ? "Rank challenge" : "Find shortlist"}
                 </button>
               ) : (
                 <div className="setup-waiting">The shortlist button appears after your candidate data and settings are ready.</div>
@@ -692,7 +835,7 @@ export default function App() {
         {phase === "processing" ? (
         <section className="pipeline-stack">
           <section className="panel run-panel">
-            <PanelTitle title="Step 3: Processing & Results" meta={ready ? `${candidates.length} candidates loaded` : "needs input"} />
+            <PanelTitle title="Step 3: Processing & Results" meta={ready ? `${loadedCandidateCount} candidates loaded` : "needs input"} />
             <StepRail phase={phase} />
             <div className="workspace-summary">
               <div>
@@ -713,7 +856,7 @@ export default function App() {
               </div>
               <div>
                 <span>Source</span>
-                <strong>{uploadedFileName ?? "Pasted candidate data"}</strong>
+                <strong>{uploadedFileName ?? (dataMode === "redrob" ? "Pasted Redrob data" : "Pasted candidate data")}</strong>
               </div>
               <div>
                 <span>Output</span>
@@ -729,14 +872,15 @@ export default function App() {
                 <ArrowLeft size={16} />
                 Edit setup
               </button>
-              <button className="btn btn-secondary" onClick={clearCurrentRun} disabled={!result}>
+              <button className="btn btn-secondary" onClick={clearCurrentRun} disabled={!result && !redrobRows.length}>
                 Clear run
               </button>
             </div>
             {error ? <div className="error-box">{error}</div> : null}
           </section>
-          {result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
-          {result ? (
+          {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} /> : null}
+          {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
+          {dataMode === "standard" && result ? (
             <TrustStrip
               privacyMode={privacyMode}
               candidateCount={result.gate1.length}
@@ -744,11 +888,12 @@ export default function App() {
               resultReady
             />
           ) : null}
-          {outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
-          {result ? <EmailConnector rows={finalWithScores} allRows={result.gate1} roleTitle={roleTitle} inviteLink={inviteLink} onExport={exportEmailCsv} /> : null}
-          <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} />
-          {outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
-          <section className="panel audit-panel">
+          {dataMode === "redrob" && outputFormat !== "report" ? <RedrobChallengeRanking rows={redrobRows} /> : null}
+          {dataMode === "standard" && outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
+          {dataMode === "standard" && result ? <EmailConnector rows={finalWithScores} allRows={result.gate1} roleTitle={roleTitle} inviteLink={inviteLink} onExport={exportEmailCsv} /> : null}
+          {dataMode === "standard" ? <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} /> : null}
+          {dataMode === "standard" && outputFormat !== "report" ? <Final rows={finalWithScores} /> : null}
+          {dataMode === "standard" ? <section className="panel audit-panel">
             <button className="audit-toggle" type="button" onClick={() => setShowAuditGates(!showAuditGates)}>
               <ShieldCheck size={16} />
               {showAuditGates ? "Hide full reasons" : "Show full reasons"}
@@ -761,7 +906,7 @@ export default function App() {
                 <Gate title="Gate 4: Ownership Probe" rows={result?.gate4 ?? []} kind="gate4" />
               </div>
             ) : null}
-          </section>
+          </section> : null}
         </section>
         ) : null}
       </div>
@@ -1018,6 +1163,59 @@ function Final({ rows }: { rows: GateCandidate[] }) {
                   <td>{row.hireConfidence}</td>
                   <td>{row.recommendation}</td>
                   <td>{row.redFlags}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function RedrobChallengeSummary({ rows, candidateCount }: { rows: RedrobRankingRow[]; candidateCount: number }) {
+  const top = rows[0];
+  const floor = rows[rows.length - 1];
+  return (
+    <section className="panel summary-panel">
+      <PanelTitle title="Redrob Challenge Output" meta={`${rows.length} rows`} />
+      <div className="summary-grid">
+        <Metric value={candidateCount} label="loaded" />
+        <Metric value={rows.length} label="ranked" />
+        <Metric value={top ? Math.round(top.score * 1000) : 0} label="top score x1000" />
+        <Metric value={floor ? Math.round(floor.score * 1000) : 0} label="cutoff x1000" />
+      </div>
+      <div className="summary-message">
+        Ranking uses the bundled Senior AI Engineer JD: production retrieval and ranking systems, evaluation depth, Python, shipper mindset, and Redrob availability signals. Names and school prestige are not used as scoring boosts.
+      </div>
+    </section>
+  );
+}
+
+function RedrobChallengeRanking({ rows }: { rows: RedrobRankingRow[] }) {
+  return (
+    <section className="panel gate-panel">
+      <PanelTitle title="Challenge Submission Rows" meta={rows.length ? "validator columns" : "waiting"} />
+      {!rows.length ? (
+        <div className="empty-state">Run the Redrob challenge ranker to generate the top-100 submission rows.</div>
+      ) : (
+        <div className="table-frame">
+          <table className="challenge-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Candidate ID</th>
+                <th>Score</th>
+                <th>Reasoning</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.candidate_id}>
+                  <td>{row.rank}</td>
+                  <td className="strong-cell">{row.candidate_id}</td>
+                  <td>{row.score.toFixed(4)}</td>
+                  <td>{row.reasoning}</td>
                 </tr>
               ))}
             </tbody>
@@ -1536,6 +1734,21 @@ function outputFormatLabel(format: OutputFormat): string {
   if (format === "report") return "Report only";
   if (format === "csv") return "Data file only";
   return "Report + data file";
+}
+
+function candidateModeFromFile(fileName: string, text: string): CandidateDataMode {
+  const lower = fileName.toLowerCase();
+  if (lower.endsWith(".json") || lower.endsWith(".jsonl") || looksLikeRedrobData(text)) return "redrob";
+  return "standard";
+}
+
+function looksLikeRedrobData(text: string): boolean {
+  const trimmed = text.trimStart();
+  return (
+    trimmed.startsWith("[") ||
+    trimmed.startsWith('{"candidate_id"') ||
+    trimmed.includes('"candidate_id"') && trimmed.includes('"redrob_signals"')
+  );
 }
 
 function intelligenceTitle(status?: NonNullable<PipelineResult["intelligence"]>["status"]): string {

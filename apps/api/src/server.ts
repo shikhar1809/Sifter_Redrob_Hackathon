@@ -1,7 +1,14 @@
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import Fastify from "fastify";
-import { parseCsv, runDeterministicPipeline, runPipelineInputSchema } from "@seederpro/core";
+import {
+  exportRedrobSubmissionCsv,
+  parseCsv,
+  parseRedrobCandidates,
+  rankRedrobCandidates,
+  runDeterministicPipeline,
+  runPipelineInputSchema,
+} from "@seederpro/core";
 import { z } from "zod";
 import { registerAuth } from "./auth.js";
 import { config } from "./config.js";
@@ -46,6 +53,46 @@ app.post("/csv/parse", async (request, reply) => {
     return { candidates: parseCsv(body.data.csv) };
   } catch (error) {
     return reply.status(400).send({ error: error instanceof Error ? error.message : "Invalid CSV" });
+  }
+});
+
+app.post("/redrob/parse", async (request, reply) => {
+  const body = z.object({ text: z.string().min(1) }).safeParse(request.body);
+  if (!body.success) return reply.status(400).send({ error: body.error.flatten() });
+
+  try {
+    const candidates = parseRedrobCandidates(body.data.text);
+    return {
+      candidates,
+      count: candidates.length,
+      message: `Parsed ${candidates.length} Redrob candidate${candidates.length === 1 ? "" : "s"}.`,
+    };
+  } catch (error) {
+    return reply.status(400).send({ error: error instanceof Error ? error.message : "Invalid Redrob JSON/JSONL" });
+  }
+});
+
+app.post("/redrob/rank", async (request, reply) => {
+  const body = z
+    .object({
+      text: z.string().optional(),
+      candidates: z.array(z.unknown()).optional(),
+      limit: z.number().int().positive().max(100).default(100),
+    })
+    .refine((value) => value.text || value.candidates?.length, "Provide candidate text or candidate objects")
+    .safeParse(request.body);
+  if (!body.success) return reply.status(400).send({ error: body.error.flatten() });
+
+  try {
+    const candidates = body.data.candidates?.length ? parseRedrobCandidates(JSON.stringify(body.data.candidates)) : parseRedrobCandidates(body.data.text ?? "");
+    const rows = rankRedrobCandidates({ candidates, limit: body.data.limit });
+    return {
+      rows,
+      csv: exportRedrobSubmissionCsv(rows),
+      count: candidates.length,
+    };
+  } catch (error) {
+    return reply.status(400).send({ error: error instanceof Error ? error.message : "Could not rank Redrob candidates" });
   }
 });
 

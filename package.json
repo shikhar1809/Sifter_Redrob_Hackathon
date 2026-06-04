@@ -17,7 +17,8 @@
     "build": "npm run build --workspace @seederpro/core && npm run build --workspace @seederpro/api && npm run build --workspace @seederpro/web",
     "typecheck": "npm run typecheck --workspace @seederpro/core && npm run typecheck --workspace @seederpro/api && npm run typecheck --workspace @seederpro/web",
     "lint": "npm run lint --workspace @seederpro/core && npm run lint --workspace @seederpro/api && npm run lint --workspace @seederpro/web",
-    "db:schema": "npm run db:schema --workspace @seederpro/api"
+    "db:schema": "npm run db:schema --workspace @seederpro/api",
+    "challenge:rank": "npm run challenge:rank --workspace @seederpro/api --"
   },
   "engines": {
     "node": ">=22"
