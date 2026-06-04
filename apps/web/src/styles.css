@@ -978,6 +978,103 @@ textarea {
   background: #ffffff;
 }
 
+.bias-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.bias-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #050505;
+  color: #ffffff;
+  padding: 12px;
+}
+
+.bias-summary svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.bias-summary strong,
+.bias-summary span,
+.bias-grid span,
+.bias-grid p,
+.bias-warning,
+.bias-table span,
+.bias-table strong,
+.bias-table p {
+  display: block;
+}
+
+.bias-summary strong {
+  font-size: 14px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.bias-summary span {
+  margin-top: 4px;
+  color: #d8d8d2;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bias-grid,
+.bias-table {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.bias-grid > div,
+.bias-table > div,
+.bias-warning {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 10px;
+}
+
+.bias-grid span,
+.bias-table span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.bias-grid p,
+.bias-table p {
+  margin: 5px 0 0;
+  color: #050505;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.bias-table strong {
+  margin-top: 4px;
+  color: #050505;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.bias-table .flagged {
+  background: #fff0d6;
+}
+
+.bias-warning {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
 .danger-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1709,6 +1806,8 @@ td {
   .console-metrics,
   .summary-grid,
   .settings-grid,
+  .bias-grid,
+  .bias-table,
   .trust-grid,
   .step-rail {
     grid-template-columns: 1fr;

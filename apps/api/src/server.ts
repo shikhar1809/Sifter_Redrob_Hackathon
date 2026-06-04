@@ -3,6 +3,7 @@ import rateLimit from "@fastify/rate-limit";
 import Fastify from "fastify";
 import {
   exportRedrobSubmissionCsv,
+  createRedrobBiasAudit,
   parseCsv,
   parseRedrobCandidates,
   rankRedrobCandidates,
@@ -90,6 +91,7 @@ app.post("/redrob/rank", async (request, reply) => {
       rows,
       csv: exportRedrobSubmissionCsv(rows),
       count: candidates.length,
+      biasAudit: createRedrobBiasAudit(candidates, rows),
     };
   } catch (error) {
     return reply.status(400).send({ error: error instanceof Error ? error.message : "Could not rank Redrob candidates" });

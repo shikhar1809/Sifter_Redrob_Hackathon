@@ -18,7 +18,8 @@
     "typecheck": "npm run typecheck --workspace @seederpro/core && npm run typecheck --workspace @seederpro/api && npm run typecheck --workspace @seederpro/web",
     "lint": "npm run lint --workspace @seederpro/core && npm run lint --workspace @seederpro/api && npm run lint --workspace @seederpro/web",
     "db:schema": "npm run db:schema --workspace @seederpro/api",
-    "challenge:rank": "npm run challenge:rank --workspace @seederpro/api --"
+    "prechallenge:rank": "npm run build --workspace @seederpro/core && npm run build --workspace @seederpro/api",
+    "challenge:rank": "node apps/api/dist/redrob-ranker.js"
   },
   "engines": {
     "node": ">=22"

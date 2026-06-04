@@ -24,6 +24,7 @@ const reviewSchema = z.object({
 });
 
 type ReviewMap = Map<string, CandidateAiReview>;
+const biasedReviewPattern = /\b(age|gender|male|female|woman|man|caste|religion|muslim|hindu|christian|sikh|race|ethnicity|disability|disabled|married|marital|pregnant|parent|mother|father|photo|picture|accent|native language)\b/i;
 
 export async function reviewCandidatesWithGemini(roleDescription: string, candidates: GateCandidate[]): Promise<ReviewMap> {
   if (!config.geminiReviewEnabled || !config.geminiApiKey || !candidates.length) return new Map();
@@ -70,15 +71,18 @@ export async function reviewCandidatesWithGemini(roleDescription: string, candid
     parsed.reviews.map((review) => [
       review.id,
       {
-        personalNote: trimSentences(review.personalNote, 2),
-        nextAction: review.nextAction,
+        personalNote: cleanAiReviewText(review.personalNote, "Evidence-only review ready; validate role proof in interview."),
+        nextAction: cleanAiReviewText(review.nextAction, "Review only job evidence and validate missing proof in interview."),
         riskLevel: review.riskLevel,
-        strengths: review.strengths,
-        weaknesses: review.weaknesses,
-        missingEvidence: review.missingEvidence,
-        interviewQuestion: review.interviewQuestion,
-        confidenceNote: review.confidenceNote,
-        sourceFields: review.sourceFields,
+        strengths: cleanAiReviewList(review.strengths, ["Relevant job evidence found in the provided profile fields."]),
+        weaknesses: cleanAiReviewList(review.weaknesses, ["Needs more job-specific evidence before final decision."]),
+        missingEvidence: cleanAiReviewList(review.missingEvidence, ["Ask for concrete project proof tied to the role."]),
+        interviewQuestion: cleanAiReviewText(review.interviewQuestion, "Walk through one relevant project and the tradeoffs you personally owned."),
+        confidenceNote: cleanAiReviewText(
+          review.confidenceNote,
+          "Bias guardrail applied: review uses only role evidence and score fields, not protected traits.",
+        ),
+        sourceFields: review.sourceFields.filter((field) => field !== "name").slice(0, 8),
         provider: "gemini" as const,
       },
     ]),
@@ -96,6 +100,8 @@ function buildPrompt(roleDescription: string, candidates: GateCandidate[]): stri
   return [
     "You are reviewing recruitment shortlist data for a hiring workflow.",
     "Use only the role and candidate fields provided. Do not invent employers, degrees, locations, or accomplishments.",
+    "Do not use protected traits or proxies as quality evidence: age, gender, caste, religion, race, ethnicity, disability, marital status, family status, photo, accent, name origin, or school prestige.",
+    "Location and salary may only be mentioned as logistics or budget fit when directly relevant to the role, never as a measure of ability.",
     "Return strict JSON only with a top-level reviews array.",
     "Each review must include: id, personalNote, nextAction, riskLevel, strengths, weaknesses, missingEvidence, interviewQuestion, confidenceNote, sourceFields.",
     "personalNote must be two short lines or fewer. strengths/weaknesses/missingEvidence must be blunt and constructive.",
@@ -105,7 +111,6 @@ function buildPrompt(roleDescription: string, candidates: GateCandidate[]): stri
     `Candidates: ${JSON.stringify(
       candidates.map((candidate) => ({
         id: candidate.id,
-        name: candidate.name,
         experience_years: candidate.experience_years,
         location: candidate.location,
         skills: candidate.skills,
@@ -121,8 +126,19 @@ function buildPrompt(roleDescription: string, candidates: GateCandidate[]): stri
       })),
     )}`,
     "",
-    "sourceFields must be an array using only these field names when relevant: name, experience_years, location, skills, summary, salary_expectation_lpa, github_url, profileScore, deepScore, ownershipScore, finalScore, redFlags, probeQuestion.",
+    "sourceFields must be an array using only these field names when relevant: experience_years, location, skills, summary, salary_expectation_lpa, github_url, profileScore, deepScore, ownershipScore, finalScore, redFlags, probeQuestion.",
   ].join("\n");
+}
+
+function cleanAiReviewText(value: string, fallback: string): string {
+  const trimmed = String(value || "").trim();
+  if (!trimmed || biasedReviewPattern.test(trimmed)) return fallback;
+  return trimSentences(trimmed, 2);
+}
+
+function cleanAiReviewList(values: string[], fallback: string[]): string[] {
+  const cleaned = values.map((value) => cleanAiReviewText(value, "")).filter(Boolean);
+  return cleaned.length ? cleaned : fallback;
 }
 
 function trimSentences(value: string, maxSentences: number): string {

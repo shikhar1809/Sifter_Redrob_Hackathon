@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
-import type { CandidateInput, GateCandidate, PipelineResult, RedrobRankingRow } from "@seederpro/core";
+import type { BiasAudit, CandidateInput, GateCandidate, PipelineResult, RedrobRankingRow } from "@seederpro/core";
 
 type RunResponse = {
   runId: string | null;
@@ -32,12 +32,14 @@ type RedrobRankResponse = {
   rows: RedrobRankingRow[];
   csv: string;
   count: number;
+  biasAudit: BiasAudit;
 };
 type RedrobChallengeAsset = {
   processedCandidates: number;
   runtimeSeconds: number;
   generatedAt: string;
   note: string;
+  biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
 
@@ -115,6 +117,7 @@ export default function App() {
   const [redrobCandidateCount, setRedrobCandidateCount] = useState(0);
   const [redrobRows, setRedrobRows] = useState<RedrobRankingRow[]>([]);
   const [redrobCsv, setRedrobCsv] = useState("");
+  const [redrobBiasAudit, setRedrobBiasAudit] = useState<BiasAudit | null>(null);
   const [result, setResult] = useState<PipelineResult | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -198,6 +201,7 @@ export default function App() {
     setRedrobCandidateCount(0);
     setRedrobRows([]);
     setRedrobCsv("");
+    setRedrobBiasAudit(null);
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -219,6 +223,7 @@ export default function App() {
     setRedrobCandidateCount(payload.count);
     setRedrobRows([]);
     setRedrobCsv("");
+    setRedrobBiasAudit(null);
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -320,6 +325,7 @@ export default function App() {
       setRedrobRows(typed.rows);
       setRedrobCsv(typed.csv);
       setRedrobCandidateCount(typed.count);
+      setRedrobBiasAudit(typed.biasAudit);
       setResult(null);
       setRunId(null);
       setSimulationScores({});
@@ -351,6 +357,7 @@ export default function App() {
       setRedrobCandidateCount(payload.processedCandidates);
       setRedrobRows(payload.rows);
       setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
+      setRedrobBiasAudit(payload.biasAudit);
       setResult(null);
       setRunId(null);
       setUploadedFileName("Full Redrob challenge output");
@@ -516,6 +523,7 @@ export default function App() {
     setRedrobCandidateCount(0);
     setRedrobRows([]);
     setRedrobCsv("");
+    setRedrobBiasAudit(null);
     setUploadedFileName(null);
     setResult(null);
     setRunId(null);
@@ -531,6 +539,7 @@ export default function App() {
     setRunId(null);
     setRedrobRows([]);
     setRedrobCsv("");
+    setRedrobBiasAudit(null);
     setSimulationScores({});
     setStatus(loadedCandidateCount ? `parsed ${loadedCandidateCount} candidates` : "idle");
     setProgressLabel("waiting for inputs");
@@ -935,7 +944,9 @@ export default function App() {
             {error ? <div className="error-box">{error}</div> : null}
           </section>
           {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} /> : null}
+          {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
+          {dataMode === "standard" && result ? <BiasAuditPanel audit={result.biasAudit} /> : null}
           {dataMode === "standard" && result ? (
             <TrustStrip
               privacyMode={privacyMode}
@@ -1244,6 +1255,47 @@ function RedrobChallengeSummary({ rows, candidateCount }: { rows: RedrobRankingR
       <div className="summary-message">
         Ranking uses the bundled Senior AI Engineer JD: production retrieval and ranking systems, evaluation depth, Python, shipper mindset, and Redrob availability signals. Names and school prestige are not used as scoring boosts.
       </div>
+    </section>
+  );
+}
+
+function BiasAuditPanel({ audit }: { audit: BiasAudit }) {
+  const flagged = audit.proxyGroups.filter((group) => group.flag !== "ok").slice(0, 6);
+  const visibleGroups = flagged.length ? flagged : audit.proxyGroups.slice(0, 4);
+  return (
+    <section className={`panel bias-panel bias-${audit.status}`}>
+      <PanelTitle title="Bias Guardrail" meta={audit.status === "pass" ? "checked" : "review needed"} />
+      <div className="bias-summary">
+        <ShieldCheck size={18} />
+        <div>
+          <strong>{audit.summary}</strong>
+          <span>Protected attributes used for scoring: {audit.protectedAttributesUsed.length}</span>
+        </div>
+      </div>
+      <div className="bias-grid">
+        <div>
+          <span>Removed from scoring</span>
+          <p>{audit.excludedSignals.slice(0, 6).join(", ")}</p>
+        </div>
+        <div>
+          <span>Mitigation</span>
+          <p>{audit.mitigations.slice(0, 3).join("; ")}</p>
+        </div>
+      </div>
+      {visibleGroups.length ? (
+        <div className="bias-table">
+          {visibleGroups.map((group) => (
+            <div key={`${group.field}-${group.group}`} className={group.flag === "ok" ? "" : "flagged"}>
+              <span>{group.field}</span>
+              <strong>{group.group}</strong>
+              <p>
+                selected {(group.selectedShare * 100).toFixed(1)}% vs pool {(group.poolShare * 100).toFixed(1)}%
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <div className="bias-warning">{audit.warnings[0]}</div>
     </section>
   );
 }

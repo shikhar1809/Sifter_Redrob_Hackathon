@@ -97,10 +97,11 @@ This project now has two major workflows.
 - Ranked the full 100,000 candidate challenge file locally.
 - Produced a validator-ready `redrob_submission.csv`.
 - Passed the official Redrob submission validator.
-- Finished the full ranking run in `248.7s`, under the 5-minute challenge limit.
+- Finished the optimized full ranking run in `289.7s`, under the 5-minute challenge limit.
 - Added a streaming CLI so huge files do not need to be loaded into the browser.
 - Added a web UI mode switch between normal `CSV` screening and `Redrob` challenge data.
 - Added a live `Redrob Challenge` button for the hosted app, so anyone can inspect and export the full-run challenge output without setting up the repo first.
+- Added a visible bias guardrail that removes protected/proxy signals from scoring, caps logistics lift, and shows proxy-distribution warnings.
 - Added clear ranking reasons for every selected candidate.
 - Kept challenge ranking local, CPU-only, and no-network.
 - Avoided using candidate names or school prestige as scoring boosts.
@@ -148,7 +149,7 @@ Recent full run:
 
 - Candidates ranked: `100,000`
 - Output rows: `100`
-- Runtime: `248.7s`
+- Runtime: `289.7s`
 - Top candidate: `CAND_0081846`
 
 ## Are We Processing All 100,000?
@@ -158,9 +159,11 @@ Yes, the challenge submission was produced by processing the full `candidates.js
 - Raw challenge input: `100,000` candidates
 - Raw file size: about `487 MB`
 - Ranked output: top `100`
-- Full local runtime: `248.7s`
+- Optimized full local runtime: `289.7s`
 
 The hosted Firebase app does **not** bundle the raw 487 MB file into every visitor's browser. That would be slow, expensive, and unnecessary for public testing. Instead, the live `Redrob Challenge` button loads the validator-ready top-100 output created from the full run.
+
+That is also how the app stays usable on almost any device. Phones, tablets, and older laptops do not need to score 100,000 profiles in the browser. The heavy ranking path is the compiled local CLI, while the live demo loads a small static result file with the same top-100 output and bias audit.
 
 ## What Is Innovative Here?
 
@@ -176,6 +179,20 @@ Names and school prestige are not used as scoring boosts. The output includes re
 
 What is not live yet is a real learning loop. The current version is deterministic and explainable. A future version should learn from recruiter feedback, interview outcomes, rejection reasons, and successful hires so the weights improve over time instead of staying fixed.
 
+## Bias Guardrail
+
+Bias is a real risk in hiring tools, especially when AI or platform signals are involved. Sifter now has an explicit guardrail:
+
+- Protected traits are not requested and are not used for scoring.
+- Names, anonymized names, education institution, education tier, language, and school prestige are excluded from Redrob scoring.
+- Optional AI review does not receive candidate names.
+- AI review text is cleaned if it mentions protected traits like gender, caste, religion, race, disability, marital status, family status, photo, accent, or age.
+- Logistics signals like location, notice period, response rate, and activity are capped so they cannot overpower technical and production evidence.
+- Proxy-heavy profiles lose score lift when job evidence is weak.
+- The UI shows a bias audit with proxy distribution warnings for fields like country, work mode, experience band, notice period, location, and salary band.
+
+This does not prove perfect fairness. The Redrob dataset does not include protected attributes, so Sifter cannot calculate true protected-class parity. What it can do today is remove direct protected/proxy scoring, audit observable proxy fields, and force humans to review any skew before treating the shortlist as final.
+
 ## What Is Done
 
 - Regular CSV candidate screening flow.
@@ -185,8 +202,10 @@ What is not live yet is a real learning loop. The current version is determinist
 - Redrob challenge ranking logic.
 - Top-100 CSV export in the exact challenge format.
 - CLI command for large challenge files.
+- Compiled production CLI path for faster full-file ranking.
 - API endpoints for Redrob parsing and ranking.
 - Web UI support for smaller Redrob JSON/JSONL samples.
+- Bias audit and AI-review sanitization guardrail.
 - Mobile readability fix for the main hero screen.
 - README screenshots and plain-language documentation.
 
@@ -194,6 +213,7 @@ What is not live yet is a real learning loop. The current version is determinist
 
 - No trained ML model yet. The current Redrob ranker is deterministic and rule/feature based.
 - No live improvement loop yet. Recruiter feedback and hiring outcomes are not being used to retrain or reweight the ranker automatically.
+- No true protected-class parity report because the source data does not include protected attributes.
 - No guarantee that the ranking perfectly matches Redrob's hidden ground truth.
 - No hosted LLM calls during the challenge ranking step. This is intentional for the rules.
 - No GPU ranking path. Also intentional for the rules.
@@ -243,6 +263,12 @@ PowerShell version:
 
 ```powershell
 npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv
+```
+
+Regenerate the hosted demo asset too:
+
+```powershell
+npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json
 ```
 
 Run on the sample file:

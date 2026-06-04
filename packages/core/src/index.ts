@@ -101,6 +101,31 @@ export type PipelineResult = {
   simulation: GateCandidate[];
   final: GateCandidate[];
   intelligence?: PipelineIntelligence;
+  biasAudit: BiasAudit;
+};
+
+export type BiasAuditStatus = "pass" | "review";
+
+export type BiasAuditGroup = {
+  field: string;
+  group: string;
+  poolCount: number;
+  selectedCount: number;
+  poolShare: number;
+  selectedShare: number;
+  ratio: number;
+  flag: "ok" | "under_selected" | "over_selected";
+};
+
+export type BiasAudit = {
+  status: BiasAuditStatus;
+  summary: string;
+  protectedAttributesAvailable: boolean;
+  protectedAttributesUsed: string[];
+  excludedSignals: string[];
+  mitigations: string[];
+  proxyGroups: BiasAuditGroup[];
+  warnings: string[];
 };
 
 export type PipelineIntelligence = {
@@ -218,6 +243,7 @@ export const redrobRankerInputSchema = z.object({
   candidates: z.array(redrobCandidateSchema).min(1),
   limit: z.number().int().positive().max(100).default(100),
 });
+const redrobRankLimitSchema = z.number().int().positive().max(100).default(100);
 
 export type RedrobCandidate = z.infer<typeof redrobCandidateSchema>;
 export type RedrobRankerInput = z.infer<typeof redrobRankerInputSchema>;
@@ -324,22 +350,56 @@ export function parseRedrobCandidates(text: string): RedrobCandidate[] {
 }
 
 export function rankRedrobCandidates(input: RedrobRankerInput): RedrobRankingRow[] {
-  const parsed = redrobRankerInputSchema.parse(input);
+  const candidates = Array.isArray(input.candidates) ? input.candidates : [];
+  if (!candidates.length) throw new Error("Provide at least one Redrob candidate.");
+  const limit = redrobRankLimitSchema.parse(input.limit ?? 100);
 
-  return parsed.candidates
+  return candidates
     .map(scoreRedrobCandidate)
     .sort(
       (a, b) =>
         redrobSubmissionScore(b) - redrobSubmissionScore(a) ||
         a.candidate.candidate_id.localeCompare(b.candidate.candidate_id),
     )
-    .slice(0, parsed.limit)
+    .slice(0, limit)
     .map((scored, index) => ({
       candidate_id: scored.candidate.candidate_id,
       rank: index + 1,
       score: redrobSubmissionScore(scored),
       reasoning: buildRedrobReasoning(scored, index + 1),
     }));
+}
+
+export function createRedrobBiasAudit(candidates: RedrobCandidate[], rows: RedrobRankingRow[]): BiasAudit {
+  const selectedIds = new Set(rows.map((row) => row.candidate_id));
+  const selected = candidates.filter((candidate) => selectedIds.has(candidate.candidate_id));
+  return createBiasAudit({
+    pool: candidates,
+    selected,
+    classifiers: [
+      ["country", (candidate) => countryBucket(candidate.profile.country || candidate.profile.location)],
+      ["work mode", (candidate) => candidate.redrob_signals.preferred_work_mode || "unknown"],
+      ["experience band", (candidate) => experienceBand(candidate.profile.years_of_experience)],
+      ["notice period", (candidate) => noticeBand(candidate.redrob_signals.notice_period_days)],
+    ],
+    protectedAttributesAvailable: false,
+    excludedSignals: [
+      "candidate name",
+      "anonymized name",
+      "education institution",
+      "education tier",
+      "language",
+      "school prestige",
+    ],
+    mitigations: [
+      "scores are built from job evidence before logistics signals",
+      "location and availability are capped as feasibility signals, not quality signals",
+      "proxy-heavy profiles lose lift when technical and production evidence is weak",
+      "tie-breaks use candidate id only for deterministic ordering",
+    ],
+    missingProtectedWarning:
+      "The Redrob file does not expose protected attributes such as gender, caste, religion, disability, or race. Sifter audits observable proxy fields instead.",
+  });
 }
 
 export function exportRedrobSubmissionCsv(rows: RedrobRankingRow[]): string {
@@ -434,8 +494,9 @@ export function runDeterministicPipeline(input: RunPipelineInput): PipelineResul
     simulationNotes: "",
   }));
   const final = buildFinalShortlist(simulation);
+  const biasAudit = createStandardBiasAudit(base, final);
 
-  return { roleProfile, gate1, gate2, gate3, gate4, invited, simulation, final };
+  return { roleProfile, gate1, gate2, gate3, gate4, invited, simulation, final, biasAudit };
 }
 
 function toGateCandidate(candidate: CandidateInput, index: number): GateCandidate {
@@ -660,6 +721,7 @@ type RedrobScoreDetails = {
     availability: number;
     bonus: number;
     penalty: number;
+    proxyGuardrail: number;
   };
   evidence: {
     coreHits: string[];
@@ -704,6 +766,9 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
   );
   const concerns = redrobConcerns(candidate, { allText, careerText, technical, production, roleDomain });
   const penalty = clamp(concerns.length * 0.035 + honeypotPenalty(candidate), 0, 0.28);
+  const evidenceStrength = clamp(technical * 0.42 + production * 0.28 + roleDomain * 0.2 + rankingEvaluation * 0.1, 0, 1);
+  const proxyLift = behavior * 0.09 + availability * 0.08;
+  const proxyGuardrail = evidenceStrength < 0.52 ? clamp(proxyLift * (0.52 - evidenceStrength) * 1.15, 0, 0.055) : 0;
   const rawScore = clamp(
     technical * 0.27 +
       production * 0.21 +
@@ -713,7 +778,8 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
       behavior * 0.09 +
       availability * 0.08 +
       bonus -
-      penalty,
+      penalty -
+      proxyGuardrail,
     0,
     1,
   );
@@ -722,7 +788,7 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
     candidate,
     rawScore,
     score: clamp(0.2 + rawScore * 0.79, 0.2, 0.99),
-    components: { technical, production, roleDomain, rankingEvaluation, experience, behavior, availability, bonus, penalty },
+    components: { technical, production, roleDomain, rankingEvaluation, experience, behavior, availability, bonus, penalty, proxyGuardrail },
     evidence: {
       coreHits: redrobEvidenceHits(allText, skillNames),
       niceHits: redrobNiceHits(allText, skillNames),
@@ -1023,6 +1089,146 @@ function recencyScore(dateString: string): number {
 function isFutureDate(dateString: string): boolean {
   const parsed = Date.parse(dateString);
   return Number.isFinite(parsed) && parsed > challengeReferenceDate.getTime();
+}
+
+function createStandardBiasAudit(pool: GateCandidate[], selected: GateCandidate[]): BiasAudit {
+  return createBiasAudit({
+    pool,
+    selected,
+    classifiers: [
+      ["location", (candidate) => locationBucket(candidate.location)],
+      ["experience band", (candidate) => experienceBand(candidate.experience_years)],
+      ["salary band", (candidate) => salaryBand(candidate.salary_expectation_lpa)],
+    ],
+    protectedAttributesAvailable: false,
+    excludedSignals: ["candidate name", "email", "photo", "school prestige", "personal background"],
+    mitigations: [
+      "AI review receives evidence fields only and is limited to shortlisted candidates",
+      "name and email are display/contact fields, not score fields",
+      "shortlists include rejection reasons so humans can challenge the result",
+      "live simulation score can override the provisional local rank",
+    ],
+    missingProtectedWarning:
+      "The CSV format does not ask for protected attributes. Sifter audits proxy fields such as location, experience, and salary instead.",
+  });
+}
+
+function createBiasAudit<T>({
+  pool,
+  selected,
+  classifiers,
+  protectedAttributesAvailable,
+  excludedSignals,
+  mitigations,
+  missingProtectedWarning,
+}: {
+  pool: T[];
+  selected: T[];
+  classifiers: Array<[string, (item: T) => string]>;
+  protectedAttributesAvailable: boolean;
+  excludedSignals: string[];
+  mitigations: string[];
+  missingProtectedWarning: string;
+}): BiasAudit {
+  const proxyGroups = classifiers.flatMap(([field, classify]) => auditClassifier(field, pool, selected, classify));
+  const flagged = proxyGroups.filter((group) => group.flag !== "ok");
+  const warnings = [missingProtectedWarning];
+  if (flagged.length) {
+    warnings.push(`${flagged.length} proxy group${flagged.length === 1 ? "" : "s"} need human review before final hiring decisions.`);
+  }
+
+  return {
+    status: flagged.length ? "review" : "pass",
+    summary: flagged.length
+      ? "Bias guardrail applied; proxy distribution still needs human review."
+      : "Bias guardrail applied; no proxy distribution warning crossed the review threshold.",
+    protectedAttributesAvailable,
+    protectedAttributesUsed: [],
+    excludedSignals,
+    mitigations,
+    proxyGroups,
+    warnings,
+  };
+}
+
+function auditClassifier<T>(field: string, pool: T[], selected: T[], classify: (item: T) => string): BiasAuditGroup[] {
+  const poolCounts = countBy(pool.map(classify));
+  const selectedCounts = countBy(selected.map(classify));
+  const poolTotal = Math.max(1, pool.length);
+  const selectedTotal = Math.max(1, selected.length);
+
+  return Array.from(poolCounts.entries())
+    .map(([group, poolCount]) => {
+      const selectedCount = selectedCounts.get(group) ?? 0;
+      const poolShare = poolCount / poolTotal;
+      const selectedShare = selectedCount / selectedTotal;
+      const ratio = poolShare > 0 ? selectedShare / poolShare : 0;
+      const enoughToReview = poolCount >= Math.max(10, poolTotal * 0.01) || selectedCount >= 3;
+      const flag: BiasAuditGroup["flag"] =
+        enoughToReview && selectedCount === 0 && poolShare >= 0.08
+          ? "under_selected"
+          : enoughToReview && ratio >= 2.5 && selectedCount >= 3
+            ? "over_selected"
+            : enoughToReview && ratio <= 0.35 && poolShare >= 0.08
+              ? "under_selected"
+              : "ok";
+      return {
+        field,
+        group,
+        poolCount,
+        selectedCount,
+        poolShare: Number(poolShare.toFixed(4)),
+        selectedShare: Number(selectedShare.toFixed(4)),
+        ratio: Number(ratio.toFixed(2)),
+        flag,
+      };
+    })
+    .sort((a, b) => Number(b.flag !== "ok") - Number(a.flag !== "ok") || b.selectedCount - a.selectedCount || b.poolCount - a.poolCount);
+}
+
+function countBy(values: string[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
+  return counts;
+}
+
+function countryBucket(value: string): string {
+  const lower = value.toLowerCase();
+  if (lower.includes("india")) return "India";
+  if (!lower.trim()) return "unknown";
+  return "outside India";
+}
+
+function locationBucket(value: string): string {
+  const lower = value.toLowerCase();
+  if (!lower.trim()) return "unknown";
+  if (lower.includes("remote")) return "remote";
+  if (/bengaluru|bangalore|mumbai|delhi|ncr|pune|hyderabad|chennai|gurgaon|gurugram/.test(lower)) return "major Indian hiring hub";
+  if (lower.includes("india")) return "other India";
+  return "other";
+}
+
+function experienceBand(years: number): string {
+  if (years < 3) return "0-2 years";
+  if (years < 5) return "3-4 years";
+  if (years <= 9) return "5-9 years";
+  if (years <= 14) return "10-14 years";
+  return "15+ years";
+}
+
+function salaryBand(lpa: number): string {
+  if (!lpa) return "not provided";
+  if (lpa <= 8) return "0-8 LPA";
+  if (lpa <= 18) return "9-18 LPA";
+  if (lpa <= 35) return "19-35 LPA";
+  return "36+ LPA";
+}
+
+function noticeBand(days: number): string {
+  if (days <= 30) return "0-30 days";
+  if (days <= 60) return "31-60 days";
+  if (days <= 90) return "61-90 days";
+  return "91+ days";
 }
 
 function quoteCsvValue(value: string): string {
