@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Brain, ClipboardList, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
 import type { CandidateInput, GateCandidate, PipelineResult, RedrobRankingRow } from "@seederpro/core";
 
 type RunResponse = {
@@ -32,6 +32,13 @@ type RedrobRankResponse = {
   rows: RedrobRankingRow[];
   csv: string;
   count: number;
+};
+type RedrobChallengeAsset = {
+  processedCandidates: number;
+  runtimeSeconds: number;
+  generatedAt: string;
+  note: string;
+  rows: RedrobRankingRow[];
 };
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
@@ -276,6 +283,14 @@ export default function App() {
   }
 
   async function runRedrobRanking() {
+    if (redrobRows.length && redrobCsv && !csv.trim()) {
+      setPhase("processing");
+      setStatus("complete");
+      setProgressLabel("Full challenge output ready");
+      setRunProgress(0);
+      setError(null);
+      return;
+    }
     setPhase("processing");
     setStatus("running");
     setRunProgress(8);
@@ -317,6 +332,39 @@ export default function App() {
       setRunProgress(0);
       setProgressLabel("ranking stopped");
       setError(err instanceof Error ? err.message : "Could not reach local API");
+    }
+  }
+
+  async function loadRedrobChallengeOutput() {
+    setError(null);
+    setStatus("loading Redrob challenge");
+    setProgressLabel("Loading full challenge output");
+    setDataMode("redrob");
+    setPhase("setup");
+    applyRoleTemplate("Senior AI Engineer");
+    try {
+      const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
+      const payload = (await response.json()) as RedrobChallengeAsset;
+      if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the bundled Redrob result.");
+      setCandidates([]);
+      setCsv("");
+      setRedrobCandidateCount(payload.processedCandidates);
+      setRedrobRows(payload.rows);
+      setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
+      setResult(null);
+      setRunId(null);
+      setUploadedFileName("Full Redrob challenge output");
+      setOutputFormat("report_csv");
+      setRunProgress(100);
+      setProgressLabel(`Loaded ${payload.rows.length} rows from ${payload.processedCandidates.toLocaleString()} candidates`);
+      setStatus("complete");
+      setPhase("processing");
+      window.setTimeout(() => setRunProgress(0), 900);
+    } catch (err) {
+      setStatus("error");
+      setRunProgress(0);
+      setProgressLabel("challenge load stopped");
+      setError(err instanceof Error ? err.message : "Could not load the Redrob challenge output");
     }
   }
 
@@ -690,6 +738,10 @@ export default function App() {
                   <Upload size={16} />
                   Upload candidate data
                 </button>
+                <button className="btn btn-primary" type="button" onClick={loadRedrobChallengeOutput} disabled={status === "running"}>
+                  <Database size={16} />
+                  Redrob Challenge
+                </button>
                 <input
                   ref={fileInputRef}
                   className="hidden-input"
@@ -795,7 +847,11 @@ export default function App() {
             {dataMode === "redrob" && redrobCandidateCount ? (
               <div className="candidate-limit">
                 <strong>{redrobCandidateCount} Redrob candidates loaded</strong>
-                <span>Challenge mode ranks against the bundled Senior AI Engineer JD and exports the required top-100 CSV.</span>
+                <span>
+                  {redrobRows.length
+                    ? "Full challenge output loaded from the 100,000-candidate run and ready to inspect or export."
+                    : "Challenge mode ranks against the bundled Senior AI Engineer JD and exports the required top-100 CSV."}
+                </span>
               </div>
             ) : null}
 
@@ -1728,6 +1784,14 @@ function readError(payload: unknown): string {
 
 function quoteCsv(value: string): string {
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function exportRowsAsRedrobCsv(rows: RedrobRankingRow[]): string {
+  const header = "candidate_id,rank,score,reasoning";
+  const body = rows.map((row) =>
+    [row.candidate_id, String(row.rank), row.score.toFixed(4), row.reasoning].map((value) => quoteCsv(value)).join(","),
+  );
+  return [header, ...body].join("\n");
 }
 
 function outputFormatLabel(format: OutputFormat): string {

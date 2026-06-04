@@ -22,7 +22,7 @@ https://sifter1011.firebaseapp.com
 
 Note: Firebase's free `web.app` URL is tied to the Firebase project id. Because this project id is `sifter1011`, the default domain is `sifter1011.web.app`. The typed domain `sifter.web,app` is not valid because of the comma, and `sifter.web.app` would require a Firebase project id of `sifter`.
 
-This deploy hosts the web app. The API-backed ranking actions still need the local API server or a separate hosted API deployment.
+This deploy hosts the web app. The **Redrob Challenge** button works live by loading the full-run top-100 output that was produced after ranking all 100,000 candidates locally. API-backed fresh ranking still needs the local API server or a separate hosted API deployment.
 
 ## Why This Exists
 
@@ -100,6 +100,7 @@ This project now has two major workflows.
 - Finished the full ranking run in `248.7s`, under the 5-minute challenge limit.
 - Added a streaming CLI so huge files do not need to be loaded into the browser.
 - Added a web UI mode switch between normal `CSV` screening and `Redrob` challenge data.
+- Added a live `Redrob Challenge` button for the hosted app, so anyone can inspect and export the full-run challenge output without setting up the repo first.
 - Added clear ranking reasons for every selected candidate.
 - Kept challenge ranking local, CPU-only, and no-network.
 - Avoided using candidate names or school prestige as scoring boosts.
@@ -150,6 +151,31 @@ Recent full run:
 - Runtime: `248.7s`
 - Top candidate: `CAND_0081846`
 
+## Are We Processing All 100,000?
+
+Yes, the challenge submission was produced by processing the full `candidates.jsonl` file:
+
+- Raw challenge input: `100,000` candidates
+- Raw file size: about `487 MB`
+- Ranked output: top `100`
+- Full local runtime: `248.7s`
+
+The hosted Firebase app does **not** bundle the raw 487 MB file into every visitor's browser. That would be slow, expensive, and unnecessary for public testing. Instead, the live `Redrob Challenge` button loads the validator-ready top-100 output created from the full run.
+
+## What Is Innovative Here?
+
+Sifter is not just doing one hard keyword filter. The Redrob ranker combines multiple evidence signals:
+
+- job-description skill evidence like Python, retrieval, vector search, ranking, evaluation, and production ML systems
+- profile and career text evidence
+- Redrob platform signals like response rate, notice period, recent activity, profile completeness, and GitHub activity
+- production proof and shipper signals
+- concern penalties for stale profiles, long notice periods, weak domain evidence, and data-quality traps
+
+Names and school prestige are not used as scoring boosts. The output includes reasoning so a recruiter can challenge the result instead of blindly trusting a score.
+
+What is not live yet is a real learning loop. The current version is deterministic and explainable. A future version should learn from recruiter feedback, interview outcomes, rejection reasons, and successful hires so the weights improve over time instead of staying fixed.
+
 ## What Is Done
 
 - Regular CSV candidate screening flow.
@@ -167,6 +193,7 @@ Recent full run:
 ## What Is Not Done Yet
 
 - No trained ML model yet. The current Redrob ranker is deterministic and rule/feature based.
+- No live improvement loop yet. Recruiter feedback and hiring outcomes are not being used to retrain or reweight the ranker automatically.
 - No guarantee that the ranking perfectly matches Redrob's hidden ground truth.
 - No hosted LLM calls during the challenge ranking step. This is intentional for the rules.
 - No GPU ranking path. Also intentional for the rules.
