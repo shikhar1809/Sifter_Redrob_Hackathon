@@ -53,10 +53,6 @@ Local first also makes the tool cheaper and more reproducible:
 
 ![Sifter desktop app](docs/screenshots/sifter-home.png)
 
-### Mobile Friendly Layout
-
-<img src="docs/screenshots/sifter-mobile.png" alt="Sifter mobile layout" width="320">
-
 ### Simple Workflow
 
 ![Sifter workflow](docs/screenshots/sifter-workflow.png)
