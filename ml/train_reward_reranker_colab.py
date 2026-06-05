@@ -90,7 +90,6 @@ def main() -> None:
         greater_is_better=True,
         fp16=args.precision == "fp16",
         bf16=args.precision == "bf16",
-        half_precision_backend="auto",
         report_to="none",
         push_to_hub=args.push_to_hub,
         hub_model_id=args.hub_model_id or None,
