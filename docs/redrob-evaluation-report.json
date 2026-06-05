@@ -49,12 +49,12 @@
   },
   "rankingProof": {
     "hybridTop100Rows": 100,
-    "keywordBaselineOverlapWithHybridTop100": 75,
+    "keywordBaselineOverlapWithHybridTop100": 76,
     "semanticTop100OverlapWithHybridTop100": 67,
-    "averageHybridTop100Score": 0.7688,
+    "averageHybridTop100Score": 0.7848,
     "averageHybridTop100SemanticFit": 0.5405,
-    "averageHybridTop100ProductionProof": 0.6235,
-    "averageHybridTop100BehavioralSignals": 0.749
+    "averageHybridTop100ProductionProof": 0.6216,
+    "averageHybridTop100BehavioralSignals": 0.7466
   },
   "ablation": [
     {
@@ -74,11 +74,19 @@
       "description": "Local semantic concept layer tied to Redrob JD concepts: retrieval, ranking, evaluation, production ML, ownership, and LLM depth."
     },
     {
+      "model": "vector_similarity_reranker",
+      "top100AverageScore": 0.9059,
+      "top100AverageSemanticFit": 0.4552,
+      "top100AverageProductionProof": 0.5183,
+      "top100AverageBehavioralSignals": 0.6856,
+      "description": "Vector similarity layer embeds the JD and candidate profile into the same normalized vector space before hybrid ranking."
+    },
+    {
       "model": "hybrid_ranker",
-      "top100AverageScore": 0.7688,
+      "top100AverageScore": 0.7848,
       "top100AverageSemanticFit": 0.5405,
-      "top100AverageProductionProof": 0.6235,
-      "top100AverageBehavioralSignals": 0.749,
+      "top100AverageProductionProof": 0.6216,
+      "top100AverageBehavioralSignals": 0.7466,
       "description": "Final score combines semantic fit, structured evidence, production proof, ranking/evaluation depth, behavior, availability, penalties, and proxy guardrails."
     }
   ],
@@ -86,7 +94,7 @@
     {
       "decision": "Use hybrid semantic plus structured ranking instead of keyword-only filters.",
       "dataPoint": "The Redrob JD asks for embeddings, hybrid retrieval, LLM re-ranking, evaluation, and production shipping; the dataset has profile text, history, skills, and behavioral signals.",
-      "implementation": "Semantic concept fit is scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals."
+      "implementation": "Semantic concept fit and vector similarity are scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals."
     },
     {
       "decision": "Cap behavioral and logistics signals.",
@@ -101,7 +109,12 @@
     {
       "decision": "Keep challenge ranking CPU-only and network-off.",
       "dataPoint": "The official submission spec caps runtime, memory, CPU use, and network access.",
-      "implementation": "The semantic concept layer runs locally without API calls; production docs explain how embeddings/FAISS/HNSW can replace this later."
+      "implementation": "The local vector and semantic layers run without API calls; an optional Transformers.js reranker can rerank winner pools when a local model is available."
+    },
+    {
+      "decision": "Let ranking improve from recruiter review behavior.",
+      "dataPoint": "Great recruiters reward production proof, role-specific depth, and evaluation discipline more than raw activity or keyword density.",
+      "implementation": "The score now includes a recruiterLearning component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
     }
   ]
 }

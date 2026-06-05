@@ -50,13 +50,15 @@ https://research.ibm.com/publications/matching-resumes-to-jobs-via-deep-siamese-
 **Implementation:** Sifter now uses a hybrid local ranker:
 
 - Semantic concept fit across retrieval, ranking, evaluation, production ML, shipping ownership, and LLM depth.
+- Normalized JD/profile vector similarity so a candidate can match related language even when exact words differ.
 - Structured skill evidence from profile text, career history, skills, and assessments.
 - Production proof from shipped/deployed/owned/monitored systems.
+- Recruiter-learning fit that favors the signals a strong recruiter would reward after reviewing profiles: production proof, ranking/evaluation depth, role evidence, and vector fit.
 - Redrob behavioral signals as capped modifiers.
 - Penalties for weak or suspicious evidence.
 - Proxy guardrails when logistics or behavior would lift a weak technical profile.
 
-This is not a cloud embedding model yet. It is a CPU-only, network-off semantic concept matcher designed for the challenge constraints. The production path is to swap the concept matcher for embeddings plus vector search.
+The full challenge path remains CPU-only and network-off. For model-backed environments, the API/CLI also includes an optional Transformers.js reranker using `Xenova/all-MiniLM-L6-v2` over the final winner pool.
 
 ## Decision 2: Keep Ranking CPU-Only And Network-Off
 
@@ -78,7 +80,7 @@ No hosted LLM call is required for the Redrob challenge ranking path.
 
 This keeps the live app lightweight while still proving the full dataset was processed.
 
-## Decision 4: Plan For Vector Search At Production Scale
+## Decision 4: Add Vector Matching Without Breaking The 100k Demo
 
 **Research:** FAISS demonstrates large-scale vector similarity search, including billion-scale search work:  
 https://arxiv.org/abs/1702.08734
@@ -86,9 +88,17 @@ https://arxiv.org/abs/1702.08734
 **Research:** HNSW is a graph-based approximate nearest-neighbor method widely used for scalable vector retrieval:  
 https://arxiv.org/abs/1603.09320
 
-**Implementation today:** The hosted demo serves all `100,000` ranked candidates as static 100-candidate pages with direct page jump and page-level search.
+**Implementation today:** Sifter computes a normalized vector similarity score between the Senior AI Engineer JD and each candidate profile, blends it into the final score, and exposes it in every candidate info dialog. The hosted demo serves all `100,000` ranked candidates as static 100-candidate pages with direct page jump and page-level search.
 
 **Production plan:** Move global candidate search to an indexed backend using BM25 plus embeddings and an ANN index such as HNSW/FAISS-style retrieval.
+
+## Decision 4b: Learn From Recruiter Feedback
+
+**Product evidence:** Recruiters do not only want a one-time rank. They want to mark "strong fit", "maybe", or "not fit" and have the system get sharper from those review decisions.
+
+**Implementation today:** Sifter includes a recruiter-learning score in the hybrid ranker and local feedback buttons in the candidate info dialog. Those judgments are stored locally so the product can adapt the recruiter review experience without sending candidate feedback to a hosted service.
+
+**Production plan:** Sync feedback to a team workspace, learn per-role weight adjustments from interview/hire/reject outcomes, and keep an audit log showing how feedback changed future scoring.
 
 ## Decision 5: Use Skills Taxonomies As The Future Normalization Layer
 
@@ -146,6 +156,7 @@ https://home4.nyc.gov/site/dca/about/automated-employment-decision-tools.page
 
 - `keyword_baseline`: exact JD term overlap.
 - `semantic_concept_matcher`: local semantic JD concept fit.
+- `vector_similarity_reranker`: JD/profile vector similarity.
 - `hybrid_ranker`: final ranking system.
 
 The generated report includes top-100 overlap, average score, average semantic fit, production proof, and behavioral signal contribution.
@@ -163,7 +174,8 @@ Sifter **does** claim:
 
 - Full `100,000` candidate processing.
 - CPU-only, network-off ranking for the challenge.
-- Hybrid semantic and structured scoring.
+- Hybrid semantic, vector, recruiter-learning, and structured scoring.
+- Optional local transformer reranking for winner pools when the model is available.
 - Explainable top-100 output.
 - Bias-aware guardrails with visible limitations.
 - Research-backed product decisions documented in this repo.

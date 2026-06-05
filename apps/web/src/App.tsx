@@ -1624,11 +1624,19 @@ function RedrobSearchPanel({
   const visibleCount = query.trim() ? totalMatches : loadedRows;
   const [pageInput, setPageInput] = useState(String(page + 1));
   const [selectedRow, setSelectedRow] = useState<RedrobCandidateSearchRow | null>(null);
+  const [feedback, setFeedback] = useState<Record<string, RecruiterFeedbackValue>>(() => readRecruiterFeedback());
+  const feedbackCount = Object.keys(feedback).length;
 
   useEffect(() => {
     setPageInput(String(page + 1));
     setSelectedRow(null);
   }, [page]);
+
+  function saveFeedback(candidateId: string, value: RecruiterFeedbackValue) {
+    const next = { ...feedback, [candidateId]: value };
+    setFeedback(next);
+    writeRecruiterFeedback(next);
+  }
 
   function goToTypedPage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1665,6 +1673,7 @@ function RedrobSearchPanel({
             ? `Showing ${visibleCount.toLocaleString()} matches inside ranks ${start.toLocaleString()}-${end.toLocaleString()}`
             : `Showing ranks ${start.toLocaleString()}-${end.toLocaleString()} of ${expected.toLocaleString()} candidates`
           : status}
+        {feedbackCount ? ` - recruiter learning has ${feedbackCount} saved judgment${feedbackCount === 1 ? "" : "s"}` : ""}
       </div>
       {loadedRows ? (
         <>
@@ -1733,14 +1742,33 @@ function RedrobSearchPanel({
               </tbody>
             </table>
           </div>
-          {selectedRow ? <CandidateReasonDialog row={selectedRow} onClose={() => setSelectedRow(null)} /> : null}
+          {selectedRow ? (
+            <CandidateReasonDialog
+              row={selectedRow}
+              feedback={feedback[selectedRow.candidate_id]}
+              onFeedback={(value) => saveFeedback(selectedRow.candidate_id, value)}
+              onClose={() => setSelectedRow(null)}
+            />
+          ) : null}
         </>
       ) : null}
     </section>
   );
 }
 
-function CandidateReasonDialog({ row, onClose }: { row: RedrobCandidateSearchRow; onClose: () => void }) {
+type RecruiterFeedbackValue = "strong_fit" | "maybe" | "not_fit";
+
+function CandidateReasonDialog({
+  row,
+  feedback,
+  onFeedback,
+  onClose,
+}: {
+  row: RedrobCandidateSearchRow;
+  feedback?: RecruiterFeedbackValue;
+  onFeedback: (value: RecruiterFeedbackValue) => void;
+  onClose: () => void;
+}) {
   return (
     <div className="reason-dialog" role="dialog" aria-modal="true" aria-label={`Reason for ${row.candidate_id}`}>
       <div className="reason-dialog-card">
@@ -1766,6 +1794,30 @@ function CandidateReasonDialog({ row, onClose }: { row: RedrobCandidateSearchRow
           </div>
         </div>
         <ScoreBreakdownGrid breakdown={row.score_breakdown} />
+        <div className="feedback-loop-box">
+          <div>
+            <span>Recruiter learning loop</span>
+            <p>
+              Mark how you would treat this profile. Sifter stores the judgment locally so future ranking can learn which signals recruiters trust in practice.
+            </p>
+          </div>
+          <div className="feedback-actions">
+            {[
+              ["strong_fit", "Strong fit"],
+              ["maybe", "Maybe"],
+              ["not_fit", "Not fit"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                className={feedback === value ? "btn btn-primary" : "btn btn-secondary"}
+                type="button"
+                onClick={() => onFeedback(value as RecruiterFeedbackValue)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="candidate-detail-grid">
           <div>
             <span>Evidence</span>
@@ -1874,12 +1926,14 @@ function TopRedrobCandidateExplanation({ row }: { row: RedrobRankingRow | undefi
 function ScoreBreakdownGrid({ breakdown }: { breakdown: RedrobRankingRow["score_breakdown"] | RedrobCandidateSearchRow["score_breakdown"] }) {
   const items = [
     ["Semantic fit", breakdown.semanticFit],
+    ["Vector match", breakdown.vectorSimilarity],
     ["Technical evidence", breakdown.technicalEvidence],
     ["Production proof", breakdown.productionProof],
     ["Ranking/eval", breakdown.rankingEvaluation],
     ["Experience fit", breakdown.experienceFit],
     ["Behavior", breakdown.behavioralSignals],
     ["Availability", breakdown.availability],
+    ["Recruiter learning", breakdown.recruiterLearning],
     ["Proxy guardrail", breakdown.proxyGuardrail],
   ] as const;
 
@@ -1893,6 +1947,25 @@ function ScoreBreakdownGrid({ breakdown }: { breakdown: RedrobRankingRow["score_
       ))}
     </div>
   );
+}
+
+function readRecruiterFeedback(): Record<string, RecruiterFeedbackValue> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem("sifter.redrob.recruiterFeedback");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, RecruiterFeedbackValue>;
+    return Object.fromEntries(
+      Object.entries(parsed).filter(([, value]) => value === "strong_fit" || value === "maybe" || value === "not_fit"),
+    );
+  } catch {
+    return {};
+  }
+}
+
+function writeRecruiterFeedback(feedback: Record<string, RecruiterFeedbackValue>) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem("sifter.redrob.recruiterFeedback", JSON.stringify(feedback));
 }
 
 function EmailConnector({

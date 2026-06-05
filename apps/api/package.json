@@ -16,6 +16,7 @@
     "@fastify/cors": "^10.1.0",
     "@fastify/rate-limit": "^10.3.0",
     "@seederpro/core": "file:../../packages/core",
+    "@xenova/transformers": "^2.17.2",
     "dotenv": "^16.6.1",
     "fastify": "^5.6.2",
     "jose": "^5.10.0",

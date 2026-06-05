@@ -14,6 +14,7 @@ import {
   type RedrobCandidate,
   type RedrobRankingRow,
 } from "@seederpro/core";
+import { rerankRedrobRowsWithTransformer } from "./transformer-rerank.js";
 
 type CliArgs = {
   input: string;
@@ -22,6 +23,7 @@ type CliArgs = {
   limit: number;
   batches: number;
   mergeSize: number;
+  transformerRerank: boolean;
 };
 
 const args = parseArgs(process.argv.slice(2));
@@ -33,7 +35,7 @@ const ranking = await rankRedrobCandidatesInBatches(candidates, {
   mergeSize: args.mergeSize,
 });
 const rankingRuntimeSeconds = Number(((Date.now() - started) / 1000).toFixed(1));
-const rows = ranking.rows;
+const rows = args.transformerRerank ? await transformerRerankOrFallback(candidates, ranking.rows) : ranking.rows;
 const outputPath = resolveOutputPath(args.output);
 await writeFile(outputPath, `${exportRedrobSubmissionCsv(rows)}\n`, "utf8");
 if (args.assetOutput) {
@@ -71,6 +73,7 @@ if (args.assetOutput) {
     rankingPlan: ranking.plan,
     generatedAt: new Date().toISOString().slice(0, 10),
     note: "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
+    transformerRerank: args.transformerRerank,
     searchIndexRows: searchIndex.length,
     searchPagePrefix,
     searchPageCount,
@@ -118,7 +121,18 @@ function parseArgs(argv: string[]): CliArgs {
   if (!Number.isInteger(mergeSize) || mergeSize < 2 || mergeSize > 16) {
     throw new Error("--merge-size must be an integer from 2 to 16.");
   }
-  return { input, output, assetOutput, limit, batches, mergeSize };
+  const transformerRerank = argv.includes("--transformer-rerank") || process.env.SIFTER_TRANSFORMER_RERANK === "1";
+  return { input, output, assetOutput, limit, batches, mergeSize, transformerRerank };
+}
+
+async function transformerRerankOrFallback(candidates: RedrobCandidate[], rows: RedrobRankingRow[]): Promise<RedrobRankingRow[]> {
+  try {
+    console.log("Transformer rerank enabled: applying Xenova/all-MiniLM-L6-v2 to the final winner pool.");
+    return await rerankRedrobRowsWithTransformer(candidates, rows);
+  } catch (error) {
+    console.warn(`Transformer rerank skipped: ${error instanceof Error ? error.message : "model unavailable"}`);
+    return rows;
+  }
 }
 
 type BatchRankingPlan = {

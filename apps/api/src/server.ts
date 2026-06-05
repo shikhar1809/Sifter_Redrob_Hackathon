@@ -16,6 +16,7 @@ import { registerAuth } from "./auth.js";
 import { config } from "./config.js";
 import { checkDatabase, savePipelineRun } from "./db.js";
 import { attachAiReviews, geminiReviewCandidateLimit, reviewCandidatesWithGemini } from "./gemini.js";
+import { rerankRedrobRowsWithTransformer } from "./transformer-rerank.js";
 
 const app = Fastify({
   logger: {
@@ -80,6 +81,7 @@ app.post("/redrob/rank", async (request, reply) => {
       text: z.string().optional(),
       candidates: z.array(z.unknown()).optional(),
       limit: z.number().int().positive().max(100).default(100),
+      transformerRerank: z.boolean().default(false),
     })
     .refine((value) => value.text || value.candidates?.length, "Provide candidate text or candidate objects")
     .safeParse(request.body);
@@ -87,11 +89,13 @@ app.post("/redrob/rank", async (request, reply) => {
 
   try {
     const candidates = body.data.candidates?.length ? parseRedrobCandidates(JSON.stringify(body.data.candidates)) : parseRedrobCandidates(body.data.text ?? "");
-    const rows = rankRedrobCandidates({ candidates, limit: body.data.limit });
+    const baseRows = rankRedrobCandidates({ candidates, limit: body.data.limit });
+    const rows = body.data.transformerRerank ? await rerankRedrobRowsWithTransformer(candidates, baseRows) : baseRows;
     return {
       rows,
       csv: exportRedrobSubmissionCsv(rows),
       count: candidates.length,
+      transformerRerank: body.data.transformerRerank,
       biasAudit: createRedrobBiasAudit(candidates, rows),
       evaluationReport: createRedrobEvaluationReport(candidates, rows),
     };

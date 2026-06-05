@@ -3,7 +3,7 @@
   "processedCandidates": 100000,
   "selectedRows": 100,
   "sourceFile": "candidates.jsonl",
-  "runtimeSeconds": 41.7,
+  "runtimeSeconds": 25.2,
   "rankingPlan": {
     "initialBatches": 10,
     "requestedBatches": 10,
@@ -37,11 +37,12 @@
   },
   "generatedAt": "2026-06-05",
   "note": "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
+  "transformerRerank": false,
   "searchIndexRows": 100000,
   "searchPagePrefix": "redrob-candidate-pages/page-",
   "searchPageCount": 1000,
   "searchPageSize": 100,
-  "searchIndexRuntimeSeconds": 113.7,
+  "searchIndexRuntimeSeconds": 155.9,
   "biasAudit": {
     "status": "review",
     "summary": "Bias guardrail applied; proxy distribution still needs human review.",
@@ -86,10 +87,10 @@
         "field": "work mode",
         "group": "hybrid",
         "poolCount": 25076,
-        "selectedCount": 37,
+        "selectedCount": 38,
         "poolShare": 0.2508,
-        "selectedShare": 0.37,
-        "ratio": 1.48,
+        "selectedShare": 0.38,
+        "ratio": 1.52,
         "flag": "ok"
       },
       {
@@ -116,10 +117,10 @@
         "field": "work mode",
         "group": "remote",
         "poolCount": 24924,
-        "selectedCount": 19,
+        "selectedCount": 18,
         "poolShare": 0.2492,
-        "selectedShare": 0.19,
-        "ratio": 0.76,
+        "selectedShare": 0.18,
+        "ratio": 0.72,
         "flag": "ok"
       },
       {
@@ -269,12 +270,12 @@
     },
     "rankingProof": {
       "hybridTop100Rows": 100,
-      "keywordBaselineOverlapWithHybridTop100": 75,
+      "keywordBaselineOverlapWithHybridTop100": 76,
       "semanticTop100OverlapWithHybridTop100": 67,
-      "averageHybridTop100Score": 0.7688,
+      "averageHybridTop100Score": 0.7848,
       "averageHybridTop100SemanticFit": 0.5405,
-      "averageHybridTop100ProductionProof": 0.6235,
-      "averageHybridTop100BehavioralSignals": 0.749
+      "averageHybridTop100ProductionProof": 0.6216,
+      "averageHybridTop100BehavioralSignals": 0.7466
     },
     "ablation": [
       {
@@ -294,11 +295,19 @@
         "description": "Local semantic concept layer tied to Redrob JD concepts: retrieval, ranking, evaluation, production ML, ownership, and LLM depth."
       },
       {
+        "model": "vector_similarity_reranker",
+        "top100AverageScore": 0.9059,
+        "top100AverageSemanticFit": 0.4552,
+        "top100AverageProductionProof": 0.5183,
+        "top100AverageBehavioralSignals": 0.6856,
+        "description": "Vector similarity layer embeds the JD and candidate profile into the same normalized vector space before hybrid ranking."
+      },
+      {
         "model": "hybrid_ranker",
-        "top100AverageScore": 0.7688,
+        "top100AverageScore": 0.7848,
         "top100AverageSemanticFit": 0.5405,
-        "top100AverageProductionProof": 0.6235,
-        "top100AverageBehavioralSignals": 0.749,
+        "top100AverageProductionProof": 0.6216,
+        "top100AverageBehavioralSignals": 0.7466,
         "description": "Final score combines semantic fit, structured evidence, production proof, ranking/evaluation depth, behavior, availability, penalties, and proxy guardrails."
       }
     ],
@@ -306,7 +315,7 @@
       {
         "decision": "Use hybrid semantic plus structured ranking instead of keyword-only filters.",
         "dataPoint": "The Redrob JD asks for embeddings, hybrid retrieval, LLM re-ranking, evaluation, and production shipping; the dataset has profile text, history, skills, and behavioral signals.",
-        "implementation": "Semantic concept fit is scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals."
+        "implementation": "Semantic concept fit and vector similarity are scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals."
       },
       {
         "decision": "Cap behavioral and logistics signals.",
@@ -321,7 +330,12 @@
       {
         "decision": "Keep challenge ranking CPU-only and network-off.",
         "dataPoint": "The official submission spec caps runtime, memory, CPU use, and network access.",
-        "implementation": "The semantic concept layer runs locally without API calls; production docs explain how embeddings/FAISS/HNSW can replace this later."
+        "implementation": "The local vector and semantic layers run without API calls; an optional Transformers.js reranker can rerank winner pools when a local model is available."
+      },
+      {
+        "decision": "Let ranking improve from recruiter review behavior.",
+        "dataPoint": "Great recruiters reward production proof, role-specific depth, and evaluation discipline more than raw activity or keyword density.",
+        "implementation": "The score now includes a recruiterLearning component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
       }
     ]
   },
@@ -329,10 +343,11 @@
     {
       "candidate_id": "CAND_0071974",
       "rank": 1,
-      "score": 0.8822,
-      "reasoning": "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 71% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16.",
+      "score": 0.8899,
+      "reasoning": "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 71% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 75% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16.",
       "score_breakdown": {
         "semanticFit": 70.5,
+        "vectorSimilarity": 90.3,
         "technicalEvidence": 58.5,
         "productionProof": 98.3,
         "rankingEvaluation": 39.1,
@@ -340,6 +355,7 @@
         "experienceFit": 100,
         "behavioralSignals": 80.4,
         "availability": 84.7,
+        "recruiterLearning": 75,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -359,10 +375,11 @@
     {
       "candidate_id": "CAND_0077337",
       "rank": 2,
-      "score": 0.8781,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26.",
+      "score": 0.8884,
+      "reasoning": "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26.",
       "score_breakdown": {
         "semanticFit": 60,
+        "vectorSimilarity": 90.5,
         "technicalEvidence": 59.5,
         "productionProof": 100,
         "rankingEvaluation": 45.5,
@@ -370,6 +387,7 @@
         "experienceFit": 100,
         "behavioralSignals": 87.9,
         "availability": 79.3,
+        "recruiterLearning": 75.8,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -389,10 +407,11 @@
     {
       "candidate_id": "CAND_0081846",
       "rank": 3,
-      "score": 0.875,
-      "reasoning": "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03.",
+      "score": 0.8875,
+      "reasoning": "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03.",
       "score_breakdown": {
         "semanticFit": 55.8,
+        "vectorSimilarity": 91.9,
         "technicalEvidence": 66.2,
         "productionProof": 93.4,
         "rankingEvaluation": 50.7,
@@ -400,6 +419,7 @@
         "experienceFit": 100,
         "behavioralSignals": 84.3,
         "availability": 79.3,
+        "recruiterLearning": 76.1,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -419,10 +439,11 @@
     {
       "candidate_id": "CAND_0055905",
       "rank": 4,
-      "score": 0.8715,
-      "reasoning": "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation.",
+      "score": 0.8828,
+      "reasoning": "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 75% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation.",
       "score_breakdown": {
         "semanticFit": 65.8,
+        "vectorSimilarity": 90.4,
         "technicalEvidence": 58,
         "productionProof": 100,
         "rankingEvaluation": 48.3,
@@ -430,6 +451,7 @@
         "experienceFit": 100,
         "behavioralSignals": 88.1,
         "availability": 40.3,
+        "recruiterLearning": 75.2,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -449,10 +471,11 @@
     {
       "candidate_id": "CAND_0008425",
       "rank": 5,
-      "score": 0.852,
-      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25.",
+      "score": 0.8637,
+      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 73% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25.",
       "score_breakdown": {
         "semanticFit": 64.9,
+        "vectorSimilarity": 91,
         "technicalEvidence": 47.7,
         "productionProof": 100,
         "rankingEvaluation": 37.9,
@@ -460,6 +483,7 @@
         "experienceFit": 100,
         "behavioralSignals": 71.7,
         "availability": 79.3,
+        "recruiterLearning": 72.7,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -479,10 +503,11 @@
     {
       "candidate_id": "CAND_0080766",
       "rank": 6,
-      "score": 0.852,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09.",
+      "score": 0.8628,
+      "reasoning": "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 72% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09.",
       "score_breakdown": {
         "semanticFit": 61,
+        "vectorSimilarity": 89.4,
         "technicalEvidence": 53.9,
         "productionProof": 100,
         "rankingEvaluation": 31.6,
@@ -490,6 +515,7 @@
         "experienceFit": 100,
         "behavioralSignals": 75.9,
         "availability": 78.6,
+        "recruiterLearning": 71.8,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -509,10 +535,11 @@
     {
       "candidate_id": "CAND_0046064",
       "rank": 7,
-      "score": 0.844,
-      "reasoning": "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26.",
+      "score": 0.8555,
+      "reasoning": "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 70% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26.",
       "score_breakdown": {
         "semanticFit": 64.9,
+        "vectorSimilarity": 91.3,
         "technicalEvidence": 56.1,
         "productionProof": 73.3,
         "rankingEvaluation": 47.1,
@@ -520,6 +547,39 @@
         "experienceFit": 100,
         "behavioralSignals": 82,
         "availability": 88.3,
+        "recruiterLearning": 70.1,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "ndcg",
+        "mrr",
+        "faiss"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0039754",
+      "rank": 8,
+      "score": 0.8536,
+      "reasoning": "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 73% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14.",
+      "score_breakdown": {
+        "semanticFit": 60.2,
+        "vectorSimilarity": 90.9,
+        "technicalEvidence": 61.7,
+        "productionProof": 97.7,
+        "rankingEvaluation": 46,
+        "roleDomain": 100,
+        "experienceFit": 42,
+        "behavioralSignals": 86.2,
+        "availability": 88.3,
+        "recruiterLearning": 72.7,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -538,11 +598,12 @@
     },
     {
       "candidate_id": "CAND_0002025",
-      "rank": 8,
-      "score": 0.8424,
-      "reasoning": "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26.",
+      "rank": 9,
+      "score": 0.8527,
+      "reasoning": "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 69% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26.",
       "score_breakdown": {
         "semanticFit": 60.2,
+        "vectorSimilarity": 89.7,
         "technicalEvidence": 52,
         "productionProof": 88,
         "rankingEvaluation": 29.3,
@@ -550,6 +611,7 @@
         "experienceFit": 100,
         "behavioralSignals": 93.3,
         "availability": 88.3,
+        "recruiterLearning": 68.9,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -567,42 +629,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0039754",
-      "rank": 9,
-      "score": 0.8403,
-      "reasoning": "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14.",
-      "score_breakdown": {
-        "semanticFit": 60.2,
-        "technicalEvidence": 61.7,
-        "productionProof": 97.7,
-        "rankingEvaluation": 46,
-        "roleDomain": 100,
-        "experienceFit": 42,
-        "behavioralSignals": 86.2,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "ndcg",
-        "mrr",
-        "faiss"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0011687",
       "rank": 10,
-      "score": 0.8402,
-      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10.",
+      "score": 0.851,
+      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10.",
       "score_breakdown": {
         "semanticFit": 64.8,
+        "vectorSimilarity": 91,
         "technicalEvidence": 59.9,
         "productionProof": 66.2,
         "rankingEvaluation": 43.1,
@@ -610,6 +643,7 @@
         "experienceFit": 100,
         "behavioralSignals": 89.7,
         "availability": 88.3,
+        "recruiterLearning": 68.3,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -629,10 +663,11 @@
     {
       "candidate_id": "CAND_0018499",
       "rank": 11,
-      "score": 0.8385,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; semantic fit 62% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13.",
+      "score": 0.8504,
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; semantic fit 62% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 69% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13.",
       "score_breakdown": {
         "semanticFit": 62,
+        "vectorSimilarity": 91.2,
         "technicalEvidence": 59.9,
         "productionProof": 64.3,
         "rankingEvaluation": 49.4,
@@ -640,6 +675,7 @@
         "experienceFit": 100,
         "behavioralSignals": 87.3,
         "availability": 91,
+        "recruiterLearning": 68.9,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -659,10 +695,11 @@
     {
       "candidate_id": "CAND_0033861",
       "rank": 12,
-      "score": 0.826,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; semantic fit 68% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently.",
+      "score": 0.8375,
+      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; semantic fit 68% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 72% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently.",
       "score_breakdown": {
         "semanticFit": 67.7,
+        "vectorSimilarity": 90.6,
         "technicalEvidence": 57.7,
         "productionProof": 100,
         "rankingEvaluation": 35.7,
@@ -670,6 +707,7 @@
         "experienceFit": 100,
         "behavioralSignals": 50.4,
         "availability": 69.5,
+        "recruiterLearning": 72.3,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -691,10 +729,11 @@
     {
       "candidate_id": "CAND_0030031",
       "rank": 13,
-      "score": 0.8213,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22.",
+      "score": 0.8335,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22.",
       "score_breakdown": {
         "semanticFit": 57.8,
+        "vectorSimilarity": 89,
         "technicalEvidence": 54.7,
         "productionProof": 81.5,
         "rankingEvaluation": 27.5,
@@ -702,6 +741,7 @@
         "experienceFit": 100,
         "behavioralSignals": 87,
         "availability": 69.5,
+        "recruiterLearning": 66.1,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -721,10 +761,11 @@
     {
       "candidate_id": "CAND_0011162",
       "rank": 14,
-      "score": 0.8204,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10.",
+      "score": 0.8334,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10.",
       "score_breakdown": {
         "semanticFit": 56.4,
+        "vectorSimilarity": 89.7,
         "technicalEvidence": 48.1,
         "productionProof": 81.7,
         "rankingEvaluation": 35.6,
@@ -732,6 +773,7 @@
         "experienceFit": 100,
         "behavioralSignals": 80.4,
         "availability": 88.3,
+        "recruiterLearning": 67.4,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -749,42 +791,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0039838",
-      "rank": 15,
-      "score": 0.8185,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21.",
-      "score_breakdown": {
-        "semanticFit": 64.5,
-        "technicalEvidence": 54.7,
-        "productionProof": 81.9,
-        "rankingEvaluation": 29.8,
-        "roleDomain": 100,
-        "experienceFit": 86,
-        "behavioralSignals": 63.8,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "milvus",
-        "opensearch",
-        "fine-tuning",
-        "production systems"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0086022",
-      "rank": 16,
-      "score": 0.8181,
-      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15.",
+      "rank": 15,
+      "score": 0.8313,
+      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15.",
       "score_breakdown": {
         "semanticFit": 60.6,
+        "vectorSimilarity": 90.8,
         "technicalEvidence": 62.4,
         "productionProof": 54.4,
         "rankingEvaluation": 47.1,
@@ -792,6 +805,7 @@
         "experienceFit": 100,
         "behavioralSignals": 78.4,
         "availability": 88.3,
+        "recruiterLearning": 66,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -809,42 +823,45 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0077285",
-      "rank": 17,
-      "score": 0.8103,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03.",
+      "candidate_id": "CAND_0039838",
+      "rank": 16,
+      "score": 0.8307,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21.",
       "score_breakdown": {
-        "semanticFit": 55.9,
-        "technicalEvidence": 45.1,
-        "productionProof": 85.8,
-        "rankingEvaluation": 27.6,
+        "semanticFit": 64.5,
+        "vectorSimilarity": 89.8,
+        "technicalEvidence": 54.7,
+        "productionProof": 81.9,
+        "rankingEvaluation": 29.8,
         "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 73.8,
+        "experienceFit": 86,
+        "behavioralSignals": 63.8,
         "availability": 88.3,
+        "recruiterLearning": 67,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
       },
       "evidence": [
         "embeddings",
-        "retrieval",
         "ranking",
         "evaluation",
         "faiss",
         "milvus",
-        "llm",
-        "fine-tuning"
+        "opensearch",
+        "fine-tuning",
+        "production systems"
       ],
       "concerns": []
     },
     {
       "candidate_id": "CAND_0032515",
-      "rank": 18,
-      "score": 0.8099,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation.",
+      "rank": 17,
+      "score": 0.8267,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation.",
       "score_breakdown": {
         "semanticFit": 58.3,
+        "vectorSimilarity": 91.1,
         "technicalEvidence": 49.8,
         "productionProof": 85,
         "rankingEvaluation": 39.7,
@@ -852,6 +869,7 @@
         "experienceFit": 100,
         "behavioralSignals": 71.5,
         "availability": 39.6,
+        "recruiterLearning": 67.6,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -869,12 +887,45 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0077285",
+      "rank": 18,
+      "score": 0.8237,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03.",
+      "score_breakdown": {
+        "semanticFit": 55.9,
+        "vectorSimilarity": 89.3,
+        "technicalEvidence": 45.1,
+        "productionProof": 85.8,
+        "rankingEvaluation": 27.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 73.8,
+        "availability": 88.3,
+        "recruiterLearning": 66,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "milvus",
+        "llm",
+        "fine-tuning"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0068811",
       "rank": 19,
-      "score": 0.8084,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21.",
+      "score": 0.8224,
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21.",
       "score_breakdown": {
         "semanticFit": 53.6,
+        "vectorSimilarity": 89.9,
         "technicalEvidence": 53.7,
         "productionProof": 68.9,
         "rankingEvaluation": 36.8,
@@ -882,6 +933,7 @@
         "experienceFit": 100,
         "behavioralSignals": 76.6,
         "availability": 96.4,
+        "recruiterLearning": 65.4,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -901,10 +953,11 @@
     {
       "candidate_id": "CAND_0046525",
       "rank": 20,
-      "score": 0.8073,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23.",
+      "score": 0.8217,
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23.",
       "score_breakdown": {
         "semanticFit": 51.6,
+        "vectorSimilarity": 90.9,
         "technicalEvidence": 60.1,
         "productionProof": 58.5,
         "rankingEvaluation": 48.5,
@@ -912,6 +965,7 @@
         "experienceFit": 100,
         "behavioralSignals": 88.7,
         "availability": 96.4,
+        "recruiterLearning": 66.5,
         "bonus": 7.7,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -929,42 +983,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0005260",
-      "rank": 21,
-      "score": 0.8066,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 67% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10.",
-      "score_breakdown": {
-        "semanticFit": 67.2,
-        "technicalEvidence": 48.6,
-        "productionProof": 54.9,
-        "rankingEvaluation": 49.4,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 82,
-        "availability": 75,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "ndcg",
-        "mrr",
-        "faiss"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0006418",
-      "rank": 22,
-      "score": 0.8057,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31.",
+      "rank": 21,
+      "score": 0.8211,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31.",
       "score_breakdown": {
         "semanticFit": 52.6,
+        "vectorSimilarity": 90.4,
         "technicalEvidence": 51,
         "productionProof": 76.3,
         "rankingEvaluation": 34.5,
@@ -972,6 +997,7 @@
         "experienceFit": 100,
         "behavioralSignals": 78.6,
         "availability": 79.3,
+        "recruiterLearning": 65.6,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -989,12 +1015,45 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0005260",
+      "rank": 22,
+      "score": 0.8198,
+      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 67% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10.",
+      "score_breakdown": {
+        "semanticFit": 67.2,
+        "vectorSimilarity": 90.7,
+        "technicalEvidence": 48.6,
+        "productionProof": 54.9,
+        "rankingEvaluation": 49.4,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 82,
+        "availability": 75,
+        "recruiterLearning": 64.5,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "ndcg",
+        "mrr",
+        "faiss"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0027691",
       "rank": 23,
-      "score": 0.8017,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31.",
+      "score": 0.8151,
+      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31.",
       "score_breakdown": {
         "semanticFit": 57.4,
+        "vectorSimilarity": 91,
         "technicalEvidence": 59.5,
         "productionProof": 52.7,
         "rankingEvaluation": 32.7,
@@ -1002,6 +1061,7 @@
         "experienceFit": 100,
         "behavioralSignals": 83.8,
         "availability": 100,
+        "recruiterLearning": 62.5,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1021,10 +1081,11 @@
     {
       "candidate_id": "CAND_0064326",
       "rank": 24,
-      "score": 0.7988,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21.",
+      "score": 0.8148,
+      "reasoning": "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21.",
       "score_breakdown": {
         "semanticFit": 52.1,
+        "vectorSimilarity": 91.5,
         "technicalEvidence": 59.9,
         "productionProof": 53,
         "rankingEvaluation": 43.1,
@@ -1032,6 +1093,7 @@
         "experienceFit": 100,
         "behavioralSignals": 85.7,
         "availability": 84.7,
+        "recruiterLearning": 63.7,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1049,42 +1111,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0041669",
-      "rank": 25,
-      "score": 0.7984,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06.",
-      "score_breakdown": {
-        "semanticFit": 60.6,
-        "technicalEvidence": 57,
-        "productionProof": 50.2,
-        "rankingEvaluation": 37.9,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 76.4,
-        "availability": 96.4,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "milvus",
-        "qdrant",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0044883",
-      "rank": 26,
-      "score": 0.7973,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07.",
+      "rank": 25,
+      "score": 0.8136,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07.",
       "score_breakdown": {
         "semanticFit": 54.1,
+        "vectorSimilarity": 90.7,
         "technicalEvidence": 48.8,
         "productionProof": 77.3,
         "rankingEvaluation": 32.7,
@@ -1092,6 +1125,7 @@
         "experienceFit": 100,
         "behavioralSignals": 68.6,
         "availability": 74.7,
+        "recruiterLearning": 65,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1110,11 +1144,12 @@
     },
     {
       "candidate_id": "CAND_0005538",
-      "rank": 27,
-      "score": 0.796,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17.",
+      "rank": 26,
+      "score": 0.8116,
+      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17.",
       "score_breakdown": {
         "semanticFit": 45.6,
+        "vectorSimilarity": 88.9,
         "technicalEvidence": 38.3,
         "productionProof": 95.8,
         "rankingEvaluation": 20.8,
@@ -1122,6 +1157,7 @@
         "experienceFit": 100,
         "behavioralSignals": 82,
         "availability": 84.7,
+        "recruiterLearning": 64.9,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1139,12 +1175,45 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0041669",
+      "rank": 27,
+      "score": 0.811,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06.",
+      "score_breakdown": {
+        "semanticFit": 60.6,
+        "vectorSimilarity": 89.5,
+        "technicalEvidence": 57,
+        "productionProof": 50.2,
+        "rankingEvaluation": 37.9,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 76.4,
+        "availability": 96.4,
+        "recruiterLearning": 62.3,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "milvus",
+        "qdrant",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0005649",
       "rank": 28,
-      "score": 0.79,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14.",
+      "score": 0.8071,
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14.",
       "score_breakdown": {
         "semanticFit": 54.1,
+        "vectorSimilarity": 90.7,
         "technicalEvidence": 52,
         "productionProof": 78.4,
         "rankingEvaluation": 33.9,
@@ -1152,6 +1221,7 @@
         "experienceFit": 100,
         "behavioralSignals": 62.9,
         "availability": 79.3,
+        "recruiterLearning": 66.1,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1171,10 +1241,11 @@
     {
       "candidate_id": "CAND_0088025",
       "rank": 29,
-      "score": 0.7872,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; semantic fit 64% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14.",
+      "score": 0.8007,
+      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; semantic fit 64% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14.",
       "score_breakdown": {
         "semanticFit": 64.3,
+        "vectorSimilarity": 91,
         "technicalEvidence": 58.5,
         "productionProof": 42.6,
         "rankingEvaluation": 31.6,
@@ -1182,6 +1253,7 @@
         "experienceFit": 100,
         "behavioralSignals": 77.9,
         "availability": 88.3,
+        "recruiterLearning": 59.8,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1201,10 +1273,11 @@
     {
       "candidate_id": "CAND_0098846",
       "rank": 30,
-      "score": 0.7832,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23.",
+      "score": 0.7989,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23.",
       "score_breakdown": {
         "semanticFit": 55.7,
+        "vectorSimilarity": 90.6,
         "technicalEvidence": 41.3,
         "productionProof": 63.5,
         "rankingEvaluation": 35.6,
@@ -1212,6 +1285,7 @@
         "experienceFit": 100,
         "behavioralSignals": 80.6,
         "availability": 88.3,
+        "recruiterLearning": 62,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1231,10 +1305,11 @@
     {
       "candidate_id": "CAND_0045250",
       "rank": 31,
-      "score": 0.7824,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29.",
+      "score": 0.7971,
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29.",
       "score_breakdown": {
         "semanticFit": 55.4,
+        "vectorSimilarity": 88.9,
         "technicalEvidence": 48.6,
         "productionProof": 70.3,
         "rankingEvaluation": 21.6,
@@ -1242,6 +1317,7 @@
         "experienceFit": 100,
         "behavioralSignals": 74.3,
         "availability": 75,
+        "recruiterLearning": 61,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1261,10 +1337,11 @@
     {
       "candidate_id": "CAND_0041610",
       "rank": 32,
-      "score": 0.7786,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14.",
+      "score": 0.7963,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14.",
       "score_breakdown": {
         "semanticFit": 48.1,
+        "vectorSimilarity": 90.7,
         "technicalEvidence": 50.8,
         "productionProof": 60.1,
         "rankingEvaluation": 36.8,
@@ -1272,6 +1349,7 @@
         "experienceFit": 100,
         "behavioralSignals": 80.2,
         "availability": 79.3,
+        "recruiterLearning": 61.8,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1291,10 +1369,11 @@
     {
       "candidate_id": "CAND_0083879",
       "rank": 33,
-      "score": 0.7782,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17.",
+      "score": 0.7929,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17.",
       "score_breakdown": {
         "semanticFit": 55.1,
+        "vectorSimilarity": 89.6,
         "technicalEvidence": 33.6,
         "productionProof": 78.3,
         "rankingEvaluation": 19,
@@ -1302,6 +1381,7 @@
         "experienceFit": 100,
         "behavioralSignals": 73.6,
         "availability": 100,
+        "recruiterLearning": 61.1,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1321,10 +1401,11 @@
     {
       "candidate_id": "CAND_0014440",
       "rank": 34,
-      "score": 0.7755,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10.",
+      "score": 0.792,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10.",
       "score_breakdown": {
         "semanticFit": 49.9,
+        "vectorSimilarity": 90.3,
         "technicalEvidence": 45.1,
         "productionProof": 63.8,
         "rankingEvaluation": 28.2,
@@ -1332,6 +1413,7 @@
         "experienceFit": 100,
         "behavioralSignals": 82.5,
         "availability": 88.3,
+        "recruiterLearning": 60.6,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1349,42 +1431,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0050876",
-      "rank": 35,
-      "score": 0.7701,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26.",
-      "score_breakdown": {
-        "semanticFit": 55.6,
-        "technicalEvidence": 48.3,
-        "productionProof": 51.8,
-        "rankingEvaluation": 32.2,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 73.6,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "opensearch",
-        "llm"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0017960",
-      "rank": 36,
-      "score": 0.7697,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27.",
+      "rank": 35,
+      "score": 0.7855,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27.",
       "score_breakdown": {
         "semanticFit": 53.8,
+        "vectorSimilarity": 89.4,
         "technicalEvidence": 41.9,
         "productionProof": 64.1,
         "rankingEvaluation": 26.4,
@@ -1392,6 +1445,7 @@
         "experienceFit": 100,
         "behavioralSignals": 72.3,
         "availability": 88.3,
+        "recruiterLearning": 59.8,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1410,11 +1464,12 @@
     },
     {
       "candidate_id": "CAND_0079387",
-      "rank": 37,
-      "score": 0.7685,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25.",
+      "rank": 36,
+      "score": 0.7854,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25.",
       "score_breakdown": {
         "semanticFit": 46.6,
+        "vectorSimilarity": 89.9,
         "technicalEvidence": 47,
         "productionProof": 61.3,
         "rankingEvaluation": 25.3,
@@ -1422,6 +1477,7 @@
         "experienceFit": 100,
         "behavioralSignals": 84.9,
         "availability": 88.3,
+        "recruiterLearning": 59.4,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1439,12 +1495,77 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0041611",
+      "candidate_id": "CAND_0050876",
+      "rank": 37,
+      "score": 0.7845,
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26.",
+      "score_breakdown": {
+        "semanticFit": 55.6,
+        "vectorSimilarity": 88,
+        "technicalEvidence": 48.3,
+        "productionProof": 51.8,
+        "rankingEvaluation": 32.2,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 73.6,
+        "availability": 88.3,
+        "recruiterLearning": 59,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
+        "opensearch",
+        "llm"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0042029",
       "rank": 38,
-      "score": 0.7684,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate.",
+      "score": 0.7834,
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13.",
+      "score_breakdown": {
+        "semanticFit": 51.5,
+        "vectorSimilarity": 90.2,
+        "technicalEvidence": 57.4,
+        "productionProof": 62.7,
+        "rankingEvaluation": 34.3,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 69.2,
+        "availability": 75,
+        "recruiterLearning": 62.9,
+        "bonus": 6.4,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "opensearch",
+        "elasticsearch",
+        "llm"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0041611",
+      "rank": 39,
+      "score": 0.7827,
+      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate.",
       "score_breakdown": {
         "semanticFit": 65.4,
+        "vectorSimilarity": 91.4,
         "technicalEvidence": 53.6,
         "productionProof": 82,
         "rankingEvaluation": 46,
@@ -1452,6 +1573,7 @@
         "experienceFit": 100,
         "behavioralSignals": 42.3,
         "availability": 71,
+        "recruiterLearning": 68.4,
         "bonus": 9,
         "penalties": 7,
         "proxyGuardrail": 0
@@ -1472,42 +1594,13 @@
       ]
     },
     {
-      "candidate_id": "CAND_0042029",
-      "rank": 39,
-      "score": 0.7667,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13.",
-      "score_breakdown": {
-        "semanticFit": 51.5,
-        "technicalEvidence": 57.4,
-        "productionProof": 62.7,
-        "rankingEvaluation": 34.3,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 69.2,
-        "availability": 75,
-        "bonus": 6.4,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "opensearch",
-        "elasticsearch",
-        "llm"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0028793",
       "rank": 40,
-      "score": 0.7666,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days).",
+      "score": 0.7812,
+      "reasoning": "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 55.7,
+        "vectorSimilarity": 89.9,
         "technicalEvidence": 49.4,
         "productionProof": 63.2,
         "rankingEvaluation": 39.7,
@@ -1515,6 +1608,7 @@
         "experienceFit": 100,
         "behavioralSignals": 72.8,
         "availability": 88.3,
+        "recruiterLearning": 62.9,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -1534,102 +1628,13 @@
       ]
     },
     {
-      "candidate_id": "CAND_0093547",
-      "rank": 41,
-      "score": 0.7648,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10.",
-      "score_breakdown": {
-        "semanticFit": 66.3,
-        "technicalEvidence": 66.2,
-        "productionProof": 72.5,
-        "rankingEvaluation": 39.9,
-        "roleDomain": 100,
-        "experienceFit": 43.5,
-        "behavioralSignals": 72.2,
-        "availability": 78.6,
-        "bonus": 9,
-        "penalties": 5,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "ndcg",
-        "faiss",
-        "milvus",
-        "fine-tuning"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0044222",
-      "rank": 42,
-      "score": 0.7612,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15.",
-      "score_breakdown": {
-        "semanticFit": 55.7,
-        "technicalEvidence": 46.3,
-        "productionProof": 46,
-        "rankingEvaluation": 30.5,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 79.8,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "opensearch",
-        "elasticsearch",
-        "fine-tuning"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0013613",
-      "rank": 43,
-      "score": 0.7608,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 4.7 yrs in Singapore; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation.",
-      "score_breakdown": {
-        "semanticFit": 55.7,
-        "technicalEvidence": 51.3,
-        "productionProof": 61.5,
-        "rankingEvaluation": 30.5,
-        "roleDomain": 100,
-        "experienceFit": 86,
-        "behavioralSignals": 71.8,
-        "availability": 49.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "elasticsearch",
-        "llm",
-        "fine-tuning"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0006567",
-      "rank": 44,
-      "score": 0.7607,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03.",
+      "rank": 41,
+      "score": 0.7801,
+      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03.",
       "score_breakdown": {
         "semanticFit": 37.5,
+        "vectorSimilarity": 89.7,
         "technicalEvidence": 41.9,
         "productionProof": 70.1,
         "rankingEvaluation": 28.2,
@@ -1637,6 +1642,7 @@
         "experienceFit": 100,
         "behavioralSignals": 76.4,
         "availability": 96.4,
+        "recruiterLearning": 60.4,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1654,12 +1660,109 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0093547",
+      "rank": 42,
+      "score": 0.7786,
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10.",
+      "score_breakdown": {
+        "semanticFit": 66.3,
+        "vectorSimilarity": 90.9,
+        "technicalEvidence": 66.2,
+        "productionProof": 72.5,
+        "rankingEvaluation": 39.9,
+        "roleDomain": 100,
+        "experienceFit": 43.5,
+        "behavioralSignals": 72.2,
+        "availability": 78.6,
+        "recruiterLearning": 64.9,
+        "bonus": 9,
+        "penalties": 5,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "ndcg",
+        "faiss",
+        "milvus",
+        "fine-tuning"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0013613",
+      "rank": 43,
+      "score": 0.778,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 4.7 yrs in Singapore; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation.",
+      "score_breakdown": {
+        "semanticFit": 55.7,
+        "vectorSimilarity": 88.6,
+        "technicalEvidence": 51.3,
+        "productionProof": 61.5,
+        "rankingEvaluation": 30.5,
+        "roleDomain": 100,
+        "experienceFit": 86,
+        "behavioralSignals": 71.8,
+        "availability": 49.3,
+        "recruiterLearning": 59.1,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "elasticsearch",
+        "llm",
+        "fine-tuning"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0044222",
+      "rank": 44,
+      "score": 0.7767,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15.",
+      "score_breakdown": {
+        "semanticFit": 55.7,
+        "vectorSimilarity": 89.5,
+        "technicalEvidence": 46.3,
+        "productionProof": 46,
+        "rankingEvaluation": 30.5,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 79.8,
+        "availability": 88.3,
+        "recruiterLearning": 57.4,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
+        "opensearch",
+        "elasticsearch",
+        "fine-tuning"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0018549",
       "rank": 45,
-      "score": 0.76,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28.",
+      "score": 0.7753,
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28.",
       "score_breakdown": {
         "semanticFit": 56.5,
+        "vectorSimilarity": 88.9,
         "technicalEvidence": 45.4,
         "productionProof": 48.8,
         "rankingEvaluation": 29.3,
@@ -1667,6 +1770,7 @@
         "experienceFit": 100,
         "behavioralSignals": 72.9,
         "availability": 88.3,
+        "recruiterLearning": 57.5,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1684,12 +1788,45 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0078002",
+      "candidate_id": "CAND_0024620",
       "rank": 46,
-      "score": 0.7584,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21.",
+      "score": 0.7745,
+      "reasoning": "Good but not clean-cut fit AI Engineer with 5.9 yrs in New York; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12.",
+      "score_breakdown": {
+        "semanticFit": 53.5,
+        "vectorSimilarity": 90,
+        "technicalEvidence": 39.6,
+        "productionProof": 58.2,
+        "rankingEvaluation": 31.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 72.5,
+        "availability": 75.4,
+        "recruiterLearning": 58.6,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "elasticsearch",
+        "llm",
+        "production systems",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0078002",
+      "rank": 47,
+      "score": 0.7742,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21.",
       "score_breakdown": {
         "semanticFit": 50.6,
+        "vectorSimilarity": 88.4,
         "technicalEvidence": 39.6,
         "productionProof": 59.9,
         "rankingEvaluation": 24.2,
@@ -1697,6 +1834,7 @@
         "experienceFit": 100,
         "behavioralSignals": 81.3,
         "availability": 88.3,
+        "recruiterLearning": 57.7,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1714,12 +1852,141 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0010685",
+      "rank": 48,
+      "score": 0.7741,
+      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16.",
+      "score_breakdown": {
+        "semanticFit": 48.1,
+        "vectorSimilarity": 90.5,
+        "technicalEvidence": 41.3,
+        "productionProof": 70.3,
+        "rankingEvaluation": 37.9,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 76.1,
+        "availability": 79.3,
+        "recruiterLearning": 62.8,
+        "bonus": 6.3,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "faiss",
+        "elasticsearch",
+        "production systems",
+        "shipping history",
+        "ownership",
+        "A/B testing"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0011432",
+      "rank": 49,
+      "score": 0.7731,
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16.",
+      "score_breakdown": {
+        "semanticFit": 51.8,
+        "vectorSimilarity": 89.1,
+        "technicalEvidence": 40.6,
+        "productionProof": 56.9,
+        "rankingEvaluation": 25.3,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 78.5,
+        "availability": 88.3,
+        "recruiterLearning": 57.5,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "opensearch",
+        "elasticsearch",
+        "llm",
+        "shipping history"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0070202",
+      "rank": 50,
+      "score": 0.7723,
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20.",
+      "score_breakdown": {
+        "semanticFit": 55.1,
+        "vectorSimilarity": 90.1,
+        "technicalEvidence": 50.5,
+        "productionProof": 43.1,
+        "rankingEvaluation": 35,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 68.7,
+        "availability": 75,
+        "recruiterLearning": 57.5,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "qdrant",
+        "fine-tuning",
+        "ownership",
+        "A/B testing",
+        "strongest skill: Embeddings"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0042100",
+      "rank": 51,
+      "score": 0.7719,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23.",
+      "score_breakdown": {
+        "semanticFit": 52.1,
+        "vectorSimilarity": 90,
+        "technicalEvidence": 42.1,
+        "productionProof": 47.5,
+        "rankingEvaluation": 34.5,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 82,
+        "availability": 84.4,
+        "recruiterLearning": 57.5,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "ranking",
+        "elasticsearch",
+        "fine-tuning",
+        "shipping history",
+        "ownership",
+        "A/B testing",
+        "strongest skill: Elasticsearch",
+        "assessment: Statistical Modeling 82"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0007411",
-      "rank": 47,
-      "score": 0.7577,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; semantic fit 63% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate.",
+      "rank": 52,
+      "score": 0.7718,
+      "reasoning": "Included as a lower-confidence fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; semantic fit 63% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate.",
       "score_breakdown": {
         "semanticFit": 63.5,
+        "vectorSimilarity": 90.9,
         "technicalEvidence": 54.9,
         "productionProof": 75.5,
         "rankingEvaluation": 40.8,
@@ -1727,6 +1994,7 @@
         "experienceFit": 100,
         "behavioralSignals": 44.1,
         "availability": 78.6,
+        "recruiterLearning": 66.1,
         "bonus": 9,
         "penalties": 7,
         "proxyGuardrail": 0
@@ -1747,132 +2015,13 @@
       ]
     },
     {
-      "candidate_id": "CAND_0011432",
-      "rank": 48,
-      "score": 0.7568,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16.",
-      "score_breakdown": {
-        "semanticFit": 51.8,
-        "technicalEvidence": 40.6,
-        "productionProof": 56.9,
-        "rankingEvaluation": 25.3,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 78.5,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "opensearch",
-        "elasticsearch",
-        "llm",
-        "shipping history"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0024620",
-      "rank": 49,
-      "score": 0.7568,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 5.9 yrs in New York; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12.",
-      "score_breakdown": {
-        "semanticFit": 53.5,
-        "technicalEvidence": 39.6,
-        "productionProof": 58.2,
-        "rankingEvaluation": 31.6,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 72.5,
-        "availability": 75.4,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "elasticsearch",
-        "llm",
-        "production systems",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0010685",
-      "rank": 50,
-      "score": 0.756,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16.",
-      "score_breakdown": {
-        "semanticFit": 48.1,
-        "technicalEvidence": 41.3,
-        "productionProof": 70.3,
-        "rankingEvaluation": 37.9,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 76.1,
-        "availability": 79.3,
-        "bonus": 6.3,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "retrieval",
-        "ranking",
-        "faiss",
-        "elasticsearch",
-        "production systems",
-        "shipping history",
-        "ownership",
-        "A/B testing"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0022812",
-      "rank": 51,
-      "score": 0.7557,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19.",
-      "score_breakdown": {
-        "semanticFit": 57.2,
-        "technicalEvidence": 47.4,
-        "productionProof": 78.3,
-        "rankingEvaluation": 34.5,
-        "roleDomain": 100,
-        "experienceFit": 86,
-        "behavioralSignals": 70.3,
-        "availability": 78.6,
-        "bonus": 9,
-        "penalties": 5,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "production systems",
-        "shipping history",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0039383",
-      "rank": 52,
-      "score": 0.7552,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19.",
+      "rank": 53,
+      "score": 0.7713,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19.",
       "score_breakdown": {
         "semanticFit": 57.1,
+        "vectorSimilarity": 89.6,
         "technicalEvidence": 42.8,
         "productionProof": 51.8,
         "rankingEvaluation": 25.3,
@@ -1880,6 +2029,7 @@
         "experienceFit": 100,
         "behavioralSignals": 70.7,
         "availability": 84.7,
+        "recruiterLearning": 57,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1897,72 +2047,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0070202",
-      "rank": 53,
-      "score": 0.7548,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20.",
-      "score_breakdown": {
-        "semanticFit": 55.1,
-        "technicalEvidence": 50.5,
-        "productionProof": 43.1,
-        "rankingEvaluation": 35,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 68.7,
-        "availability": 75,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "qdrant",
-        "fine-tuning",
-        "ownership",
-        "A/B testing",
-        "strongest skill: Embeddings"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0042100",
-      "rank": 54,
-      "score": 0.7546,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23.",
-      "score_breakdown": {
-        "semanticFit": 52.1,
-        "technicalEvidence": 42.1,
-        "productionProof": 47.5,
-        "rankingEvaluation": 34.5,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 82,
-        "availability": 84.4,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "ranking",
-        "elasticsearch",
-        "fine-tuning",
-        "shipping history",
-        "ownership",
-        "A/B testing",
-        "strongest skill: Elasticsearch",
-        "assessment: Statistical Modeling 82"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0075574",
-      "rank": 55,
-      "score": 0.7537,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17.",
+      "rank": 54,
+      "score": 0.7711,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17.",
       "score_breakdown": {
         "semanticFit": 53.5,
+        "vectorSimilarity": 90.7,
         "technicalEvidence": 50.4,
         "productionProof": 50.6,
         "rankingEvaluation": 39.7,
@@ -1970,6 +2061,7 @@
         "experienceFit": 100,
         "behavioralSignals": 73.2,
         "availability": 79.3,
+        "recruiterLearning": 60.5,
         "bonus": 6.8,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -1987,12 +2079,141 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0092278",
+      "candidate_id": "CAND_0022812",
+      "rank": 55,
+      "score": 0.7708,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19.",
+      "score_breakdown": {
+        "semanticFit": 57.2,
+        "vectorSimilarity": 90.2,
+        "technicalEvidence": 47.4,
+        "productionProof": 78.3,
+        "rankingEvaluation": 34.5,
+        "roleDomain": 100,
+        "experienceFit": 86,
+        "behavioralSignals": 70.3,
+        "availability": 78.6,
+        "recruiterLearning": 63.7,
+        "bonus": 9,
+        "penalties": 5,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
+        "production systems",
+        "shipping history",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0081686",
       "rank": 56,
-      "score": 0.7512,
-      "reasoning": "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate.",
+      "score": 0.7699,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation.",
+      "score_breakdown": {
+        "semanticFit": 51.8,
+        "vectorSimilarity": 90.5,
+        "technicalEvidence": 55.5,
+        "productionProof": 47.8,
+        "rankingEvaluation": 34,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 72,
+        "availability": 39.6,
+        "recruiterLearning": 57.6,
+        "bonus": 8.9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "faiss",
+        "milvus",
+        "elasticsearch",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0030468",
+      "rank": 57,
+      "score": 0.7678,
+      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03.",
+      "score_breakdown": {
+        "semanticFit": 37.7,
+        "vectorSimilarity": 90,
+        "technicalEvidence": 31.8,
+        "productionProof": 82.8,
+        "rankingEvaluation": 24.5,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 82.8,
+        "availability": 79.3,
+        "recruiterLearning": 60.7,
+        "bonus": 7.8,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "milvus",
+        "opensearch",
+        "shipping history",
+        "team or project leadership",
+        "A/B testing",
+        "operational monitoring"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0049538",
+      "rank": 58,
+      "score": 0.7677,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27.",
+      "score_breakdown": {
+        "semanticFit": 47.9,
+        "vectorSimilarity": 89.6,
+        "technicalEvidence": 46.2,
+        "productionProof": 55.9,
+        "rankingEvaluation": 25.3,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 75.8,
+        "availability": 69.5,
+        "recruiterLearning": 57.1,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "milvus",
+        "opensearch",
+        "elasticsearch",
+        "production systems",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0092278",
+      "rank": 59,
+      "score": 0.7663,
+      "reasoning": "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate.",
       "score_breakdown": {
         "semanticFit": 60.2,
+        "vectorSimilarity": 90.9,
         "technicalEvidence": 57.8,
         "productionProof": 66.6,
         "rankingEvaluation": 47.1,
@@ -2000,6 +2221,7 @@
         "experienceFit": 100,
         "behavioralSignals": 38.4,
         "availability": 90.3,
+        "recruiterLearning": 65.6,
         "bonus": 9,
         "penalties": 7,
         "proxyGuardrail": 0
@@ -2020,12 +2242,45 @@
       ]
     },
     {
+      "candidate_id": "CAND_0053695",
+      "rank": 60,
+      "score": 0.7657,
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02.",
+      "score_breakdown": {
+        "semanticFit": 50.9,
+        "vectorSimilarity": 90.7,
+        "technicalEvidence": 41.1,
+        "productionProof": 49.9,
+        "rankingEvaluation": 36.8,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 74.7,
+        "availability": 84.7,
+        "recruiterLearning": 58.2,
+        "bonus": 8.3,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "elasticsearch",
+        "shipping history",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0000031",
-      "rank": 57,
-      "score": 0.7509,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24.",
+      "rank": 61,
+      "score": 0.7653,
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24.",
       "score_breakdown": {
         "semanticFit": 57,
+        "vectorSimilarity": 88.6,
         "technicalEvidence": 46.7,
         "productionProof": 46.4,
         "rankingEvaluation": 36.8,
@@ -2033,6 +2288,7 @@
         "experienceFit": 100,
         "behavioralSignals": 81.4,
         "availability": 88.3,
+        "recruiterLearning": 58.8,
         "bonus": 6.5,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -2051,11 +2307,12 @@
     },
     {
       "candidate_id": "CAND_0094759",
-      "rank": 58,
-      "score": 0.7506,
-      "reasoning": "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate.",
+      "rank": 62,
+      "score": 0.7649,
+      "reasoning": "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate.",
       "score_breakdown": {
         "semanticFit": 64.7,
+        "vectorSimilarity": 91,
         "technicalEvidence": 56.2,
         "productionProof": 62.5,
         "rankingEvaluation": 47.1,
@@ -2063,6 +2320,7 @@
         "experienceFit": 100,
         "behavioralSignals": 48.2,
         "availability": 78.6,
+        "recruiterLearning": 64.6,
         "bonus": 9,
         "penalties": 7,
         "proxyGuardrail": 0
@@ -2083,110 +2341,22 @@
       ]
     },
     {
-      "candidate_id": "CAND_0081686",
-      "rank": 59,
-      "score": 0.7499,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation.",
+      "candidate_id": "CAND_0041568",
+      "rank": 63,
+      "score": 0.7616,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation.",
       "score_breakdown": {
-        "semanticFit": 51.8,
-        "technicalEvidence": 55.5,
-        "productionProof": 47.8,
-        "rankingEvaluation": 34,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 72,
-        "availability": 39.6,
-        "bonus": 8.9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "faiss",
-        "milvus",
-        "elasticsearch",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0049538",
-      "rank": 60,
-      "score": 0.7491,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27.",
-      "score_breakdown": {
-        "semanticFit": 47.9,
-        "technicalEvidence": 46.2,
-        "productionProof": 55.9,
-        "rankingEvaluation": 25.3,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 75.8,
-        "availability": 69.5,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "milvus",
-        "opensearch",
-        "elasticsearch",
-        "production systems",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0030468",
-      "rank": 61,
-      "score": 0.7476,
-      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03.",
-      "score_breakdown": {
-        "semanticFit": 37.7,
-        "technicalEvidence": 31.8,
-        "productionProof": 82.8,
-        "rankingEvaluation": 24.5,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 82.8,
-        "availability": 79.3,
-        "bonus": 7.8,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "retrieval",
-        "ranking",
-        "milvus",
-        "opensearch",
-        "shipping history",
-        "team or project leadership",
-        "A/B testing",
-        "operational monitoring"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0053695",
-      "rank": 62,
-      "score": 0.7471,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02.",
-      "score_breakdown": {
-        "semanticFit": 50.9,
-        "technicalEvidence": 41.1,
-        "productionProof": 49.9,
+        "semanticFit": 57.4,
+        "vectorSimilarity": 90.5,
+        "technicalEvidence": 54.9,
+        "productionProof": 35.1,
         "rankingEvaluation": 36.8,
         "roleDomain": 100,
         "experienceFit": 100,
-        "behavioralSignals": 74.7,
-        "availability": 84.7,
-        "bonus": 8.3,
+        "behavioralSignals": 64,
+        "availability": 49.3,
+        "recruiterLearning": 55.9,
+        "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
       },
@@ -2196,19 +2366,84 @@
         "ranking",
         "evaluation",
         "faiss",
+        "qdrant",
+        "ownership",
+        "A/B testing"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0072660",
+      "rank": 64,
+      "score": 0.761,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation.",
+      "score_breakdown": {
+        "semanticFit": 47.8,
+        "vectorSimilarity": 90.5,
+        "technicalEvidence": 46.9,
+        "productionProof": 54.9,
+        "rankingEvaluation": 25.3,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 81.8,
+        "availability": 40.3,
+        "recruiterLearning": 56,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "retrieval",
+        "ranking",
+        "faiss",
+        "opensearch",
         "elasticsearch",
-        "shipping history",
+        "production systems",
         "ownership"
       ],
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0055992",
+      "rank": 65,
+      "score": 0.7595,
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28.",
+      "score_breakdown": {
+        "semanticFit": 51.5,
+        "vectorSimilarity": 90.4,
+        "technicalEvidence": 56.8,
+        "productionProof": 49.7,
+        "rankingEvaluation": 40.8,
+        "roleDomain": 100,
+        "experienceFit": 42,
+        "behavioralSignals": 75.5,
+        "availability": 84.4,
+        "recruiterLearning": 58,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "milvus",
+        "opensearch",
+        "elasticsearch"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0081053",
-      "rank": 63,
-      "score": 0.7425,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31.",
+      "rank": 66,
+      "score": 0.7595,
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31.",
       "score_breakdown": {
         "semanticFit": 48.9,
+        "vectorSimilarity": 88.6,
         "technicalEvidence": 44.4,
         "productionProof": 54.6,
         "rankingEvaluation": 14.9,
@@ -2216,6 +2451,7 @@
         "experienceFit": 100,
         "behavioralSignals": 72.4,
         "availability": 88.3,
+        "recruiterLearning": 55,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -2233,42 +2469,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0041568",
-      "rank": 64,
-      "score": 0.7423,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation.",
-      "score_breakdown": {
-        "semanticFit": 57.4,
-        "technicalEvidence": 54.9,
-        "productionProof": 35.1,
-        "rankingEvaluation": 36.8,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 64,
-        "availability": 49.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "ownership",
-        "A/B testing"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0065878",
-      "rank": 65,
-      "score": 0.7423,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23.",
+      "rank": 67,
+      "score": 0.7593,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23.",
       "score_breakdown": {
         "semanticFit": 55.7,
+        "vectorSimilarity": 90.2,
         "technicalEvidence": 44.5,
         "productionProof": 35.1,
         "rankingEvaluation": 31.5,
@@ -2276,6 +2483,7 @@
         "experienceFit": 100,
         "behavioralSignals": 77.7,
         "availability": 88.3,
+        "recruiterLearning": 54.7,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -2293,12 +2501,109 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0066999",
+      "rank": 68,
+      "score": 0.7591,
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05.",
+      "score_breakdown": {
+        "semanticFit": 42.6,
+        "vectorSimilarity": 89.7,
+        "technicalEvidence": 42.9,
+        "productionProof": 64.3,
+        "rankingEvaluation": 26.4,
+        "roleDomain": 86,
+        "experienceFit": 100,
+        "behavioralSignals": 81.2,
+        "availability": 79.3,
+        "recruiterLearning": 58.8,
+        "bonus": 8.6,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "faiss",
+        "opensearch",
+        "production systems",
+        "ownership",
+        "operational monitoring"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0051292",
+      "rank": 69,
+      "score": 0.7585,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12.",
+      "score_breakdown": {
+        "semanticFit": 50.2,
+        "vectorSimilarity": 90.4,
+        "technicalEvidence": 46.7,
+        "productionProof": 37.6,
+        "rankingEvaluation": 31.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 75.5,
+        "availability": 88.3,
+        "recruiterLearning": 55.1,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "elasticsearch",
+        "fine-tuning",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0043228",
+      "rank": 70,
+      "score": 0.7581,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22.",
+      "score_breakdown": {
+        "semanticFit": 49.5,
+        "vectorSimilarity": 90.8,
+        "technicalEvidence": 46.6,
+        "productionProof": 59.6,
+        "rankingEvaluation": 25.3,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 78,
+        "availability": 78.6,
+        "recruiterLearning": 58.8,
+        "bonus": 6.2,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "opensearch",
+        "elasticsearch",
+        "production systems",
+        "ownership"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0007412",
-      "rank": 66,
-      "score": 0.7414,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days).",
+      "rank": 71,
+      "score": 0.7577,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 48.1,
+        "vectorSimilarity": 89.6,
         "technicalEvidence": 45.4,
         "productionProof": 58.5,
         "rankingEvaluation": 40.8,
@@ -2306,6 +2611,7 @@
         "experienceFit": 100,
         "behavioralSignals": 74,
         "availability": 100,
+        "recruiterLearning": 61,
         "bonus": 8.1,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2325,80 +2631,54 @@
       ]
     },
     {
-      "candidate_id": "CAND_0072660",
-      "rank": 67,
-      "score": 0.7403,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation.",
+      "candidate_id": "CAND_0099401",
+      "rank": 72,
+      "score": 0.7567,
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27.",
       "score_breakdown": {
-        "semanticFit": 47.8,
-        "technicalEvidence": 46.9,
-        "productionProof": 54.9,
-        "rankingEvaluation": 25.3,
+        "semanticFit": 47.4,
+        "vectorSimilarity": 89.8,
+        "technicalEvidence": 42.1,
+        "productionProof": 69,
+        "rankingEvaluation": 37.9,
         "roleDomain": 100,
         "experienceFit": 100,
-        "behavioralSignals": 81.8,
-        "availability": 40.3,
-        "bonus": 9,
+        "behavioralSignals": 64.8,
+        "availability": 78.6,
+        "recruiterLearning": 62.2,
+        "bonus": 5,
         "penalties": 0,
         "proxyGuardrail": 0
       },
       "evidence": [
         "python",
-        "retrieval",
-        "ranking",
-        "faiss",
-        "opensearch",
-        "elasticsearch",
-        "production systems",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0043228",
-      "rank": 68,
-      "score": 0.7401,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22.",
-      "score_breakdown": {
-        "semanticFit": 49.5,
-        "technicalEvidence": 46.6,
-        "productionProof": 59.6,
-        "rankingEvaluation": 25.3,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 78,
-        "availability": 78.6,
-        "bonus": 6.2,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
+        "embeddings",
         "retrieval",
         "ranking",
         "evaluation",
-        "faiss",
-        "opensearch",
-        "elasticsearch",
-        "production systems",
-        "ownership"
+        "qdrant",
+        "llm",
+        "production systems"
       ],
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0051292",
-      "rank": 69,
-      "score": 0.74,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12.",
+      "candidate_id": "CAND_0047721",
+      "rank": 73,
+      "score": 0.7563,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05.",
       "score_breakdown": {
-        "semanticFit": 50.2,
-        "technicalEvidence": 46.7,
-        "productionProof": 37.6,
-        "rankingEvaluation": 31.6,
+        "semanticFit": 50.4,
+        "vectorSimilarity": 89.3,
+        "technicalEvidence": 49.2,
+        "productionProof": 52.2,
+        "rankingEvaluation": 33.3,
         "roleDomain": 100,
         "experienceFit": 100,
-        "behavioralSignals": 75.5,
-        "availability": 88.3,
-        "bonus": 9,
+        "behavioralSignals": 60.7,
+        "availability": 78.6,
+        "recruiterLearning": 58.5,
+        "bonus": 7,
         "penalties": 0,
         "proxyGuardrail": 0
       },
@@ -2408,19 +2688,52 @@
         "ranking",
         "evaluation",
         "faiss",
-        "elasticsearch",
-        "fine-tuning",
+        "milvus",
+        "qdrant",
         "ownership"
       ],
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0037980",
+      "rank": 74,
+      "score": 0.755,
+      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; semantic fit 41% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28.",
+      "score_breakdown": {
+        "semanticFit": 41.3,
+        "vectorSimilarity": 89.7,
+        "technicalEvidence": 34.4,
+        "productionProof": 61.7,
+        "rankingEvaluation": 23,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 75.5,
+        "availability": 88.3,
+        "recruiterLearning": 56.2,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "production systems",
+        "shipping history",
+        "ownership",
+        "A/B testing",
+        "operational monitoring"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0096142",
-      "rank": 70,
-      "score": 0.7398,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days).",
+      "rank": 75,
+      "score": 0.7536,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 55.1,
+        "vectorSimilarity": 88,
         "technicalEvidence": 41.8,
         "productionProof": 62.9,
         "rankingEvaluation": 20.1,
@@ -2428,6 +2741,7 @@
         "experienceFit": 100,
         "behavioralSignals": 78.1,
         "availability": 88.3,
+        "recruiterLearning": 57.4,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2447,72 +2761,13 @@
       ]
     },
     {
-      "candidate_id": "CAND_0055992",
-      "rank": 71,
-      "score": 0.7396,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28.",
-      "score_breakdown": {
-        "semanticFit": 51.5,
-        "technicalEvidence": 56.8,
-        "productionProof": 49.7,
-        "rankingEvaluation": 40.8,
-        "roleDomain": 100,
-        "experienceFit": 42,
-        "behavioralSignals": 75.5,
-        "availability": 84.4,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "milvus",
-        "opensearch",
-        "elasticsearch"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0066999",
-      "rank": 72,
-      "score": 0.7391,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05.",
-      "score_breakdown": {
-        "semanticFit": 42.6,
-        "technicalEvidence": 42.9,
-        "productionProof": 64.3,
-        "rankingEvaluation": 26.4,
-        "roleDomain": 86,
-        "experienceFit": 100,
-        "behavioralSignals": 81.2,
-        "availability": 79.3,
-        "bonus": 8.6,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "faiss",
-        "opensearch",
-        "production systems",
-        "ownership",
-        "operational monitoring"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0010257",
-      "rank": 73,
-      "score": 0.7386,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days).",
+      "rank": 76,
+      "score": 0.7532,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 49.5,
+        "vectorSimilarity": 88.6,
         "technicalEvidence": 48,
         "productionProof": 82.8,
         "rankingEvaluation": 24.2,
@@ -2520,6 +2775,7 @@
         "experienceFit": 100,
         "behavioralSignals": 73.8,
         "availability": 100,
+        "recruiterLearning": 63.9,
         "bonus": 6.1,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2539,72 +2795,13 @@
       ]
     },
     {
-      "candidate_id": "CAND_0047721",
-      "rank": 74,
-      "score": 0.7381,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05.",
-      "score_breakdown": {
-        "semanticFit": 50.4,
-        "technicalEvidence": 49.2,
-        "productionProof": 52.2,
-        "rankingEvaluation": 33.3,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 60.7,
-        "availability": 78.6,
-        "bonus": 7,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "milvus",
-        "qdrant",
-        "ownership"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0099401",
-      "rank": 75,
-      "score": 0.738,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27.",
-      "score_breakdown": {
-        "semanticFit": 47.4,
-        "technicalEvidence": 42.1,
-        "productionProof": 69,
-        "rankingEvaluation": 37.9,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 64.8,
-        "availability": 78.6,
-        "bonus": 5,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "qdrant",
-        "llm",
-        "production systems"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0037944",
-      "rank": 76,
-      "score": 0.7371,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22.",
+      "rank": 77,
+      "score": 0.752,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22.",
       "score_breakdown": {
         "semanticFit": 57.1,
+        "vectorSimilarity": 90.2,
         "technicalEvidence": 49.8,
         "productionProof": 63.2,
         "rankingEvaluation": 26.4,
@@ -2612,6 +2809,7 @@
         "experienceFit": 86,
         "behavioralSignals": 74.8,
         "availability": 88.3,
+        "recruiterLearning": 59.3,
         "bonus": 9,
         "penalties": 5,
         "proxyGuardrail": 0
@@ -2629,132 +2827,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0037980",
-      "rank": 77,
-      "score": 0.735,
-      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; semantic fit 41% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28.",
-      "score_breakdown": {
-        "semanticFit": 41.3,
-        "technicalEvidence": 34.4,
-        "productionProof": 61.7,
-        "rankingEvaluation": 23,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 75.5,
-        "availability": 88.3,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "production systems",
-        "shipping history",
-        "ownership",
-        "A/B testing",
-        "operational monitoring"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0030953",
-      "rank": 78,
-      "score": 0.7341,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11.",
-      "score_breakdown": {
-        "semanticFit": 58.3,
-        "technicalEvidence": 43.1,
-        "productionProof": 57,
-        "rankingEvaluation": 31.6,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 68.5,
-        "availability": 78.6,
-        "bonus": 4.9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "elasticsearch"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0052682",
-      "rank": 79,
-      "score": 0.7334,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28.",
-      "score_breakdown": {
-        "semanticFit": 51.1,
-        "technicalEvidence": 47.5,
-        "productionProof": 30.7,
-        "rankingEvaluation": 28.6,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 85.5,
-        "availability": 84.7,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0.1
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "fine-tuning",
-        "A/B testing",
-        "strongest skill: QLoRA"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0095528",
-      "rank": 80,
-      "score": 0.7333,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03.",
-      "score_breakdown": {
-        "semanticFit": 49.5,
-        "technicalEvidence": 60.3,
-        "productionProof": 54.9,
-        "rankingEvaluation": 24.1,
-        "roleDomain": 86,
-        "experienceFit": 100,
-        "behavioralSignals": 72.3,
-        "availability": 84.7,
-        "bonus": 5.5,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "python",
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "qdrant",
-        "opensearch",
-        "elasticsearch"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0083307",
-      "rank": 81,
-      "score": 0.733,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days).",
+      "rank": 78,
+      "score": 0.7508,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 54.1,
+        "vectorSimilarity": 91.8,
         "technicalEvidence": 55.6,
         "productionProof": 38.3,
         "rankingEvaluation": 37.9,
@@ -2762,6 +2841,7 @@
         "experienceFit": 100,
         "behavioralSignals": 66,
         "availability": 88.3,
+        "recruiterLearning": 57.6,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2781,42 +2861,173 @@
       ]
     },
     {
-      "candidate_id": "CAND_0092255",
-      "rank": 82,
-      "score": 0.7306,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07.",
+      "candidate_id": "CAND_0095528",
+      "rank": 79,
+      "score": 0.7506,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03.",
       "score_breakdown": {
-        "semanticFit": 48.5,
-        "technicalEvidence": 47.6,
-        "productionProof": 50.9,
-        "rankingEvaluation": 21.2,
-        "roleDomain": 100,
+        "semanticFit": 49.5,
+        "vectorSimilarity": 89.6,
+        "technicalEvidence": 60.3,
+        "productionProof": 54.9,
+        "rankingEvaluation": 24.1,
+        "roleDomain": 86,
         "experienceFit": 100,
-        "behavioralSignals": 72.4,
-        "availability": 100,
-        "bonus": 6.3,
+        "behavioralSignals": 72.3,
+        "availability": 84.7,
+        "recruiterLearning": 59.6,
+        "bonus": 5.5,
         "penalties": 0,
         "proxyGuardrail": 0
       },
       "evidence": [
         "python",
+        "embeddings",
         "retrieval",
         "ranking",
         "evaluation",
+        "qdrant",
         "opensearch",
-        "llm",
-        "production systems",
-        "platform work"
+        "elasticsearch"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0053591",
+      "rank": 80,
+      "score": 0.7505,
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; semantic fit 44% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation.",
+      "score_breakdown": {
+        "semanticFit": 43.7,
+        "vectorSimilarity": 90.1,
+        "technicalEvidence": 42.4,
+        "productionProof": 62.4,
+        "rankingEvaluation": 27.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 77.7,
+        "availability": 45.7,
+        "recruiterLearning": 57.2,
+        "bonus": 7.6,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "milvus",
+        "qdrant",
+        "opensearch",
+        "shipping history"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0052682",
+      "rank": 81,
+      "score": 0.7499,
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28.",
+      "score_breakdown": {
+        "semanticFit": 51.1,
+        "vectorSimilarity": 88.1,
+        "technicalEvidence": 47.5,
+        "productionProof": 30.7,
+        "rankingEvaluation": 28.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 85.5,
+        "availability": 84.7,
+        "recruiterLearning": 52.8,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0.1
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "fine-tuning",
+        "A/B testing",
+        "strongest skill: QLoRA"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0030953",
+      "rank": 82,
+      "score": 0.7498,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11.",
+      "score_breakdown": {
+        "semanticFit": 58.3,
+        "vectorSimilarity": 89.3,
+        "technicalEvidence": 43.1,
+        "productionProof": 57,
+        "rankingEvaluation": 31.6,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 68.5,
+        "availability": 78.6,
+        "recruiterLearning": 59.3,
+        "bonus": 4.9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "python",
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
+        "elasticsearch"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0061655",
+      "rank": 83,
+      "score": 0.7492,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21.",
+      "score_breakdown": {
+        "semanticFit": 45.4,
+        "vectorSimilarity": 89.2,
+        "technicalEvidence": 45.8,
+        "productionProof": 40.8,
+        "rankingEvaluation": 32.2,
+        "roleDomain": 100,
+        "experienceFit": 86,
+        "behavioralSignals": 88.5,
+        "availability": 78.6,
+        "recruiterLearning": 54.2,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "ranking",
+        "evaluation",
+        "qdrant",
+        "opensearch",
+        "elasticsearch",
+        "ownership",
+        "A/B testing"
       ],
       "concerns": []
     },
     {
       "candidate_id": "CAND_0061265",
-      "rank": 83,
-      "score": 0.7305,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days).",
+      "rank": 84,
+      "score": 0.7483,
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 53,
+        "vectorSimilarity": 91.2,
         "technicalEvidence": 44.8,
         "productionProof": 62.8,
         "rankingEvaluation": 26.4,
@@ -2824,6 +3035,7 @@
         "experienceFit": 100,
         "behavioralSignals": 73,
         "availability": 88.3,
+        "recruiterLearning": 59.4,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2844,11 +3056,12 @@
     },
     {
       "candidate_id": "CAND_0008978",
-      "rank": 84,
-      "score": 0.73,
-      "reasoning": "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13.",
+      "rank": 85,
+      "score": 0.7471,
+      "reasoning": "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13.",
       "score_breakdown": {
         "semanticFit": 46.3,
+        "vectorSimilarity": 86,
         "technicalEvidence": 44.8,
         "productionProof": 50.6,
         "rankingEvaluation": 19.5,
@@ -2856,6 +3069,7 @@
         "experienceFit": 100,
         "behavioralSignals": 57.6,
         "availability": 90.3,
+        "recruiterLearning": 54.1,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -2873,102 +3087,77 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0061655",
-      "rank": 85,
-      "score": 0.7298,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21.",
-      "score_breakdown": {
-        "semanticFit": 45.4,
-        "technicalEvidence": 45.8,
-        "productionProof": 40.8,
-        "rankingEvaluation": 32.2,
-        "roleDomain": 100,
-        "experienceFit": 86,
-        "behavioralSignals": 88.5,
-        "availability": 78.6,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "ranking",
-        "evaluation",
-        "qdrant",
-        "opensearch",
-        "elasticsearch",
-        "ownership",
-        "A/B testing"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0053591",
+      "candidate_id": "CAND_0092255",
       "rank": 86,
-      "score": 0.7291,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; semantic fit 44% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation.",
+      "score": 0.7468,
+      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07.",
       "score_breakdown": {
-        "semanticFit": 43.7,
-        "technicalEvidence": 42.4,
-        "productionProof": 62.4,
-        "rankingEvaluation": 27.6,
+        "semanticFit": 48.5,
+        "vectorSimilarity": 88.4,
+        "technicalEvidence": 47.6,
+        "productionProof": 50.9,
+        "rankingEvaluation": 21.2,
         "roleDomain": 100,
         "experienceFit": 100,
-        "behavioralSignals": 77.7,
-        "availability": 45.7,
-        "bonus": 7.6,
+        "behavioralSignals": 72.4,
+        "availability": 100,
+        "recruiterLearning": 56.3,
+        "bonus": 6.3,
         "penalties": 0,
         "proxyGuardrail": 0
       },
       "evidence": [
-        "embeddings",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "milvus",
-        "qdrant",
-        "opensearch",
-        "shipping history"
-      ],
-      "concerns": []
-    },
-    {
-      "candidate_id": "CAND_0015528",
-      "rank": 87,
-      "score": 0.7287,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16.",
-      "score_breakdown": {
-        "semanticFit": 50.2,
-        "technicalEvidence": 40.6,
-        "productionProof": 51.9,
-        "rankingEvaluation": 14.9,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 68.1,
-        "availability": 78.6,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
+        "python",
         "retrieval",
         "ranking",
-        "faiss",
+        "evaluation",
         "opensearch",
+        "llm",
         "production systems",
+        "platform work"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0078042",
+      "rank": 87,
+      "score": 0.7462,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.7 yrs in Dubai; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, opensearch from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 30d, last active 2026-04-24. Concern: location or availability needs recruiter confirmation.",
+      "score_breakdown": {
+        "semanticFit": 48,
+        "vectorSimilarity": 89.9,
+        "technicalEvidence": 44.4,
+        "productionProof": 51.5,
+        "rankingEvaluation": 34.5,
+        "roleDomain": 100,
+        "experienceFit": 86,
+        "behavioralSignals": 77.4,
+        "availability": 30.6,
+        "recruiterLearning": 55.3,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "retrieval",
+        "ranking",
+        "opensearch",
+        "shipping history",
+        "ownership",
         "A/B testing",
-        "operational monitoring"
+        "strongest skill: OpenSearch",
+        "assessment: PyTorch 85"
       ],
       "concerns": []
     },
     {
       "candidate_id": "CAND_0070398",
       "rank": 88,
-      "score": 0.7285,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days).",
+      "score": 0.7458,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 52.1,
+        "vectorSimilarity": 90.1,
         "technicalEvidence": 49.4,
         "productionProof": 49.5,
         "rankingEvaluation": 30.4,
@@ -2976,6 +3165,7 @@
         "experienceFit": 100,
         "behavioralSignals": 63.6,
         "availability": 88.3,
+        "recruiterLearning": 57.2,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
@@ -2997,10 +3187,11 @@
     {
       "candidate_id": "CAND_0076482",
       "rank": 89,
-      "score": 0.7284,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06.",
+      "score": 0.7458,
+      "reasoning": "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06.",
       "score_breakdown": {
         "semanticFit": 45.4,
+        "vectorSimilarity": 87.7,
         "technicalEvidence": 42.7,
         "productionProof": 51.1,
         "rankingEvaluation": 10.9,
@@ -3008,6 +3199,7 @@
         "experienceFit": 100,
         "behavioralSignals": 79,
         "availability": 84.4,
+        "recruiterLearning": 52.6,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -3025,12 +3217,45 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0091909",
+      "candidate_id": "CAND_0015528",
       "rank": 90,
-      "score": 0.7283,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18.",
+      "score": 0.7456,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 87% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16.",
+      "score_breakdown": {
+        "semanticFit": 50.2,
+        "vectorSimilarity": 86.9,
+        "technicalEvidence": 40.6,
+        "productionProof": 51.9,
+        "rankingEvaluation": 14.9,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 68.1,
+        "availability": 78.6,
+        "recruiterLearning": 53.1,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "faiss",
+        "opensearch",
+        "production systems",
+        "A/B testing",
+        "operational monitoring"
+      ],
+      "concerns": []
+    },
+    {
+      "candidate_id": "CAND_0091909",
+      "rank": 91,
+      "score": 0.7452,
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18.",
       "score_breakdown": {
         "semanticFit": 51.7,
+        "vectorSimilarity": 88.1,
         "technicalEvidence": 34.1,
         "productionProof": 51.8,
         "rankingEvaluation": 17.8,
@@ -3038,6 +3263,7 @@
         "experienceFit": 100,
         "behavioralSignals": 72.4,
         "availability": 88.3,
+        "recruiterLearning": 53.5,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0.2
@@ -3055,42 +3281,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0009024",
-      "rank": 91,
-      "score": 0.7266,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.46, notice 30d, last active 2026-04-09.",
-      "score_breakdown": {
-        "semanticFit": 55.8,
-        "technicalEvidence": 44.8,
-        "productionProof": 34.7,
-        "rankingEvaluation": 19,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 74.4,
-        "availability": 84.7,
-        "bonus": 9,
-        "penalties": 0,
-        "proxyGuardrail": 0.2
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "opensearch",
-        "A/B testing"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0065195",
       "rank": 92,
-      "score": 0.7257,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24.",
+      "score": 0.7441,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24.",
       "score_breakdown": {
         "semanticFit": 51.6,
+        "vectorSimilarity": 90.2,
         "technicalEvidence": 36.5,
         "productionProof": 51.9,
         "rankingEvaluation": 20.1,
@@ -3098,6 +3295,7 @@
         "experienceFit": 100,
         "behavioralSignals": 86.1,
         "availability": 88.3,
+        "recruiterLearning": 55,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0.5
@@ -3115,42 +3313,13 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0044855",
-      "rank": 93,
-      "score": 0.725,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24.",
-      "score_breakdown": {
-        "semanticFit": 51.3,
-        "technicalEvidence": 49.8,
-        "productionProof": 36.1,
-        "rankingEvaluation": 27.6,
-        "roleDomain": 100,
-        "experienceFit": 100,
-        "behavioralSignals": 71.1,
-        "availability": 78.6,
-        "bonus": 7.8,
-        "penalties": 0,
-        "proxyGuardrail": 0
-      },
-      "evidence": [
-        "embeddings",
-        "retrieval",
-        "ranking",
-        "evaluation",
-        "faiss",
-        "qdrant",
-        "opensearch",
-        "elasticsearch"
-      ],
-      "concerns": []
-    },
-    {
       "candidate_id": "CAND_0052328",
-      "rank": 94,
-      "score": 0.7243,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31.",
+      "rank": 93,
+      "score": 0.7439,
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31.",
       "score_breakdown": {
         "semanticFit": 42.9,
+        "vectorSimilarity": 89.8,
         "technicalEvidence": 45.7,
         "productionProof": 50.9,
         "rankingEvaluation": 15,
@@ -3158,6 +3327,7 @@
         "experienceFit": 100,
         "behavioralSignals": 77.1,
         "availability": 100,
+        "recruiterLearning": 54.5,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -3175,42 +3345,45 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0078042",
-      "rank": 95,
-      "score": 0.7238,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.7 yrs in Dubai; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, opensearch from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 30d, last active 2026-04-24. Concern: location or availability needs recruiter confirmation.",
+      "candidate_id": "CAND_0044855",
+      "rank": 94,
+      "score": 0.7438,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24.",
       "score_breakdown": {
-        "semanticFit": 48,
-        "technicalEvidence": 44.4,
-        "productionProof": 51.5,
-        "rankingEvaluation": 34.5,
+        "semanticFit": 51.3,
+        "vectorSimilarity": 90.3,
+        "technicalEvidence": 49.8,
+        "productionProof": 36.1,
+        "rankingEvaluation": 27.6,
         "roleDomain": 100,
-        "experienceFit": 86,
-        "behavioralSignals": 77.4,
-        "availability": 30.6,
-        "bonus": 9,
+        "experienceFit": 100,
+        "behavioralSignals": 71.1,
+        "availability": 78.6,
+        "recruiterLearning": 54.1,
+        "bonus": 7.8,
         "penalties": 0,
         "proxyGuardrail": 0
       },
       "evidence": [
+        "embeddings",
         "retrieval",
         "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
         "opensearch",
-        "shipping history",
-        "ownership",
-        "A/B testing",
-        "strongest skill: OpenSearch",
-        "assessment: PyTorch 85"
+        "elasticsearch"
       ],
       "concerns": []
     },
     {
       "candidate_id": "CAND_0058688",
-      "rank": 96,
-      "score": 0.7225,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; semantic fit 42% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28.",
+      "rank": 95,
+      "score": 0.7415,
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; semantic fit 42% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28.",
       "score_breakdown": {
         "semanticFit": 41.5,
+        "vectorSimilarity": 88.6,
         "technicalEvidence": 39.6,
         "productionProof": 58.8,
         "rankingEvaluation": 17.2,
@@ -3218,6 +3391,7 @@
         "experienceFit": 100,
         "behavioralSignals": 82.5,
         "availability": 80.8,
+        "recruiterLearning": 54.9,
         "bonus": 7.4,
         "penalties": 0,
         "proxyGuardrail": 0
@@ -3235,12 +3409,45 @@
       "concerns": []
     },
     {
+      "candidate_id": "CAND_0009024",
+      "rank": 96,
+      "score": 0.7414,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; recruiter-learning fit 51% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.46, notice 30d, last active 2026-04-09.",
+      "score_breakdown": {
+        "semanticFit": 55.8,
+        "vectorSimilarity": 86.5,
+        "technicalEvidence": 44.8,
+        "productionProof": 34.7,
+        "rankingEvaluation": 19,
+        "roleDomain": 100,
+        "experienceFit": 100,
+        "behavioralSignals": 74.4,
+        "availability": 84.7,
+        "recruiterLearning": 51.3,
+        "bonus": 9,
+        "penalties": 0,
+        "proxyGuardrail": 0.2
+      },
+      "evidence": [
+        "embeddings",
+        "retrieval",
+        "ranking",
+        "evaluation",
+        "faiss",
+        "qdrant",
+        "opensearch",
+        "A/B testing"
+      ],
+      "concerns": []
+    },
+    {
       "candidate_id": "CAND_0076251",
       "rank": 97,
-      "score": 0.7222,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.6 yrs in Bhubaneswar, Odisha; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.51, notice 60d, last active 2026-04-15.",
+      "score": 0.7407,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.6 yrs in Bhubaneswar, Odisha; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.51, notice 60d, last active 2026-04-15.",
       "score_breakdown": {
         "semanticFit": 55.1,
+        "vectorSimilarity": 90.5,
         "technicalEvidence": 43.4,
         "productionProof": 35.1,
         "rankingEvaluation": 21.3,
@@ -3248,6 +3455,7 @@
         "experienceFit": 100,
         "behavioralSignals": 68.2,
         "availability": 84.7,
+        "recruiterLearning": 52.2,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0.3
@@ -3267,10 +3475,11 @@
     {
       "candidate_id": "CAND_0081852",
       "rank": 98,
-      "score": 0.7216,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.9 yrs in Delhi, Delhi; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; matches embeddings, retrieval, evaluation, milvus from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.44, notice 45d, last active 2026-05-23.",
+      "score": 0.7395,
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.9 yrs in Delhi, Delhi; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, milvus from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.44, notice 45d, last active 2026-05-23.",
       "score_breakdown": {
         "semanticFit": 50.2,
+        "vectorSimilarity": 89.3,
         "technicalEvidence": 37.6,
         "productionProof": 43.9,
         "rankingEvaluation": 16.1,
@@ -3278,6 +3487,7 @@
         "experienceFit": 100,
         "behavioralSignals": 80.6,
         "availability": 88.3,
+        "recruiterLearning": 52,
         "bonus": 9,
         "penalties": 0,
         "proxyGuardrail": 0.4
@@ -3295,42 +3505,45 @@
       "concerns": []
     },
     {
-      "candidate_id": "CAND_0067866",
+      "candidate_id": "CAND_0020877",
       "rank": 99,
-      "score": 0.7206,
-      "reasoning": "Included as a lower-confidence fit Senior Software Engineer (ML) with 6.4 yrs in Noida, Uttar Pradesh; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.79, notice 45d, last active 2026-05-22.",
+      "score": 0.7382,
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.1 yrs in Gurgaon, Haryana; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, faiss from the Senior AI Engineer JD; production deployment proof is thin. Redrob signals: response rate 0.66, notice 60d, last active 2026-04-03.",
       "score_breakdown": {
-        "semanticFit": 46.9,
-        "technicalEvidence": 35.3,
-        "productionProof": 45.9,
-        "rankingEvaluation": 13.8,
+        "semanticFit": 47,
+        "vectorSimilarity": 89.6,
+        "technicalEvidence": 53.4,
+        "productionProof": 27.2,
+        "rankingEvaluation": 26.4,
         "roleDomain": 100,
         "experienceFit": 100,
-        "behavioralSignals": 92.5,
-        "availability": 91,
+        "behavioralSignals": 68.5,
+        "availability": 78.6,
+        "recruiterLearning": 51.7,
         "bonus": 9,
         "penalties": 0,
-        "proxyGuardrail": 0.5
+        "proxyGuardrail": 0
       },
       "evidence": [
-        "python",
         "embeddings",
         "retrieval",
-        "ranking",
+        "evaluation",
+        "faiss",
+        "milvus",
         "qdrant",
-        "elasticsearch",
-        "fine-tuning",
-        "production systems"
+        "opensearch",
+        "elasticsearch"
       ],
       "concerns": []
     },
     {
       "candidate_id": "CAND_0012957",
       "rank": 100,
-      "score": 0.7204,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 4.9 yrs in Chennai, Tamil Nadu; semantic fit 59% across retrieval, ranking, evaluation, and production AI concepts; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 120d, last active 2026-05-02. Concern: long notice period (120 days).",
+      "score": 0.7373,
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 4.9 yrs in Chennai, Tamil Nadu; semantic fit 59% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 120d, last active 2026-05-02. Concern: long notice period (120 days).",
       "score_breakdown": {
         "semanticFit": 58.9,
+        "vectorSimilarity": 89.5,
         "technicalEvidence": 45.8,
         "productionProof": 48.5,
         "rankingEvaluation": 33.9,
@@ -3338,6 +3551,7 @@
         "experienceFit": 86,
         "behavioralSignals": 62.1,
         "availability": 78.6,
+        "recruiterLearning": 56.4,
         "bonus": 9,
         "penalties": 3.5,
         "proxyGuardrail": 0
