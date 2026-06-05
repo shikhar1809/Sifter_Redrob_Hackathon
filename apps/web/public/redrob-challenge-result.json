@@ -3,8 +3,39 @@
   "processedCandidates": 100000,
   "selectedRows": 100,
   "sourceFile": "candidates.jsonl",
-  "runtimeSeconds": 289.5,
-  "generatedAt": "2026-06-04",
+  "runtimeSeconds": 37.1,
+  "rankingPlan": {
+    "initialBatches": 10,
+    "requestedBatches": 10,
+    "mergeSize": 2,
+    "rounds": [
+      {
+        "round": 1,
+        "inputGroups": 10,
+        "outputGroups": 5,
+        "candidatesConsidered": 1000
+      },
+      {
+        "round": 2,
+        "inputGroups": 5,
+        "outputGroups": 3,
+        "candidatesConsidered": 500
+      },
+      {
+        "round": 3,
+        "inputGroups": 3,
+        "outputGroups": 2,
+        "candidatesConsidered": 300
+      },
+      {
+        "round": 4,
+        "inputGroups": 2,
+        "outputGroups": 1,
+        "candidatesConsidered": 200
+      }
+    ]
+  },
+  "generatedAt": "2026-06-05",
   "note": "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
   "biasAudit": {
     "status": "review",

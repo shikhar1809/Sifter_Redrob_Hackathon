@@ -1,14 +1,16 @@
 import { createReadStream, existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
-import { isAbsolute, resolve } from "node:path";
+import { dirname, isAbsolute, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
+import { Worker } from "node:worker_threads";
 import { createGunzip } from "node:zlib";
 import {
   createRedrobBiasAudit,
   exportRedrobSubmissionCsv,
   parseRedrobCandidates,
-  rankRedrobCandidates,
   type RedrobCandidate,
+  type RedrobRankingRow,
 } from "@seederpro/core";
 
 type CliArgs = {
@@ -16,12 +18,19 @@ type CliArgs = {
   output: string;
   assetOutput: string | null;
   limit: number;
+  batches: number;
+  mergeSize: number;
 };
 
 const args = parseArgs(process.argv.slice(2));
 const started = Date.now();
 const candidates = await loadCandidates(resolveInputPath(args.input));
-const rows = rankRedrobCandidates({ candidates, limit: args.limit });
+const ranking = await rankRedrobCandidatesInBatches(candidates, {
+  limit: args.limit,
+  batches: args.batches,
+  mergeSize: args.mergeSize,
+});
+const rows = ranking.rows;
 const outputPath = resolveOutputPath(args.output);
 await writeFile(outputPath, `${exportRedrobSubmissionCsv(rows)}\n`, "utf8");
 if (args.assetOutput) {
@@ -32,6 +41,7 @@ if (args.assetOutput) {
     selectedRows: rows.length,
     sourceFile: "candidates.jsonl",
     runtimeSeconds: Number(((Date.now() - started) / 1000).toFixed(1)),
+    rankingPlan: ranking.plan,
     generatedAt: new Date().toISOString().slice(0, 10),
     note: "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
     biasAudit: createRedrobBiasAudit(candidates, rows),
@@ -43,6 +53,7 @@ if (args.assetOutput) {
 console.log(
   [
     `Ranked ${candidates.length} candidates in ${((Date.now() - started) / 1000).toFixed(1)}s.`,
+    `Batch plan: ${ranking.plan.initialBatches} initial batches, merge size ${ranking.plan.mergeSize}, ${ranking.plan.rounds.length} merge rounds.`,
     `Wrote ${rows.length} rows to ${outputPath}.`,
     args.assetOutput ? `Wrote live asset to ${resolveOutputPath(args.assetOutput)}.` : "",
     rows[0] ? `Top candidate: ${rows[0].candidate_id} (${rows[0].score.toFixed(4)}).` : "No rows were produced.",
@@ -59,13 +70,116 @@ function parseArgs(argv: string[]): CliArgs {
   const output = valueAfter("--output") ?? valueAfter("-o") ?? positional[1] ?? "redrob_submission.csv";
   const assetOutput = valueAfter("--asset-output") ?? null;
   const limit = Number(valueAfter("--limit") ?? positional[2] ?? 100);
+  const batches = Number(valueAfter("--batches") ?? 10);
+  const mergeSize = Number(valueAfter("--merge-size") ?? 2);
   if (!input) {
-    throw new Error("Usage: npm run challenge:rank --workspace @seederpro/api -- --input <candidates.jsonl|json|jsonl.gz> --output <team_id.csv>");
+    throw new Error("Usage: npm run challenge:rank --workspace @seederpro/api -- --input <candidates.jsonl|json|jsonl.gz> --output <team_id.csv> [--batches 10] [--merge-size 2]");
   }
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
     throw new Error("--limit must be an integer from 1 to 100.");
   }
-  return { input, output, assetOutput, limit };
+  if (!Number.isInteger(batches) || batches < 1 || batches > 64) {
+    throw new Error("--batches must be an integer from 1 to 64.");
+  }
+  if (!Number.isInteger(mergeSize) || mergeSize < 2 || mergeSize > 16) {
+    throw new Error("--merge-size must be an integer from 2 to 16.");
+  }
+  return { input, output, assetOutput, limit, batches, mergeSize };
+}
+
+type BatchRankingPlan = {
+  initialBatches: number;
+  requestedBatches: number;
+  mergeSize: number;
+  rounds: Array<{ round: number; inputGroups: number; outputGroups: number; candidatesConsidered: number }>;
+};
+
+async function rankRedrobCandidatesInBatches(
+  candidates: RedrobCandidate[],
+  options: { limit: number; batches: number; mergeSize: number },
+): Promise<{ rows: RedrobRankingRow[]; plan: BatchRankingPlan }> {
+  if (!candidates.length) throw new Error("Provide at least one Redrob candidate.");
+
+  const candidateById = new Map(candidates.map((candidate) => [candidate.candidate_id, candidate]));
+  const initialBatches = splitIntoBatches(candidates, Math.min(options.batches, candidates.length));
+  const plan: BatchRankingPlan = {
+    initialBatches: initialBatches.length,
+    requestedBatches: options.batches,
+    mergeSize: options.mergeSize,
+    rounds: [],
+  };
+
+  let groups = await Promise.all(
+    initialBatches.map(async (batch, index) => {
+      const rows = await rankBatch(batch, options.limit);
+      console.log(`Batch ${index + 1}/${initialBatches.length}: ${batch.length} candidates -> ${rows.length} winners.`);
+      return rowsToCandidates(rows, candidateById);
+    }),
+  );
+
+  let round = 1;
+  while (groups.length > 1) {
+    const mergedInputs = chunk(groups, options.mergeSize).map((group) => group.flat());
+    const nextGroups = await Promise.all(
+      mergedInputs.map(async (batch, index) => {
+        const rows = await rankBatch(batch, options.limit);
+        console.log(`Merge round ${round}, group ${index + 1}/${mergedInputs.length}: ${batch.length} candidates -> ${rows.length} winners.`);
+        return rowsToCandidates(rows, candidateById);
+      }),
+    );
+    plan.rounds.push({
+      round,
+      inputGroups: groups.length,
+      outputGroups: nextGroups.length,
+      candidatesConsidered: mergedInputs.reduce((total, batch) => total + batch.length, 0),
+    });
+    groups = nextGroups;
+    round += 1;
+  }
+
+  return { rows: await rankBatch(groups[0] ?? [], options.limit), plan };
+}
+
+async function rankBatch(candidates: RedrobCandidate[], limit: number): Promise<RedrobRankingRow[]> {
+  if (!candidates.length) return [];
+  const currentFile = fileURLToPath(import.meta.url);
+  const workerFile = currentFile.endsWith(".ts") ? "redrob-batch-worker.ts" : "redrob-batch-worker.js";
+  const workerPath = resolve(dirname(currentFile), workerFile);
+  return new Promise((resolveRows, reject) => {
+    const worker = new Worker(workerPath, { workerData: { candidates, limit } });
+    worker.once("message", (message: { ok: boolean; rows?: RedrobRankingRow[]; error?: string }) => {
+      if (message.ok && message.rows) {
+        resolveRows(message.rows);
+        return;
+      }
+      reject(new Error(message.error ?? "Batch ranking failed"));
+    });
+    worker.once("error", reject);
+    worker.once("exit", (code) => {
+      if (code !== 0) reject(new Error(`Batch worker stopped with exit code ${code}.`));
+    });
+  });
+}
+
+function rowsToCandidates(rows: RedrobRankingRow[], candidateById: Map<string, RedrobCandidate>): RedrobCandidate[] {
+  return rows.map((row) => candidateById.get(row.candidate_id)).filter((candidate): candidate is RedrobCandidate => Boolean(candidate));
+}
+
+function splitIntoBatches<T>(items: T[], batchCount: number): T[][] {
+  const batches: T[][] = [];
+  const size = Math.ceil(items.length / batchCount);
+  for (let index = 0; index < items.length; index += size) {
+    batches.push(items.slice(index, index + size));
+  }
+  return batches;
+}
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
 }
 
 async function loadCandidates(input: string): Promise<RedrobCandidate[]> {

@@ -42,11 +42,11 @@ Sifter was built as a chain of product decisions. Each feature exists because of
 
 **Problem:** Huge candidate lists can crash browser apps or make phones and older laptops unusable.
 
-**Decision:** Use the browser for interaction and the local CLI for very large ranking jobs.
+**Decision:** Use the browser for interaction and the local CLI for very large ranking jobs. For the large path, split the candidate pool into parallel batches, rank each batch, then merge the winners in rounds.
 
-**What we built:** A streaming local Redrob ranker that processed the full `100,000` candidate challenge dataset and produced the required submission output.
+**What we built:** A batch-tournament Redrob ranker. By default, `100,000` candidates are split into `10` batches. Each batch is ranked in parallel. Then Sifter combines two ranked batches at a time, ranks that smaller winner pool, and repeats until one final top list remains.
 
-**What is different:** The website stays lightweight, while the heavy ranking path remains reproducible and local.
+**What is different:** The website stays lightweight, while the heavy ranking path becomes easier to scale. Instead of making one giant ranking pass carry all the pressure, Sifter reduces the problem in stages: `10 batches -> 5 merged batches -> 3 -> 2 -> 1 final ranking`.
 
 ## 4. Rank With Evidence, Not Just Keywords
 
@@ -154,9 +154,11 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 - Processed the full Redrob challenge dataset locally.
 - Ranked `100,000` candidate records.
+- Added a parallel batch-tournament ranking path with default `10` initial batches and pairwise merge rounds.
 - Produced `redrob_submission.csv`.
 - Passed the official Redrob submission validator.
-- Finished the optimized full run in `289.7s` on local hardware.
+- Finished the batch-tournament full run in `37.2s` on local hardware.
+- Merged `10` initial batches down to the final ranking in `4` merge rounds.
 - Exported the required `candidate_id`, `rank`, `score`, and `reason` fields.
 - Kept challenge ranking CPU-only and no-network.
 - Avoided using candidate names or school prestige as scoring boosts.
@@ -171,6 +173,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Deterministic local scoring for normal recruiter CSVs.
 - Redrob candidate schema parsing.
 - Redrob challenge ranking logic.
+- Parallel batch processing and merge-round ranking for large Redrob files.
 - Top-100 CSV export in the exact challenge format.
 - CLI command for large challenge files.
 - Compiled production CLI path for faster full-file ranking.
@@ -230,19 +233,19 @@ Put the official challenge bundle in the local `Challenge/` folder.
 Run:
 
 ```bash
-npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv
+npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv --batches 10 --merge-size 2
 ```
 
 PowerShell version:
 
 ```powershell
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv
+npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --batches 10 --merge-size 2
 ```
 
 Regenerate the hosted demo asset:
 
 ```powershell
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json
+npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json --batches 10 --merge-size 2
 ```
 
 ## Validate The Submission

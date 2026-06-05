@@ -34,11 +34,18 @@ type RedrobRankResponse = {
   count: number;
   biasAudit: BiasAudit;
 };
+type RedrobRankingPlan = {
+  initialBatches: number;
+  requestedBatches: number;
+  mergeSize: number;
+  rounds: Array<{ round: number; inputGroups: number; outputGroups: number; candidatesConsidered: number }>;
+};
 type RedrobChallengeAsset = {
   processedCandidates: number;
   runtimeSeconds: number;
   generatedAt: string;
   note: string;
+  rankingPlan?: RedrobRankingPlan;
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
@@ -124,6 +131,7 @@ export default function App() {
   const [redrobRows, setRedrobRows] = useState<RedrobRankingRow[]>([]);
   const [redrobCsv, setRedrobCsv] = useState("");
   const [redrobBiasAudit, setRedrobBiasAudit] = useState<BiasAudit | null>(null);
+  const [redrobRankingPlan, setRedrobRankingPlan] = useState<RedrobRankingPlan | null>(null);
   const [result, setResult] = useState<PipelineResult | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -208,6 +216,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobRankingPlan(null);
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -230,6 +239,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobRankingPlan(null);
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -332,6 +342,7 @@ export default function App() {
       setRedrobCsv(typed.csv);
       setRedrobCandidateCount(typed.count);
       setRedrobBiasAudit(typed.biasAudit);
+      setRedrobRankingPlan(null);
       setResult(null);
       setRunId(null);
       setSimulationScores({});
@@ -364,6 +375,7 @@ export default function App() {
       setRedrobRows(payload.rows);
       setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
       setRedrobBiasAudit(payload.biasAudit);
+      setRedrobRankingPlan(payload.rankingPlan ?? null);
       setResult(null);
       setRunId(null);
       setUploadedFileName("Full Redrob challenge output");
@@ -529,6 +541,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobRankingPlan(null);
     setUploadedFileName(null);
     setResult(null);
     setRunId(null);
@@ -545,6 +558,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobRankingPlan(null);
     setSimulationScores({});
     setStatus(loadedCandidateCount ? `parsed ${loadedCandidateCount} candidates` : "idle");
     setProgressLabel("waiting for inputs");
@@ -957,7 +971,7 @@ export default function App() {
             </div>
             {error ? <div className="error-box">{error}</div> : null}
           </section>
-          {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} /> : null}
+          {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
           {dataMode === "standard" && result ? <BiasAuditPanel audit={result.biasAudit} /> : null}
@@ -1257,7 +1271,15 @@ function Final({ rows }: { rows: GateCandidate[] }) {
   );
 }
 
-function RedrobChallengeSummary({ rows, candidateCount }: { rows: RedrobRankingRow[]; candidateCount: number }) {
+function RedrobChallengeSummary({
+  rows,
+  candidateCount,
+  rankingPlan,
+}: {
+  rows: RedrobRankingRow[];
+  candidateCount: number;
+  rankingPlan: RedrobRankingPlan | null;
+}) {
   const top = rows[0];
   const floor = rows[rows.length - 1];
   return (
@@ -1272,6 +1294,17 @@ function RedrobChallengeSummary({ rows, candidateCount }: { rows: RedrobRankingR
       <div className="summary-message">
         Ranking uses the bundled Senior AI Engineer JD: production retrieval and ranking systems, evaluation depth, Python, shipper mindset, and Redrob availability signals. Names and school prestige are not used as scoring boosts.
       </div>
+      {rankingPlan ? (
+        <div className="batch-plan-box">
+          <span>Large-file batch plan</span>
+          <strong>
+            {rankingPlan.initialBatches} parallel batches to {rankingPlan.rounds.length} merge rounds to final top {rows.length}
+          </strong>
+          <p>
+            Sifter ranks each batch, keeps the strongest candidates, combines {rankingPlan.mergeSize} batches at a time, and repeats until one final ranking remains.
+          </p>
+        </div>
+      ) : null}
     </section>
   );
 }
