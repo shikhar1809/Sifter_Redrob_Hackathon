@@ -33,6 +33,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--learning-rate", type=float, default=2e-5)
     parser.add_argument("--max-length", type=int, default=512)
+    parser.add_argument("--precision", choices=["fp32", "fp16", "bf16"], default="fp32")
     parser.add_argument("--push-to-hub", action="store_true")
     args = parser.parse_args()
 
@@ -75,7 +76,8 @@ def main() -> None:
         load_best_model_at_end=True,
         metric_for_best_model="spearman",
         greater_is_better=True,
-        fp16=True,
+        fp16=args.precision == "fp16",
+        bf16=args.precision == "bf16",
         report_to="none",
         push_to_hub=args.push_to_hub,
         hub_model_id=args.hub_model_id or None,
