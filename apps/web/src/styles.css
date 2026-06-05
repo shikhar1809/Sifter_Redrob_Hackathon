@@ -1374,6 +1374,115 @@ textarea {
   line-height: 1.35;
 }
 
+.mechanics-panel {
+  padding: 14px;
+}
+
+.mechanics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mechanic-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.mechanic-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.mechanic-card-head svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.mechanic-card-head span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mechanic-card-head strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.mechanic-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.mechanic-flow span {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #050505;
+  color: #ffffff;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.mechanic-agent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.mechanic-agent-grid > div {
+  min-height: 74px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 9px;
+}
+
+.mechanic-agent-grid span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mechanic-agent-grid strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.mechanic-card p {
+  margin: 10px 0 0;
+  color: #30302c;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.42;
+}
+
 .workspace-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -2008,7 +2117,10 @@ td {
   .workspace-summary,
   .report-columns,
   .agent-review-grid,
-  .challenge-agent-stack {
+  .challenge-agent-stack,
+  .mechanics-grid,
+  .mechanic-flow,
+  .mechanic-agent-grid {
     grid-template-columns: 1fr;
   }
 

@@ -971,6 +971,14 @@ export default function App() {
             </div>
             {error ? <div className="error-box">{error}</div> : null}
           </section>
+          {(dataMode === "redrob" && redrobRows.length) || (dataMode === "standard" && result) ? (
+            <ProcessingMechanicsPanel
+              mode={dataMode}
+              candidateCount={loadedCandidateCount}
+              rankedCount={rankedCount}
+              rankingPlan={redrobRankingPlan}
+            />
+          ) : null}
           {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
@@ -1008,6 +1016,82 @@ export default function App() {
     </main>
   );
 }
+
+function ProcessingMechanicsPanel({
+  mode,
+  candidateCount,
+  rankedCount,
+  rankingPlan,
+}: {
+  mode: CandidateDataMode;
+  candidateCount: number;
+  rankedCount: number;
+  rankingPlan: RedrobRankingPlan | null;
+}) {
+  const batchCount = rankingPlan?.initialBatches ?? 10;
+  const mergeSize = rankingPlan?.mergeSize ?? 2;
+  const mergeRounds = rankingPlan?.rounds.length ?? 4;
+  const flow = rankingPlan
+    ? [rankingPlan.initialBatches, ...rankingPlan.rounds.map((round) => round.outputGroups)].join(" -> ")
+    : "10 -> 5 -> 3 -> 2 -> 1";
+  const isRedrob = mode === "redrob";
+
+  return (
+    <section className="panel mechanics-panel">
+      <PanelTitle title="Under The Hood" meta="visible mechanics" />
+      <div className="mechanics-grid">
+        <div className="mechanic-card mechanic-batch-card">
+          <div className="mechanic-card-head">
+            <Database size={17} />
+            <div>
+              <span>Breaking into pieces</span>
+              <strong>Batch processing</strong>
+            </div>
+          </div>
+          <div className="mechanic-flow" aria-label="Batch processing flow">
+            <span>Split pool</span>
+            <span>Parallel rank</span>
+            <span>Merge winners</span>
+            <span>Final ranking</span>
+          </div>
+          <p>
+            {isRedrob
+              ? `${candidateCount.toLocaleString()} candidates are divided into ${batchCount} batches, ranked in parallel, then merged ${mergeSize} batches at a time for ${mergeRounds} rounds: ${flow}.`
+              : "Normal CSV runs use staged gates. The same batch-tournament pattern is reserved for very large Redrob files so the browser stays light."}
+          </p>
+        </div>
+
+        <div className="mechanic-card">
+          <div className="mechanic-card-head">
+            <Brain size={17} />
+            <div>
+              <span>Re-evaluating with 4 views</span>
+              <strong>Agent cross-questioning</strong>
+            </div>
+          </div>
+          <div className="mechanic-agent-grid">
+            {reviewAgentLenses.map((agent) => (
+              <div key={agent.name}>
+                <span>{agent.name}</span>
+                <strong>{agent.question}</strong>
+              </div>
+            ))}
+          </div>
+          <p>
+            After ranking, Sifter re-questions the result from four points of view before a human treats the shortlist as final. Current ranked output: {rankedCount}.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const reviewAgentLenses = [
+  { name: "Hiring Manager", question: "Can they do the job?" },
+  { name: "Interview Designer", question: "What should we test live?" },
+  { name: "Recruiter Ops", question: "Can we move them forward?" },
+  { name: "Bias & Compliance", question: "Is this based on job proof?" },
+] as const;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
