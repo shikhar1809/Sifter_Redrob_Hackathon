@@ -1112,9 +1112,9 @@ export default function App() {
               rankingPlan={redrobRankingPlan}
             />
           ) : null}
-          {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
           {dataMode === "redrob" && redrobRows.length ? <TopRedrobCandidateExplanation row={redrobRows[0]} /> : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
+          {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
           {dataMode === "redrob" && redrobRows.length ? (
             <RedrobSearchPanel
               totalCandidates={redrobCandidateCount}
