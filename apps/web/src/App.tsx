@@ -1517,6 +1517,7 @@ function RedrobChallengeSummary({
 }) {
   const top = rows[0];
   const floor = rows[rows.length - 1];
+  const topBreakdown = top?.score_breakdown;
   return (
     <section className="panel summary-panel">
       <PanelTitle title="Redrob Challenge Output" meta={`${rows.length} rows`} />
@@ -1527,8 +1528,32 @@ function RedrobChallengeSummary({
         <Metric value={floor ? Math.round(floor.score * 1000) : 0} label="cutoff x1000" />
       </div>
       <div className="summary-message">
-        Ranking uses the bundled Senior AI Engineer JD: production retrieval and ranking systems, evaluation depth, Python, shipper mindset, and Redrob availability signals. Names and school prestige are not used as scoring boosts.
+        Ranking uses the bundled Senior AI Engineer JD through a hybrid score: semantic concept fit, structured skill evidence, production proof, ranking/evaluation depth, capped Redrob behavioral signals, and bias guardrails. Names and school prestige are not used as scoring boosts.
       </div>
+      {topBreakdown ? (
+        <div className="reason-strip">
+          <div>
+            <span>Top semantic fit</span>
+            <strong>{topBreakdown.semanticFit}%</strong>
+            <p>Retrieval, ranking, evaluation, production AI, and ownership concepts from the JD.</p>
+          </div>
+          <div>
+            <span>Top production proof</span>
+            <strong>{topBreakdown.productionProof}%</strong>
+            <p>Evidence of shipped, deployed, monitored, or owned systems.</p>
+          </div>
+          <div>
+            <span>Behavior cap</span>
+            <strong>{topBreakdown.behavioralSignals}%</strong>
+            <p>Recruiter activity helps only after job-fit evidence is present.</p>
+          </div>
+          <div>
+            <span>Bias guardrail</span>
+            <strong>{topBreakdown.proxyGuardrail}%</strong>
+            <p>Proxy-heavy lift is reduced when technical evidence is weak.</p>
+          </div>
+        </div>
+      ) : null}
       {rankingPlan ? (
         <div className="batch-plan-box">
           <span>Large-file batch plan</span>

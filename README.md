@@ -6,6 +6,8 @@ It is built for people who need hiring help but may not have a big budget, a pai
 
 Sifter is not trying to replace the recruiter. It does the heavy first pass, explains the evidence, points out risks, and leaves the final decision with a human.
 
+Every major product decision is backed by research, challenge specs, or measured Redrob dataset facts. See [Research-Backed Product Decisions](docs/research-backed-decisions.md) and the generated [Redrob Evaluation Report](docs/redrob-evaluation-report.json).
+
 ## Live Demo
 
 [Open Sifter on Firebase](https://sifter1011.web.app/)
@@ -54,9 +56,9 @@ Sifter was built as a chain of product decisions. Each feature exists because of
 
 **Decision:** Use multiple evidence signals instead of a single keyword match.
 
-**What we built:** The Redrob ranker looks for job-specific evidence such as Python, retrieval, embeddings, vector search, ranking, evaluation metrics, production ML systems, shipped work, recent activity, notice period, and recruiter response signals.
+**What we built:** The Redrob ranker now uses a hybrid score: local semantic concept matching against the Senior AI Engineer JD, structured skill evidence, production proof, ranking/evaluation depth, Redrob behavioral signals, penalties, and proxy guardrails.
 
-**What is different:** The rank is not only "does the resume contain this word?" It asks whether the candidate looks capable for this specific job.
+**What is different:** The rank is not only "does the resume contain this word?" It asks whether the candidate shows evidence for the role concepts Redrob actually requested: retrieval, ranking, evaluation, production ML, shipping ownership, and LLM depth.
 
 ## 5. Explain Every Shortlist
 
@@ -130,11 +132,12 @@ Important limitation: the Redrob dataset does not include protected demographic 
 | Research input | What we learned | Product decision |
 | --- | --- | --- |
 | Redrob job description | The role needs production AI, retrieval, ranking, evaluation, Python, and shipping ability. | Score on role evidence, not generic "AI" labels. |
-| Redrob candidate data | The data is too large for a browser-first ranking path. | Build a local streaming CLI for the full run. |
-| Recruiter workflows | Recruiters need reasons they can defend. | Show rank, score, evidence, missing proof, and next questions. |
-| Bias/compliance risk | Hiring tools can amplify unfair shortcuts. | Exclude protected/proxy scoring inputs and show an audit. |
+| Redrob candidate data | The data is `464.7 MB`, with `100,000` candidates and average `9.6` skills per candidate. | Build a local streaming CLI for the full run and page the live candidate index. |
+| Recruiter workflows | Recruiters need reasons they can defend. | Show rank, score, semantic fit, production proof, evidence, missing proof, and next questions. |
+| Bias/compliance risk | Hiring tools can amplify unfair shortcuts. | Exclude protected/proxy scoring inputs, cap behavioral/logistics signals, and show an audit. |
 | Small-team access | Many users cannot pay for AI or enterprise ATS tools. | Keep the core flow local, cheap, and simple. |
 | Hiring team review | Different stakeholders ask different questions. | Add reviewer agents for hiring, interview, ops, and bias/compliance views. |
+| Research review | Judges need proof, not claims. | Add [research-backed decisions](docs/research-backed-decisions.md) and a generated Redrob evaluation report with keyword/semantic/hybrid ablations. |
 
 ## Screenshots
 
@@ -155,9 +158,13 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Processed the full Redrob challenge dataset locally.
 - Ranked `100,000` candidate records.
 - Added a parallel batch-tournament ranking path with default `10` initial batches and pairwise merge rounds.
+- Added local semantic concept matching for the Redrob JD.
+- Added hybrid score breakdowns for semantic fit, production proof, behavior, penalties, and proxy guardrails.
+- Added generated evaluation reporting for keyword baseline vs semantic concept matcher vs hybrid ranker.
 - Produced `redrob_submission.csv`.
 - Passed the official Redrob submission validator.
-- Finished the batch-tournament full run in `37.2s` on local hardware.
+- Finished the batch-tournament official top-100 run in `46.9s` on local hardware.
+- Built the live 100,000-candidate page asset plus evaluation report in `275.4s`.
 - Merged `10` initial batches down to the final ranking in `4` merge rounds.
 - Exported the required `candidate_id`, `rank`, `score`, and `reason` fields.
 - Kept challenge ranking CPU-only and no-network.
@@ -174,6 +181,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Deterministic local scoring for normal recruiter CSVs.
 - Redrob candidate schema parsing.
 - Redrob challenge ranking logic.
+- Semantic concept scoring for the Senior AI Engineer JD.
+- Evaluation report generation with ranking ablations.
 - Parallel batch processing and merge-round ranking for large Redrob files.
 - Top-100 CSV export in the exact challenge format.
 - CLI command for large challenge files.
@@ -190,8 +199,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 ## What Is Not Done Yet
 
-- No trained ML model yet. The current Redrob ranker is deterministic and feature based.
-- No embedding/transformer semantic matching yet.
+- No trained proprietary ML model yet. The Redrob challenge path uses deterministic local semantic concept matching plus hybrid scoring so it can stay CPU-only and network-off.
+- No hosted embedding/transformer service in the challenge path yet. Production search should add embeddings behind a backend index.
 - No live improvement loop yet. Recruiter feedback and hiring outcomes are not being used to retrain or reweight the ranker automatically.
 - No complex PDF/DOC resume parsing yet.
 - No NLP-based candidate deduplication yet.

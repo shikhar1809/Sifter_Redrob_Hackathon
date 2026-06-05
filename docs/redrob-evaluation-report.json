@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-06-05",
+  "datasetFacts": {
+    "candidates": 100000,
+    "averageYearsExperience": 7.1663,
+    "averageSkillsPerCandidate": 9.6,
+    "signalCoverage": {
+      "recruiter_response_rate": {
+        "count": 100000,
+        "share": 1
+      },
+      "avg_response_time_hours": {
+        "count": 100000,
+        "share": 1
+      },
+      "github_activity_score": {
+        "count": 35363,
+        "share": 0.3536
+      },
+      "skill_assessment_scores": {
+        "count": 24244,
+        "share": 0.2424
+      },
+      "saved_by_recruiters_30d": {
+        "count": 100000,
+        "share": 1
+      },
+      "interview_completion_rate": {
+        "count": 100000,
+        "share": 1
+      },
+      "offer_acceptance_rate": {
+        "count": 40446,
+        "share": 0.4045
+      },
+      "open_to_work_flag": {
+        "count": 100000,
+        "share": 1
+      },
+      "notice_period_days": {
+        "count": 100000,
+        "share": 1
+      },
+      "expected_salary_range_inr_lpa": {
+        "count": 100000,
+        "share": 1
+      }
+    }
+  },
+  "rankingProof": {
+    "hybridTop100Rows": 100,
+    "keywordBaselineOverlapWithHybridTop100": 75,
+    "semanticTop100OverlapWithHybridTop100": 67,
+    "averageHybridTop100Score": 0.7688,
+    "averageHybridTop100SemanticFit": 0.5405,
+    "averageHybridTop100ProductionProof": 0.6235,
+    "averageHybridTop100BehavioralSignals": 0.749
+  },
+  "ablation": [
+    {
+      "model": "keyword_baseline",
+      "top100AverageScore": 0.5535,
+      "top100AverageSemanticFit": 0.5364,
+      "top100AverageProductionProof": 0.5506,
+      "top100AverageBehavioralSignals": 0.7415,
+      "description": "Exact JD term overlap only; useful as a control, but vulnerable to keyword stuffing and missing transferable evidence."
+    },
+    {
+      "model": "semantic_concept_matcher",
+      "top100AverageScore": 0.5615,
+      "top100AverageSemanticFit": 0.5615,
+      "top100AverageProductionProof": 0.5654,
+      "top100AverageBehavioralSignals": 0.719,
+      "description": "Local semantic concept layer tied to Redrob JD concepts: retrieval, ranking, evaluation, production ML, ownership, and LLM depth."
+    },
+    {
+      "model": "hybrid_ranker",
+      "top100AverageScore": 0.7688,
+      "top100AverageSemanticFit": 0.5405,
+      "top100AverageProductionProof": 0.6235,
+      "top100AverageBehavioralSignals": 0.749,
+      "description": "Final score combines semantic fit, structured evidence, production proof, ranking/evaluation depth, behavior, availability, penalties, and proxy guardrails."
+    }
+  ],
+  "evidenceBackedDecisions": [
+    {
+      "decision": "Use hybrid semantic plus structured ranking instead of keyword-only filters.",
+      "dataPoint": "The Redrob JD asks for embeddings, hybrid retrieval, LLM re-ranking, evaluation, and production shipping; the dataset has profile text, history, skills, and behavioral signals.",
+      "implementation": "Semantic concept fit is scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals."
+    },
+    {
+      "decision": "Cap behavioral and logistics signals.",
+      "dataPoint": "Recruiter response, response time, notice period, salary, and work mode have 100% coverage, but they can act as proxy shortcuts if overweighted.",
+      "implementation": "Behavior and availability contribute only 12% of the raw hybrid score together, and proxyGuardrail subtracts lift when job evidence is weak."
+    },
+    {
+      "decision": "Do not overweight incomplete signals.",
+      "dataPoint": "GitHub activity appears for only part of the dataset and skill assessments are sparse, so using them as hard filters would exclude many candidates unfairly.",
+      "implementation": "GitHub and assessments are optional evidence boosts, never required gates."
+    },
+    {
+      "decision": "Keep challenge ranking CPU-only and network-off.",
+      "dataPoint": "The official submission spec caps runtime, memory, CPU use, and network access.",
+      "implementation": "The semantic concept layer runs locally without API calls; production docs explain how embeddings/FAISS/HNSW can replace this later."
+    }
+  ]
+}

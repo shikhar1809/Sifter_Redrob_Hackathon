@@ -8,6 +8,7 @@ import { createGunzip } from "node:zlib";
 import {
   createRedrobCandidateSearchIndex,
   createRedrobBiasAudit,
+  createRedrobEvaluationReport,
   exportRedrobSubmissionCsv,
   parseRedrobCandidates,
   type RedrobCandidate,
@@ -76,6 +77,7 @@ if (args.assetOutput) {
     searchPageSize,
     searchIndexRuntimeSeconds: Number(((Date.now() - searchStarted) / 1000).toFixed(1)),
     biasAudit: createRedrobBiasAudit(candidates, rows),
+    evaluationReport: createRedrobEvaluationReport(candidates, rows),
     rows,
   };
   await writeFile(assetOutputPath, `${JSON.stringify(asset, null, 2)}\n`, "utf8");

@@ -252,6 +252,55 @@ export type RedrobRankingRow = {
   rank: number;
   score: number;
   reasoning: string;
+  score_breakdown: RedrobScoreBreakdown;
+  evidence: string[];
+  concerns: string[];
+};
+
+export type RedrobScoreBreakdown = {
+  semanticFit: number;
+  technicalEvidence: number;
+  productionProof: number;
+  rankingEvaluation: number;
+  roleDomain: number;
+  experienceFit: number;
+  behavioralSignals: number;
+  availability: number;
+  bonus: number;
+  penalties: number;
+  proxyGuardrail: number;
+};
+
+export type RedrobEvaluationReport = {
+  generatedAt: string;
+  datasetFacts: {
+    candidates: number;
+    averageYearsExperience: number;
+    averageSkillsPerCandidate: number;
+    signalCoverage: Record<string, { count: number; share: number }>;
+  };
+  rankingProof: {
+    hybridTop100Rows: number;
+    keywordBaselineOverlapWithHybridTop100: number;
+    semanticTop100OverlapWithHybridTop100: number;
+    averageHybridTop100Score: number;
+    averageHybridTop100SemanticFit: number;
+    averageHybridTop100ProductionProof: number;
+    averageHybridTop100BehavioralSignals: number;
+  };
+  ablation: Array<{
+    model: "keyword_baseline" | "semantic_concept_matcher" | "hybrid_ranker";
+    top100AverageScore: number;
+    top100AverageSemanticFit: number;
+    top100AverageProductionProof: number;
+    top100AverageBehavioralSignals: number;
+    description: string;
+  }>;
+  evidenceBackedDecisions: Array<{
+    decision: string;
+    dataPoint: string;
+    implementation: string;
+  }>;
 };
 
 export type RedrobCandidateSearchRow = {
@@ -298,6 +347,39 @@ const seniorAiEngineerSkillGroups = {
   mlSystems: ["machine learning", "ml", "nlp", "llm", "transformer", "model serving", "feature engineering", "fine-tuning", "lora", "qlora", "peft", "inference"],
   distributed: ["distributed", "kafka", "spark", "airflow", "ray", "kubernetes", "docker", "latency", "monitoring", "on-call"],
 };
+const seniorAiSemanticConcepts = [
+  {
+    name: "semantic retrieval systems",
+    weight: 1.15,
+    terms: ["embedding", "embeddings", "semantic search", "retrieval", "rag", "vector search", "faiss", "qdrant", "milvus", "pinecone", "weaviate"],
+  },
+  {
+    name: "ranking and relevance",
+    weight: 1.1,
+    terms: ["ranking", "ranker", "re-ranking", "reranking", "learning-to-rank", "search relevance", "recommender", "xgboost", "ndcg", "mrr", "map"],
+  },
+  {
+    name: "evaluation discipline",
+    weight: 1,
+    terms: ["evaluation", "eval", "offline benchmark", "a/b", "ab test", "metrics", "quality regression", "relevance", "experiment"],
+  },
+  {
+    name: "production ML engineering",
+    weight: 1,
+    terms: ["production", "model serving", "latency", "monitoring", "deployment", "deployed", "inference", "mlops", "kubernetes", "docker"],
+  },
+  {
+    name: "shipping and ownership",
+    weight: 0.9,
+    terms: ["shipped", "built", "owned", "led", "platform", "product", "real users", "customer-facing", "scrappy", "startup"],
+  },
+  {
+    name: "LLM depth beyond wrappers",
+    weight: 0.85,
+    terms: ["llm", "fine-tuning", "lora", "qlora", "peft", "transformer", "hugging face", "prompt evaluation", "guardrail"],
+  },
+] as const;
+const termRegexCache = new Map<string, RegExp>();
 
 export function parseCsv(text: string): CandidateInput[] {
   const rows: string[][] = [];
@@ -381,6 +463,9 @@ export function rankRedrobCandidates(input: RedrobRankerInput): RedrobRankingRow
       rank: index + 1,
       score: redrobSubmissionScore(scored),
       reasoning: buildRedrobReasoning(scored, index + 1),
+      score_breakdown: redrobScoreBreakdown(scored),
+      evidence: redrobExplainableEvidence(scored),
+      concerns: scored.concerns,
     }));
 }
 
@@ -445,6 +530,93 @@ export function createRedrobBiasAudit(candidates: RedrobCandidate[], rows: Redro
     missingProtectedWarning:
       "The Redrob file does not expose protected attributes such as gender, caste, religion, disability, or race. Sifter audits observable proxy fields instead.",
   });
+}
+
+export function createRedrobEvaluationReport(candidates: RedrobCandidate[], rows: RedrobRankingRow[]): RedrobEvaluationReport {
+  const scored = candidates.map(scoreRedrobCandidate);
+  const hybridTop = scored
+    .slice()
+    .sort((a, b) => redrobSubmissionScore(b) - redrobSubmissionScore(a) || a.candidate.candidate_id.localeCompare(b.candidate.candidate_id))
+    .slice(0, 100);
+  const keywordTop = scored
+    .slice()
+    .sort((a, b) => redrobKeywordBaselineScore(b) - redrobKeywordBaselineScore(a) || a.candidate.candidate_id.localeCompare(b.candidate.candidate_id))
+    .slice(0, 100);
+  const semanticTop = scored
+    .slice()
+    .sort((a, b) => b.components.semanticFit - a.components.semanticFit || a.candidate.candidate_id.localeCompare(b.candidate.candidate_id))
+    .slice(0, 100);
+  const hybridIds = new Set((rows.length ? rows : hybridTop.map((scoredRow, index) => ({
+    candidate_id: scoredRow.candidate.candidate_id,
+    rank: index + 1,
+    score: redrobSubmissionScore(scoredRow),
+    reasoning: buildRedrobReasoning(scoredRow, index + 1),
+    score_breakdown: redrobScoreBreakdown(scoredRow),
+    evidence: redrobExplainableEvidence(scoredRow),
+    concerns: scoredRow.concerns,
+  }))).map((row) => row.candidate_id));
+
+  return {
+    generatedAt: new Date().toISOString().slice(0, 10),
+    datasetFacts: createRedrobDatasetFacts(candidates),
+    rankingProof: {
+      hybridTop100Rows: hybridIds.size,
+      keywordBaselineOverlapWithHybridTop100: overlapCount(keywordTop, hybridIds),
+      semanticTop100OverlapWithHybridTop100: overlapCount(semanticTop, hybridIds),
+      averageHybridTop100Score: average(hybridTop.map((item) => redrobSubmissionScore(item))),
+      averageHybridTop100SemanticFit: average(hybridTop.map((item) => item.components.semanticFit)),
+      averageHybridTop100ProductionProof: average(hybridTop.map((item) => item.components.production)),
+      averageHybridTop100BehavioralSignals: average(hybridTop.map((item) => item.components.behavior)),
+    },
+    ablation: [
+      {
+        model: "keyword_baseline",
+        top100AverageScore: average(keywordTop.map(redrobKeywordBaselineScore)),
+        top100AverageSemanticFit: average(keywordTop.map((item) => item.components.semanticFit)),
+        top100AverageProductionProof: average(keywordTop.map((item) => item.components.production)),
+        top100AverageBehavioralSignals: average(keywordTop.map((item) => item.components.behavior)),
+        description: "Exact JD term overlap only; useful as a control, but vulnerable to keyword stuffing and missing transferable evidence.",
+      },
+      {
+        model: "semantic_concept_matcher",
+        top100AverageScore: average(semanticTop.map((item) => item.components.semanticFit)),
+        top100AverageSemanticFit: average(semanticTop.map((item) => item.components.semanticFit)),
+        top100AverageProductionProof: average(semanticTop.map((item) => item.components.production)),
+        top100AverageBehavioralSignals: average(semanticTop.map((item) => item.components.behavior)),
+        description: "Local semantic concept layer tied to Redrob JD concepts: retrieval, ranking, evaluation, production ML, ownership, and LLM depth.",
+      },
+      {
+        model: "hybrid_ranker",
+        top100AverageScore: average(hybridTop.map((item) => redrobSubmissionScore(item))),
+        top100AverageSemanticFit: average(hybridTop.map((item) => item.components.semanticFit)),
+        top100AverageProductionProof: average(hybridTop.map((item) => item.components.production)),
+        top100AverageBehavioralSignals: average(hybridTop.map((item) => item.components.behavior)),
+        description: "Final score combines semantic fit, structured evidence, production proof, ranking/evaluation depth, behavior, availability, penalties, and proxy guardrails.",
+      },
+    ],
+    evidenceBackedDecisions: [
+      {
+        decision: "Use hybrid semantic plus structured ranking instead of keyword-only filters.",
+        dataPoint: "The Redrob JD asks for embeddings, hybrid retrieval, LLM re-ranking, evaluation, and production shipping; the dataset has profile text, history, skills, and behavioral signals.",
+        implementation: "Semantic concept fit is scored separately and blended with technical evidence, production proof, role domain, ranking/evaluation depth, and capped behavioral signals.",
+      },
+      {
+        decision: "Cap behavioral and logistics signals.",
+        dataPoint: "Recruiter response, response time, notice period, salary, and work mode have 100% coverage, but they can act as proxy shortcuts if overweighted.",
+        implementation: "Behavior and availability contribute only 12% of the raw hybrid score together, and proxyGuardrail subtracts lift when job evidence is weak.",
+      },
+      {
+        decision: "Do not overweight incomplete signals.",
+        dataPoint: "GitHub activity appears for only part of the dataset and skill assessments are sparse, so using them as hard filters would exclude many candidates unfairly.",
+        implementation: "GitHub and assessments are optional evidence boosts, never required gates.",
+      },
+      {
+        decision: "Keep challenge ranking CPU-only and network-off.",
+        dataPoint: "The official submission spec caps runtime, memory, CPU use, and network access.",
+        implementation: "The semantic concept layer runs locally without API calls; production docs explain how embeddings/FAISS/HNSW can replace this later.",
+      },
+    ],
+  };
 }
 
 export function exportRedrobSubmissionCsv(rows: RedrobRankingRow[]): string {
@@ -757,6 +929,7 @@ type RedrobScoreDetails = {
   rawScore: number;
   score: number;
   components: {
+    semanticFit: number;
     technical: number;
     production: number;
     roleDomain: number;
@@ -789,6 +962,7 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
   const evalScore = termGroupScore(allText, skillNames, candidate.redrob_signals.skill_assessment_scores, seniorAiEngineerSkillGroups.evaluation);
   const mlScore = termGroupScore(allText, skillNames, candidate.redrob_signals.skill_assessment_scores, seniorAiEngineerSkillGroups.mlSystems);
   const distributedScore = termGroupScore(allText, skillNames, candidate.redrob_signals.skill_assessment_scores, seniorAiEngineerSkillGroups.distributed);
+  const semanticFit = semanticConceptFit(candidate, allText, skillNames);
   const technical = clamp(
     retrievalScore * 0.2 + vectorScore * 0.18 + rankingScore * 0.18 + evalScore * 0.16 + pythonScore * 0.14 + mlScore * 0.14,
     0,
@@ -815,13 +989,14 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
   const proxyLift = behavior * 0.09 + availability * 0.08;
   const proxyGuardrail = evidenceStrength < 0.52 ? clamp(proxyLift * (0.52 - evidenceStrength) * 1.15, 0, 0.055) : 0;
   const rawScore = clamp(
-    technical * 0.27 +
-      production * 0.21 +
-      roleDomain * 0.14 +
-      rankingEvaluation * 0.12 +
+    semanticFit * 0.19 +
+      technical * 0.19 +
+      production * 0.18 +
+      roleDomain * 0.12 +
+      rankingEvaluation * 0.11 +
       experience * 0.09 +
-      behavior * 0.09 +
-      availability * 0.08 +
+      behavior * 0.07 +
+      availability * 0.05 +
       bonus -
       penalty -
       proxyGuardrail,
@@ -833,7 +1008,7 @@ function scoreRedrobCandidate(candidate: RedrobCandidate): RedrobScoreDetails {
     candidate,
     rawScore,
     score: clamp(0.2 + rawScore * 0.79, 0.2, 0.99),
-    components: { technical, production, roleDomain, rankingEvaluation, experience, behavior, availability, bonus, penalty, proxyGuardrail },
+    components: { semanticFit, technical, production, roleDomain, rankingEvaluation, experience, behavior, availability, bonus, penalty, proxyGuardrail },
     evidence: {
       coreHits: redrobEvidenceHits(allText, skillNames),
       niceHits: redrobNiceHits(allText, skillNames),
@@ -849,11 +1024,96 @@ function redrobSubmissionScore(scored: RedrobScoreDetails): number {
   return Number(scored.score.toFixed(4));
 }
 
+function redrobKeywordBaselineScore(scored: RedrobScoreDetails): number {
+  return clamp(
+    scored.components.technical * 0.45 +
+      scored.components.rankingEvaluation * 0.25 +
+      scored.components.roleDomain * 0.15 +
+      scored.components.experience * 0.1 +
+      scored.components.bonus * 0.05 -
+      scored.components.penalty,
+    0,
+    1,
+  );
+}
+
+function createRedrobDatasetFacts(candidates: RedrobCandidate[]): RedrobEvaluationReport["datasetFacts"] {
+  const count = Math.max(1, candidates.length);
+  const skillCount = candidates.reduce((total, candidate) => total + candidate.skills.length, 0);
+  const coverageKeys = [
+    "recruiter_response_rate",
+    "avg_response_time_hours",
+    "github_activity_score",
+    "skill_assessment_scores",
+    "saved_by_recruiters_30d",
+    "interview_completion_rate",
+    "offer_acceptance_rate",
+    "open_to_work_flag",
+    "notice_period_days",
+    "expected_salary_range_inr_lpa",
+  ] as const;
+
+  return {
+    candidates: candidates.length,
+    averageYearsExperience: average(candidates.map((candidate) => candidate.profile.years_of_experience)),
+    averageSkillsPerCandidate: Number((skillCount / count).toFixed(2)),
+    signalCoverage: Object.fromEntries(
+      coverageKeys.map((key) => {
+        const covered = candidates.filter((candidate) => redrobSignalIsCovered(candidate, key)).length;
+        return [key, { count: covered, share: Number((covered / count).toFixed(4)) }];
+      }),
+    ),
+  };
+}
+
+function redrobSignalIsCovered(candidate: RedrobCandidate, key: keyof RedrobCandidate["redrob_signals"]): boolean {
+  const value = candidate.redrob_signals[key];
+  if (key === "skill_assessment_scores") return typeof value === "object" && value !== null && Object.keys(value).length > 0;
+  if (key === "github_activity_score" || key === "offer_acceptance_rate") return typeof value === "number" && value >= 0;
+  if (key === "expected_salary_range_inr_lpa") return typeof value === "object" && value !== null;
+  return value !== undefined && value !== null;
+}
+
+function overlapCount(rows: RedrobScoreDetails[], ids: Set<string>): number {
+  return rows.filter((row) => ids.has(row.candidate.candidate_id)).length;
+}
+
+function average(values: number[]): number {
+  if (!values.length) return 0;
+  return Number((values.reduce((total, value) => total + value, 0) / values.length).toFixed(4));
+}
+
+function redrobScoreBreakdown(scored: RedrobScoreDetails): RedrobScoreBreakdown {
+  return {
+    semanticFit: percent(scored.components.semanticFit),
+    technicalEvidence: percent(scored.components.technical),
+    productionProof: percent(scored.components.production),
+    rankingEvaluation: percent(scored.components.rankingEvaluation),
+    roleDomain: percent(scored.components.roleDomain),
+    experienceFit: percent(scored.components.experience),
+    behavioralSignals: percent(scored.components.behavior),
+    availability: percent(scored.components.availability),
+    bonus: percent(scored.components.bonus),
+    penalties: percent(scored.components.penalty),
+    proxyGuardrail: percent(scored.components.proxyGuardrail),
+  };
+}
+
+function redrobExplainableEvidence(scored: RedrobScoreDetails): string[] {
+  return unique([
+    ...scored.evidence.coreHits,
+    ...scored.evidence.productionSignals,
+    scored.evidence.strongestSkill ? `strongest skill: ${scored.evidence.strongestSkill}` : "",
+    scored.evidence.assessment ? `assessment: ${scored.evidence.assessment}` : "",
+  ].filter(Boolean)).slice(0, 8);
+}
+
 function buildRedrobReasoning(scored: RedrobScoreDetails, rank: number): string {
   const { candidate, evidence, concerns, components } = scored;
   const profile = candidate.profile;
   const pieces = [
     `${profile.current_title || "Candidate"} with ${profile.years_of_experience.toFixed(1)} yrs in ${profile.location || profile.country || "listed location"}`,
+    `semantic fit ${(components.semanticFit * 100).toFixed(0)}% across retrieval, ranking, evaluation, and production AI concepts`,
     evidence.coreHits.length
       ? `matches ${evidence.coreHits.slice(0, 4).join(", ")} from the Senior AI Engineer JD`
       : evidence.strongestSkill
@@ -909,11 +1169,43 @@ function termGroupScore(text: string, skills: string[], assessments: Record<stri
   return clamp(textScore * 0.46 + skillScore * 0.34 + assessmentScore * 0.2, 0, 1);
 }
 
+function semanticConceptFit(candidate: RedrobCandidate, text: string, skills: string[]): number {
+  const lowerSkills = skills.map((skill) => skill.toLowerCase());
+  const assessmentNames = Object.keys(candidate.redrob_signals.skill_assessment_scores);
+  const weighted = seniorAiSemanticConcepts.map((concept) => {
+    const textHits = concept.terms.filter((term) => containsTerm(text, term)).length;
+    const skillHits = concept.terms.filter((term) => lowerSkills.some((skill) => containsTerm(skill, term))).length;
+    const assessmentHits = concept.terms.filter((term) => assessmentNames.some((name) => containsTerm(name.toLowerCase(), term))).length;
+    const score = clamp(
+      clamp(textHits / 4, 0, 1) * 0.5 +
+        clamp(skillHits / 2, 0, 1) * 0.34 +
+        clamp(assessmentHits / 1, 0, 1) * 0.1 +
+        roleHistoryConceptLift(candidate, concept.terms) * 0.06,
+      0,
+      1,
+    );
+    return { score, weight: concept.weight };
+  });
+  const totalWeight = weighted.reduce((total, item) => total + item.weight, 0);
+  return totalWeight ? clamp(weighted.reduce((total, item) => total + item.score * item.weight, 0) / totalWeight, 0, 1) : 0;
+}
+
+function roleHistoryConceptLift(candidate: RedrobCandidate, terms: readonly string[]): number {
+  const titles = [candidate.profile.current_title, ...candidate.career_history.map((item) => item.title)].join(" ").toLowerCase();
+  if (terms.some((term) => containsTerm(titles, term))) return 1;
+  if (/ai engineer|machine learning|ml engineer|nlp|search|ranking|backend|data engineer/.test(titles)) return 0.5;
+  return 0;
+}
+
 function containsTerm(text: string, term: string): boolean {
-  const lower = text.toLowerCase();
+  const lower = text;
   const normalizedTerm = term.toLowerCase();
   if (normalizedTerm.includes(" ") || normalizedTerm.includes("-") || normalizedTerm.includes("/")) return lower.includes(normalizedTerm);
-  return new RegExp(`(^|[^a-z0-9+#])${escapeRegExp(normalizedTerm)}([^a-z0-9+#]|$)`).test(lower);
+  const cached = termRegexCache.get(normalizedTerm);
+  if (cached) return cached.test(lower);
+  const regex = new RegExp(`(^|[^a-z0-9+#])${escapeRegExp(normalizedTerm)}([^a-z0-9+#]|$)`);
+  termRegexCache.set(normalizedTerm, regex);
+  return regex.test(lower);
 }
 
 function productionEvidenceScore(careerText: string, candidate: RedrobCandidate): number {
@@ -1287,6 +1579,10 @@ function escapeRegExp(value: string): string {
 function clamp(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min;
   return Math.max(min, Math.min(max, value));
+}
+
+function percent(value: number): number {
+  return Number((clamp(value, 0, 1) * 100).toFixed(1));
 }
 
 function unique<T>(list: T[]): T[] {
