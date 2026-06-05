@@ -121,9 +121,9 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 **Decision:** Do not load the raw 487 MB dataset into every browser. For the live demo, load a compact search index on demand. For production, move the same idea behind a backend-indexed search service.
 
-**What we built today:** The live app can load a compact `100,000` candidate Redrob search index. Recruiters can search by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
+**What we built today:** The live app shows the full `100,000` candidate Redrob index as real pages: page 1 is ranks 1-100, page 2 is ranks 101-200, and so on. Recruiters can page through the whole ranked pool and search within the visible page by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
 
-**What is different:** The top-100 table stays the official submission output, while the search panel answers "where are the other 99,900?" without exposing the raw challenge file.
+**What is different:** The top-100 is no longer repeated as a second table. The main visible table is the full ranked candidate index, served in 100-candidate pages without exposing the raw challenge file.
 
 ## Research That Shaped The Product
 
@@ -164,7 +164,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Avoided using candidate names or school prestige as scoring boosts.
 - Added a visible bias guardrail and plain-English audit.
 - Added four reviewer agents on final output.
-- Added on-demand search across a compact `100,000` candidate Redrob index.
+- Added visible page-by-page access across the full `100,000` candidate Redrob index.
 - Deployed the web app on Firebase Hosting.
 
 ## What Is Done
@@ -182,7 +182,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Web UI support for smaller Redrob JSON/JSONL samples.
 - Redrob Challenge button in the hosted app.
 - Visible Redrob processing showcase before results appear.
-- On-demand Redrob search index for all `100,000` candidates.
+- Page-by-page Redrob candidate index for all `100,000` candidates.
 - Cross-question reviewer agents on final results.
 - Bias audit and AI-review sanitization guardrail.
 - Firebase Hosting deployment.

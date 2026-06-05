@@ -46,13 +46,20 @@ type RedrobChallengeAsset = {
   generatedAt: string;
   note: string;
   rankingPlan?: RedrobRankingPlan;
-  searchIndexFile?: string;
   searchIndexRows?: number;
+  searchPagePrefix?: string;
+  searchPageCount?: number;
+  searchPageSize?: number;
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
-type RedrobSearchAsset = {
+type RedrobSearchPageAsset = {
   generatedAt: string;
+  page: number;
+  pageSize: number;
+  totalRows: number;
+  startRank: number;
+  endRank: number;
   rows: RedrobCandidateSearchRow[];
 };
 type ReviewAgentOpinion = {
@@ -142,7 +149,10 @@ export default function App() {
   const [redrobSearchStatus, setRedrobSearchStatus] = useState("not loaded");
   const [redrobSearchQuery, setRedrobSearchQuery] = useState("");
   const [redrobSearchPage, setRedrobSearchPage] = useState(0);
-  const [redrobSearchIndexFile, setRedrobSearchIndexFile] = useState("redrob-challenge-result-search-index.json");
+  const [redrobSearchPagePrefix, setRedrobSearchPagePrefix] = useState("redrob-candidate-pages/page-");
+  const [redrobSearchPageCount, setRedrobSearchPageCount] = useState(1000);
+  const [redrobSearchPageStart, setRedrobSearchPageStart] = useState(0);
+  const [redrobSearchPageEnd, setRedrobSearchPageEnd] = useState(0);
   const [redrobSearchIndexRows, setRedrobSearchIndexRows] = useState(0);
   const [result, setResult] = useState<PipelineResult | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
@@ -205,12 +215,8 @@ export default function App() {
           .includes(query),
       );
   }, [redrobSearchQuery, redrobSearchRows]);
-  const redrobSearchPageCount = Math.max(1, Math.ceil(filteredRedrobSearchRows.length / redrobSearchPageSize));
-  const safeRedrobSearchPage = Math.min(redrobSearchPage, redrobSearchPageCount - 1);
-  const visibleRedrobSearchRows = filteredRedrobSearchRows.slice(
-    safeRedrobSearchPage * redrobSearchPageSize,
-    safeRedrobSearchPage * redrobSearchPageSize + redrobSearchPageSize,
-  );
+  const safeRedrobSearchPage = Math.min(redrobSearchPage, Math.max(0, redrobSearchPageCount - 1));
+  const visibleRedrobSearchRows = filteredRedrobSearchRows;
   const setupReady =
     dataMode === "redrob"
       ? roleReady && redrobCandidateCount > 0 && Boolean(outputFormat)
@@ -433,10 +439,14 @@ export default function App() {
       setProgressLabel("Step 2: attaching Redrob candidate data");
       setPhase("setup");
       setRedrobCandidateCount(payload.processedCandidates);
-      setRedrobSearchIndexFile(payload.searchIndexFile ?? "redrob-challenge-result-search-index.json");
+      setRedrobSearchPagePrefix(payload.searchPagePrefix ?? "redrob-candidate-pages/page-");
+      setRedrobSearchPageCount(payload.searchPageCount ?? Math.ceil(payload.processedCandidates / 100));
       setRedrobSearchIndexRows(payload.searchIndexRows ?? payload.processedCandidates);
       setRedrobSearchRows([]);
       setRedrobSearchStatus("not loaded");
+      setRedrobSearchPage(0);
+      setRedrobSearchPageStart(0);
+      setRedrobSearchPageEnd(0);
       await delay(950);
       setPhase("processing");
 
@@ -450,7 +460,7 @@ export default function App() {
       setRunProgress(100);
       setProgressLabel(`Final shortlist ready from ${payload.processedCandidates.toLocaleString()} candidates`);
       setStatus("complete");
-      void loadRedrobSearchIndex(payload.searchIndexFile ?? "redrob-challenge-result-search-index.json");
+      void loadRedrobCandidatePage(0, payload.searchPagePrefix ?? "redrob-candidate-pages/page-");
       window.setTimeout(() => setRunProgress(0), 1200);
     } catch (err) {
       setStatus("error");
@@ -484,24 +494,32 @@ export default function App() {
     setRedrobSearchRows([]);
     setRedrobSearchStatus("not loaded");
     setRedrobSearchQuery("");
+    setRedrobSearchPage(0);
+    setRedrobSearchPagePrefix("redrob-candidate-pages/page-");
+    setRedrobSearchPageCount(1000);
+    setRedrobSearchPageStart(0);
+    setRedrobSearchPageEnd(0);
     setRedrobSearchIndexRows(0);
-    setRedrobSearchIndexFile("redrob-challenge-result-search-index.json");
   }
 
-  async function loadRedrobSearchIndex(fileOverride?: string) {
-    if (redrobSearchRows.length) return;
+  async function loadRedrobCandidatePage(page: number, prefixOverride?: string) {
+    const nextPage = Math.max(0, Math.min(page, redrobSearchPageCount - 1));
     setRedrobSearchStatus("loading");
     setError(null);
     try {
-      const response = await fetch(`/${fileOverride ?? redrobSearchIndexFile}`, { cache: "no-cache" });
-      const payload = (await response.json()) as RedrobSearchAsset;
+      const prefix = prefixOverride ?? redrobSearchPagePrefix;
+      const response = await fetch(`/${prefix}${String(nextPage + 1).padStart(4, "0")}.json`, { cache: "no-cache" });
+      const payload = (await response.json()) as RedrobSearchPageAsset;
       if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the Redrob search index.");
       setRedrobSearchRows(payload.rows);
-      setRedrobSearchStatus(`loaded ${payload.rows.length.toLocaleString()} candidates`);
-      setRedrobSearchIndexRows(payload.rows.length);
+      setRedrobSearchPage(nextPage);
+      setRedrobSearchPageStart(payload.startRank);
+      setRedrobSearchPageEnd(payload.endRank);
+      setRedrobSearchStatus(`loaded ranks ${payload.startRank.toLocaleString()}-${payload.endRank.toLocaleString()}`);
+      setRedrobSearchIndexRows(payload.totalRows);
     } catch (err) {
       setRedrobSearchStatus("error");
-      setError(err instanceof Error ? err.message : "Could not load Redrob search index");
+      setError(err instanceof Error ? err.message : "Could not load Redrob candidate page");
     }
   }
 
@@ -1105,11 +1123,12 @@ export default function App() {
               page={safeRedrobSearchPage}
               pageCount={redrobSearchPageCount}
               pageSize={redrobSearchPageSize}
+              pageStart={redrobSearchPageStart}
+              pageEnd={redrobSearchPageEnd}
               status={redrobSearchStatus}
               query={redrobSearchQuery}
               setQuery={setRedrobSearchQuery}
-              setPage={setRedrobSearchPage}
-              onLoad={loadRedrobSearchIndex}
+              onPage={loadRedrobCandidatePage}
             />
           ) : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
@@ -1534,11 +1553,12 @@ function RedrobSearchPanel({
   page,
   pageCount,
   pageSize,
+  pageStart,
+  pageEnd,
   status,
   query,
   setQuery,
-  setPage,
-  onLoad,
+  onPage,
 }: {
   totalCandidates: number;
   indexRows: number;
@@ -1548,50 +1568,56 @@ function RedrobSearchPanel({
   page: number;
   pageCount: number;
   pageSize: number;
+  pageStart: number;
+  pageEnd: number;
   status: string;
   query: string;
   setQuery: (value: string) => void;
-  setPage: (value: number) => void;
-  onLoad: () => void;
+  onPage: (page: number) => void;
 }) {
   const expected = indexRows || totalCandidates;
-  const start = loadedRows && totalMatches ? page * pageSize + 1 : 0;
-  const end = loadedRows && totalMatches ? Math.min((page + 1) * pageSize, totalMatches) : 0;
+  const start = loadedRows ? pageStart : 0;
+  const end = loadedRows ? pageEnd : 0;
+  const visibleCount = query.trim() ? totalMatches : loadedRows;
   return (
     <section className="panel redrob-search-panel">
-      <PanelTitle title="Search All Redrob Candidates" meta={loadedRows ? `${loadedRows.toLocaleString()} indexed` : `${expected.toLocaleString()} available`} />
+      <PanelTitle title="All 100,000 Ranked Candidates" meta={loadedRows ? `page ${page + 1} of ${pageCount}` : `${expected.toLocaleString()} available`} />
       <div className="search-explainer">
         <strong>Where are the other 99,900?</strong>
         <span>
-          They are visible here page by page. The table above is only the official top-100 submission; this panel loads the full ranked index without exposing the raw 487 MB candidate file.
+          They are visible here page by page. Page 1 shows ranks 1-100, page 2 shows ranks 101-200, and so on through the full ranked index without exposing the raw 487 MB candidate file.
         </span>
       </div>
       <div className="search-actions">
-        <button className="btn btn-primary" type="button" onClick={onLoad} disabled={status === "loading" || Boolean(loadedRows)}>
+        <button className="btn btn-primary" type="button" onClick={() => onPage(page)} disabled={status === "loading"}>
           <Database size={16} />
-          {loadedRows ? "Search index loaded" : status === "loading" ? "Loading index" : `Load ${expected.toLocaleString()} candidate index`}
+          {status === "loading" ? "Loading page" : loadedRows ? "Refresh current page" : "Load page 1"}
         </button>
         <input
           className="field-control compact-control search-input"
           value={query}
           disabled={!loadedRows}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search ID, rank, location, title, skill, experience"
+          placeholder="Search within this page by ID, rank, location, title, skill, experience"
         />
       </div>
       <div className="search-status">
-        {loadedRows ? `Showing ${start.toLocaleString()}-${end.toLocaleString()} of ${totalMatches.toLocaleString()} candidates` : status}
+        {loadedRows
+          ? query.trim()
+            ? `Showing ${visibleCount.toLocaleString()} matches inside ranks ${start.toLocaleString()}-${end.toLocaleString()}`
+            : `Showing ranks ${start.toLocaleString()}-${end.toLocaleString()} of ${expected.toLocaleString()} candidates`
+          : status}
       </div>
       {loadedRows ? (
         <>
           <div className="search-pager">
-            <button className="btn btn-secondary" type="button" onClick={() => setPage(Math.max(0, page - 1))} disabled={page <= 0}>
+            <button className="btn btn-secondary" type="button" onClick={() => onPage(Math.max(0, page - 1))} disabled={page <= 0 || status === "loading"}>
               Previous 100
             </button>
             <span>
-              Page {page + 1} of {pageCount}
+              Page {page + 1} of {pageCount} - ranks {start.toLocaleString()}-{end.toLocaleString()}
             </span>
-            <button className="btn btn-secondary" type="button" onClick={() => setPage(Math.min(pageCount - 1, page + 1))} disabled={page >= pageCount - 1}>
+            <button className="btn btn-secondary" type="button" onClick={() => onPage(Math.min(pageCount - 1, page + 1))} disabled={page >= pageCount - 1 || status === "loading"}>
               Next 100
             </button>
           </div>
@@ -1616,7 +1642,7 @@ function RedrobSearchPanel({
                     <td>
                       <strong>{row.title}</strong>
                       <span className="search-profile-line">
-                        {row.years} yrs · {row.location}
+                        {row.years} yrs - {row.location}
                       </span>
                       <span className="search-profile-line">{row.skills.slice(0, 4).join(", ")}</span>
                     </td>
@@ -1684,11 +1710,14 @@ function RedrobChallengeRanking({ rows }: { rows: RedrobRankingRow[] }) {
   const reviewRows = rows.slice(0, 4);
   return (
     <section className="panel gate-panel">
-      <PanelTitle title="Challenge Submission Rows" meta={rows.length ? "validator columns" : "waiting"} />
+      <PanelTitle title="Top Candidate Cross-Questions" meta={rows.length ? "4 reviewer views" : "waiting"} />
       {!rows.length ? (
         <div className="empty-state">Run the Redrob challenge ranker to generate the top-100 submission rows.</div>
       ) : (
-        <>
+        <div>
+          <div className="summary-message">
+            The official top-100 CSV is available from the export button. The visible candidate table is now the full ranked index above, so the top 100 is not repeated here.
+          </div>
           <div className="challenge-agent-stack">
             {reviewRows.map((row) => (
               <article key={`agent-${row.candidate_id}`} className="challenge-agent-card">
@@ -1700,29 +1729,7 @@ function RedrobChallengeRanking({ rows }: { rows: RedrobRankingRow[] }) {
               </article>
             ))}
           </div>
-          <div className="table-frame">
-            <table className="challenge-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Candidate ID</th>
-                  <th>Score</th>
-                  <th>Reasoning</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.candidate_id}>
-                    <td>{row.rank}</td>
-                    <td className="strong-cell">{row.candidate_id}</td>
-                    <td>{row.score.toFixed(4)}</td>
-                    <td>{row.reasoning}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+        </div>
       )}
     </section>
   );

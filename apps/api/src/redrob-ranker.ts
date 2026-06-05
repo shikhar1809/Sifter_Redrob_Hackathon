@@ -1,5 +1,5 @@
 import { createReadStream, existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
@@ -37,9 +37,30 @@ const outputPath = resolveOutputPath(args.output);
 await writeFile(outputPath, `${exportRedrobSubmissionCsv(rows)}\n`, "utf8");
 if (args.assetOutput) {
   const assetOutputPath = resolveOutputPath(args.assetOutput);
-  const searchOutputPath = assetOutputPath.replace(/\.json$/i, "-search-index.json");
+  const searchPageSize = 100;
+  const searchPageDir = resolve(dirname(assetOutputPath), "redrob-candidate-pages");
+  const searchPagePrefix = "redrob-candidate-pages/page-";
   const searchStarted = Date.now();
   const searchIndex = createRedrobCandidateSearchIndex(candidates);
+  await rm(searchPageDir, { force: true, recursive: true });
+  await mkdir(searchPageDir, { recursive: true });
+  const searchPageCount = Math.ceil(searchIndex.length / searchPageSize);
+  await Promise.all(
+    Array.from({ length: searchPageCount }, async (_, pageIndex) => {
+      const start = pageIndex * searchPageSize;
+      const rowsForPage = searchIndex.slice(start, start + searchPageSize);
+      const page = {
+        generatedAt: new Date().toISOString().slice(0, 10),
+        page: pageIndex + 1,
+        pageSize: searchPageSize,
+        totalRows: searchIndex.length,
+        startRank: start + 1,
+        endRank: start + rowsForPage.length,
+        rows: rowsForPage,
+      };
+      await writeFile(resolve(searchPageDir, `page-${String(pageIndex + 1).padStart(4, "0")}.json`), JSON.stringify(page), "utf8");
+    }),
+  );
   const asset = {
     label: "Full Redrob challenge output",
     processedCandidates: candidates.length,
@@ -49,14 +70,15 @@ if (args.assetOutput) {
     rankingPlan: ranking.plan,
     generatedAt: new Date().toISOString().slice(0, 10),
     note: "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
-    searchIndexFile: "redrob-challenge-result-search-index.json",
     searchIndexRows: searchIndex.length,
+    searchPagePrefix,
+    searchPageCount,
+    searchPageSize,
     searchIndexRuntimeSeconds: Number(((Date.now() - searchStarted) / 1000).toFixed(1)),
     biasAudit: createRedrobBiasAudit(candidates, rows),
     rows,
   };
   await writeFile(assetOutputPath, `${JSON.stringify(asset, null, 2)}\n`, "utf8");
-  await writeFile(searchOutputPath, `${JSON.stringify({ generatedAt: asset.generatedAt, rows: searchIndex })}\n`, "utf8");
 }
 
 console.log(
