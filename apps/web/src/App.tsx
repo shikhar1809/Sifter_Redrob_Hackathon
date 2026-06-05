@@ -42,6 +42,12 @@ type RedrobChallengeAsset = {
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
+type ReviewAgentOpinion = {
+  agent: string;
+  verdict: string;
+  question: string;
+  focus: string;
+};
 
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
 const softCandidateLimit = 500;
@@ -1318,34 +1324,48 @@ function BiasAuditPanel({ audit }: { audit: BiasAudit }) {
 }
 
 function RedrobChallengeRanking({ rows }: { rows: RedrobRankingRow[] }) {
+  const reviewRows = rows.slice(0, 4);
   return (
     <section className="panel gate-panel">
       <PanelTitle title="Challenge Submission Rows" meta={rows.length ? "validator columns" : "waiting"} />
       {!rows.length ? (
         <div className="empty-state">Run the Redrob challenge ranker to generate the top-100 submission rows.</div>
       ) : (
-        <div className="table-frame">
-          <table className="challenge-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Candidate ID</th>
-                <th>Score</th>
-                <th>Reasoning</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.candidate_id}>
-                  <td>{row.rank}</td>
-                  <td className="strong-cell">{row.candidate_id}</td>
-                  <td>{row.score.toFixed(4)}</td>
-                  <td>{row.reasoning}</td>
+        <>
+          <div className="challenge-agent-stack">
+            {reviewRows.map((row) => (
+              <article key={`agent-${row.candidate_id}`} className="challenge-agent-card">
+                <div className="challenge-agent-head">
+                  <span>#{row.rank}</span>
+                  <strong>{row.candidate_id}</strong>
+                </div>
+                <ReviewerOpinions opinions={buildRedrobAgentOpinions(row)} />
+              </article>
+            ))}
+          </div>
+          <div className="table-frame">
+            <table className="challenge-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Candidate ID</th>
+                  <th>Score</th>
+                  <th>Reasoning</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={row.candidate_id}>
+                    <td>{row.rank}</td>
+                    <td className="strong-cell">{row.candidate_id}</td>
+                    <td>{row.score.toFixed(4)}</td>
+                    <td>{row.reasoning}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </section>
   );
@@ -1586,6 +1606,7 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
                   <p>{report.confidenceNote}</p>
                   <strong>Fields used: {report.sourceFields.join(", ")}</strong>
                 </div>
+                <ReviewerOpinions opinions={report.agentOpinions} />
                 <div className="rank-reason">{report.rankReason}</div>
               </article>
               );
@@ -1594,6 +1615,27 @@ function RecommendedCandidates({ rows, inviteCap }: { rows: GateCandidate[]; inv
         </>
       )}
     </section>
+  );
+}
+
+function ReviewerOpinions({ opinions }: { opinions: ReviewAgentOpinion[] }) {
+  return (
+    <div className="agent-review-panel">
+      <div className="agent-review-title">
+        <Brain size={15} />
+        <span>Cross-question agents</span>
+      </div>
+      <div className="agent-review-grid">
+        {opinions.map((opinion) => (
+          <div key={opinion.agent} className="agent-review-card">
+            <span>{opinion.agent}</span>
+            <strong>{opinion.verdict}</strong>
+            <p>{opinion.question}</p>
+            <em>{opinion.focus}</em>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1675,7 +1717,90 @@ function buildCandidateReport(row: GateCandidate) {
     sourceFields: cleanSourceFields(ai?.sourceFields ?? ["skills", "summary", "profileScore", "deepScore", "ownershipScore"]),
     reviewer: ai?.provider ?? "local",
     rankReason: `Why top 5: ranked #${row.rank} because the combined score (${row.finalScore ?? 0}) is built from ${scoreParts.join(", ")}.`,
+    agentOpinions: buildCandidateAgentOpinions(row, {
+      riskLevel: ai?.riskLevel ?? riskLevel,
+      nextAction: ai?.nextAction ?? nextAction,
+      missingEvidence: ai?.missingEvidence?.length ? ai.missingEvidence : missingEvidence,
+      interviewQuestion: ai?.interviewQuestion ?? interviewQuestion,
+    }),
   };
+}
+
+function buildCandidateAgentOpinions(
+  row: GateCandidate,
+  report: {
+    riskLevel: "Low" | "Medium" | "High";
+    nextAction: string;
+    missingEvidence: string[];
+    interviewQuestion: string;
+  },
+): ReviewAgentOpinion[] {
+  const score = row.finalScore ?? row.ownershipScore ?? row.deepScore ?? row.profileScore ?? 0;
+  const skills = row.skillsList.slice(0, 3).join(", ") || "the listed skills";
+  const flags = row.redFlags && row.redFlags !== "none" ? row.redFlags : "no major listed red flag";
+  const salary = row.salary_expectation_lpa ? `${row.salary_expectation_lpa} LPA` : "not listed";
+  const evidenceGap = report.missingEvidence[0] ?? "live proof";
+
+  return [
+    {
+      agent: "Hiring Manager",
+      verdict: score >= 82 ? "Strong role-fit, but still needs proof of ownership." : "Possible fit; compare against stronger profiles before advancing.",
+      question: `Ask: which ${skills} project did they personally own from problem to result?`,
+      focus: "Checks whether the person can actually do the job.",
+    },
+    {
+      agent: "Interview Designer",
+      verdict: "Do not rely only on the resume; test the weakest assumption live.",
+      question: report.interviewQuestion,
+      focus: "Turns the shortlist into a practical interview plan.",
+    },
+    {
+      agent: "Recruiter Ops",
+      verdict: report.nextAction,
+      question: `Confirm location, salary (${salary}), availability, and whether ${evidenceGap.toLowerCase()} can be shared.`,
+      focus: "Checks whether the candidate is realistic to move forward.",
+    },
+    {
+      agent: "Bias & Compliance",
+      verdict: `Decision should stay tied to job evidence; current risk is ${report.riskLevel.toLowerCase()}.`,
+      question: `Are we advancing this person because of skills and proof, not name, school, background, or proxies? Current flag: ${flags}.`,
+      focus: "Challenges unfair or weak reasoning before a human decision.",
+    },
+  ];
+}
+
+function buildRedrobAgentOpinions(row: RedrobRankingRow): ReviewAgentOpinion[] {
+  const scoreLabel = row.score >= 0.92 ? "high-confidence" : row.score >= 0.84 ? "solid" : "review-needed";
+  const concern = row.reasoning.match(/Concern: ([^.]+)\./)?.[1] ?? "no single concern listed";
+  const matched = row.reasoning.match(/matches ([^.;]+) from/)?.[1] ?? "the listed role evidence";
+  const production = row.reasoning.match(/production proof includes ([^.;]+)/)?.[1] ?? "production proof";
+
+  return [
+    {
+      agent: "Hiring Manager",
+      verdict: `${scoreLabel} fit based on ${matched}.`,
+      question: `Ask them to explain one shipped system using ${matched} and what tradeoff they owned.`,
+      focus: "Validates job capability, not just ranking position.",
+    },
+    {
+      agent: "Technical Interviewer",
+      verdict: `Interview should test ${production}.`,
+      question: "Give a retrieval/ranking failure case and ask how they would debug metrics, data quality, and rollout risk.",
+      focus: "Turns the score into a real technical screen.",
+    },
+    {
+      agent: "Recruiter Ops",
+      verdict: concern === "no single concern listed" ? "No major logistics concern in the reasoning." : `Check logistics: ${concern}.`,
+      question: "Confirm availability, notice period, work mode, and willingness to interview before spending hiring-team time.",
+      focus: "Checks practical hiring movement.",
+    },
+    {
+      agent: "Bias & Compliance",
+      verdict: "Keep the decision tied to role evidence and the audit trail.",
+      question: "Would this candidate still be shortlisted if candidate ID, location, and school-style signals were hidden?",
+      focus: "Challenges proxy bias before treating the rank as final.",
+    },
+  ];
 }
 
 function cleanSourceFields(fields: string[]): string[] {
@@ -1805,6 +1930,13 @@ function buildMarkdownReport({
       ...report.missingEvidence.map((item) => `- ${item}`),
       "",
       `Interview question: ${report.interviewQuestion}`,
+      "",
+      `Cross-question agents:`,
+      ...report.agentOpinions.flatMap((opinion) => [
+        `- ${opinion.agent}: ${opinion.verdict}`,
+        `  Question: ${opinion.question}`,
+        `  Focus: ${opinion.focus}`,
+      ]),
       "",
       `Review basis: ${report.confidenceNote}`,
       `Fields used: ${report.sourceFields.join(", ")}`,

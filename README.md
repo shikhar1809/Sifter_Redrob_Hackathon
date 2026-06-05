@@ -60,7 +60,7 @@ Sifter has two main workflows.
 
 1. Regular recruiter screening
 
-   Upload a CSV, describe the role, and Sifter creates a shortlist with scores, reasons, risks, missing evidence, and interview questions.
+   Upload a CSV, describe the role, and Sifter creates a shortlist with scores, reasons, risks, missing evidence, interview questions, and cross-question reviewer opinions.
 
 2. Redrob Challenge ranking
 
@@ -105,6 +105,7 @@ It does not silently jump ahead or auto-process without user control.
 - Kept challenge ranking CPU-only and no-network.
 - Avoided using candidate names or school prestige as scoring boosts.
 - Added a visible bias guardrail and plain-English audit.
+- Added four reviewer agents on final output: Hiring Manager, Interview Designer, Recruiter Ops, and Bias/Compliance.
 - Deployed the web app on Firebase Hosting.
 
 ## Product Readiness
@@ -115,6 +116,7 @@ It does not silently jump ahead or auto-process without user control.
 | Parsing and data quality | **Partly done.** | CSV, JSON, JSONL, and gzipped challenge data are supported. Complex PDF/DOC resume parsing and NLP deduplication are not done yet. |
 | Semantic matching | **Partly done.** | Sifter uses multiple evidence signals instead of only keyword overlap. True embedding/transformer matching is still a next step. |
 | Ranking with reasons | **Strong.** | Shortlisted candidates come with clear reasons that a recruiter can review and challenge. |
+| Multi-perspective review | **Built.** | Final output now includes small reviewer agents that challenge each result from hiring, interview, operations, and bias/compliance angles. |
 | Configurable weights | **Basic today.** | The scoring system is explainable, but recruiter-controlled sliders and saved role templates need more work. |
 | Bias and fairness | **Guardrail built.** | Protected attributes and obvious proxy fields are not used for scoring. Full protected-class parity dashboards need more data and enterprise setup. |
 | Candidate updates | **Not complete.** | Automatic received/shortlisted/rejected/update messages are planned. |
@@ -183,6 +185,7 @@ For the Redrob challenge, names are anonymized, so search should use candidate I
 - API endpoints for Redrob parsing and ranking.
 - Web UI support for smaller Redrob JSON/JSONL samples.
 - Redrob Challenge button in the hosted app.
+- Cross-question reviewer agents on final results.
 - Bias audit and AI-review sanitization guardrail.
 - Firebase Hosting deployment.
 - README screenshots and layman-first documentation.

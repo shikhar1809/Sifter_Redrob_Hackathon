@@ -1734,6 +1734,110 @@ td {
   line-height: 1.35;
 }
 
+.agent-review-panel {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.agent-review-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.agent-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.agent-review-card {
+  min-height: 132px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 9px;
+}
+
+.agent-review-card span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.agent-review-card strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.agent-review-card p,
+.agent-review-card em {
+  display: block;
+  margin: 0;
+  color: #30302c;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.agent-review-card em {
+  margin-top: 7px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.challenge-agent-stack {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.challenge-agent-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.challenge-agent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+.challenge-agent-head span {
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.challenge-agent-head strong {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  font-weight: 950;
+}
+
 .rank-reason {
   margin-top: 10px;
   border-left: 4px solid var(--line);
@@ -1869,7 +1973,9 @@ td {
   }
 
   .workspace-summary,
-  .report-columns {
+  .report-columns,
+  .agent-review-grid,
+  .challenge-agent-stack {
     grid-template-columns: 1fr;
   }
 
