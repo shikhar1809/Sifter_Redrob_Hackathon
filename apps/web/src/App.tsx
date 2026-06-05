@@ -365,6 +365,10 @@ export default function App() {
       setError(null);
       return;
     }
+    if (!csv.trim() && redrobCandidateCount > 0) {
+      await runBundledRedrobChallengeRanking();
+      return;
+    }
     setPhase("processing");
     setStatus("running");
     setRunProgress(8);
@@ -414,9 +418,9 @@ export default function App() {
 
   async function loadRedrobChallengeOutput() {
     setError(null);
-    setStatus("showcasing");
-    setRunProgress(5);
-    setProgressLabel("Step 1: loading Redrob role requirements");
+    setStatus("loading Redrob challenge data");
+    setRunProgress(0);
+    setProgressLabel("Loading Redrob role and candidate data");
     setDataMode("redrob");
     setPhase("role");
     applyRoleTemplate("Senior AI Engineer");
@@ -431,13 +435,9 @@ export default function App() {
     setUploadedFileName("Full Redrob challenge output");
     setOutputFormat("report_csv");
     try {
-      await delay(900);
       const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
       const payload = (await response.json()) as RedrobChallengeAsset;
       if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the bundled Redrob result.");
-      setRunProgress(18);
-      setProgressLabel("Step 2: attaching Redrob candidate data");
-      setPhase("setup");
       setRedrobCandidateCount(payload.processedCandidates);
       setRedrobSearchPagePrefix(payload.searchPagePrefix ?? "redrob-candidate-pages/page-");
       setRedrobSearchPageCount(payload.searchPageCount ?? Math.ceil(payload.processedCandidates / 100));
@@ -447,8 +447,26 @@ export default function App() {
       setRedrobSearchPage(0);
       setRedrobSearchPageStart(0);
       setRedrobSearchPageEnd(0);
-      await delay(950);
-      setPhase("processing");
+      setProgressLabel(`Redrob data inserted: ${payload.processedCandidates.toLocaleString()} candidates ready`);
+      setStatus("Redrob data ready");
+    } catch (err) {
+      setStatus("error");
+      setRunProgress(0);
+      setProgressLabel("challenge load stopped");
+      setError(err instanceof Error ? err.message : "Could not load the Redrob challenge output");
+    }
+  }
+
+  async function runBundledRedrobChallengeRanking() {
+    setPhase("processing");
+    setStatus("showcasing");
+    setRunProgress(8);
+    setProgressLabel("Starting Redrob batch ranking showcase");
+    setError(null);
+    try {
+      const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
+      const payload = (await response.json()) as RedrobChallengeAsset;
+      if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the bundled Redrob result.");
 
       await playRedrobShowcase(payload);
 
@@ -465,7 +483,7 @@ export default function App() {
     } catch (err) {
       setStatus("error");
       setRunProgress(0);
-      setProgressLabel("challenge load stopped");
+      setProgressLabel("challenge ranking stopped");
       setError(err instanceof Error ? err.message : "Could not load the Redrob challenge output");
     }
   }
@@ -886,7 +904,7 @@ export default function App() {
 
         {phase === "setup" ? (
           <section className="panel input-panel">
-            <PanelTitle title="Step 2: Candidate Data & Output Setup" meta={candidates.length ? `${candidates.length} ready` : "waiting"} />
+            <PanelTitle title="Step 2: Candidate Data & Output Setup" meta={loadedCandidateCount ? `${loadedCandidateCount} ready` : "waiting"} />
             <StepRail phase={phase} />
 
             <div className="role-preview setup-role-preview">
@@ -1020,7 +1038,7 @@ export default function App() {
                 <span>
                   {redrobRows.length
                     ? "Full challenge output loaded from the 100,000-candidate run and ready to inspect or export."
-                    : "Challenge mode ranks against the bundled Senior AI Engineer JD and exports the required top-100 CSV."}
+                    : "Challenge data is inserted. Click Rank challenge when you are ready to move into processing."}
                 </span>
               </div>
             ) : null}

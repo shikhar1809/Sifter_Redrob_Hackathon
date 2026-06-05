@@ -111,11 +111,11 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 **Problem:** Reviewers should be able to try the app without setting up the repo.
 
-**Decision:** Add a live Redrob Challenge button.
+**Decision:** Add a live Redrob Challenge button, but keep the user in control of the flow.
 
-**What we built:** The button starts at Step 1, fills the Redrob role, walks through data setup and processing, plays the visible batch-ranking showcase, then reveals ranked output, CSV export, reviewer agents, full candidate pages, and bias audit.
+**What we built:** The button stays on Step 1 and only inserts the Redrob role plus the 100,000-candidate challenge data. The user then clicks Continue to review Step 2, and only clicks Rank challenge when they want Step 3 processing to begin.
 
-**What is different:** Judges can see the process instead of only seeing finished answers. The UI shows candidates being broken into batches, merged into final ranking, and re-evaluated by four reviewer agents.
+**What is different:** Judges can inspect the setup before the app moves. The visible batch-ranking showcase, merge rounds, reviewer agents, bias guardrail, top candidate explanation, CSV export, and full candidate pages appear only after the user starts the ranking step.
 
 ## 10. Plan For Full Candidate Search
 
@@ -153,6 +153,10 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 ![Redrob submission preview](docs/screenshots/redrob-output.png)
 
+### Candidate Info Reason
+
+![Candidate info reason dialog](docs/screenshots/candidate-info.png)
+
 ## What We Proved
 
 - Processed the full Redrob challenge dataset locally.
@@ -174,6 +178,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Added a visible bias guardrail and plain-English audit.
 - Added four reviewer agents on final output.
 - Added visible page-by-page access across the full `100,000` candidate Redrob index.
+- Kept the Redrob Challenge button on Step 1 so users choose when to continue and when to rank.
 - Deployed the web app on Firebase Hosting.
 
 ## What Is Done
@@ -192,7 +197,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - API endpoints for Redrob parsing and ranking.
 - Web UI support for smaller Redrob JSON/JSONL samples.
 - Redrob Challenge button in the hosted app.
-- Visible Redrob processing showcase before results appear.
+- Redrob Challenge preload that stays on Step 1 until the user clicks Continue.
+- Visible Redrob processing showcase only after the user clicks Rank challenge.
 - Page-by-page Redrob candidate index for all `100,000` candidates.
 - Per-candidate reason dialog for the visible ranked index.
 - Top candidate "why they won" explanation above the full candidate list.
