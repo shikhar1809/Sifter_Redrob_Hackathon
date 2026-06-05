@@ -111,7 +111,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 **Decision:** Add a live Redrob Challenge button.
 
-**What we built:** The button now opens the processing/results screen, plays the visible batch-ranking showcase, then reveals ranked output, CSV export, reviewer agents, full-index search, and bias audit.
+**What we built:** The button starts at Step 1, fills the Redrob role, walks through data setup and processing, plays the visible batch-ranking showcase, then reveals ranked output, CSV export, reviewer agents, full candidate pages, and bias audit.
 
 **What is different:** Judges can see the process instead of only seeing finished answers. The UI shows candidates being broken into batches, merged into final ranking, and re-evaluated by four reviewer agents.
 
@@ -119,9 +119,9 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 **Problem:** Recruiters eventually need to search a full pool by candidate, location, skill, experience, salary, availability, rank, and score.
 
-**Decision:** Do not load the raw 487 MB dataset into every browser. For the live demo, load a compact search index on demand. For production, move the same idea behind a backend-indexed search service.
+**Decision:** Do not load the raw 487 MB dataset into every browser. For the live demo, split the ranked index into 100-candidate pages. For production, move the same idea behind a backend-indexed search service.
 
-**What we built today:** The live app shows the full `100,000` candidate Redrob index as real pages: page 1 is ranks 1-100, page 2 is ranks 101-200, and so on. Recruiters can page through the whole ranked pool and search within the visible page by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
+**What we built today:** The live app shows the full `100,000` candidate Redrob index as real pages: page 1 is ranks 1-100, page 2 is ranks 101-200, and so on. Recruiters can use Previous/Next or type a page number directly, then search within that visible page by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
 
 **What is different:** The top-100 is no longer repeated as a second table. The main visible table is the full ranked candidate index, served in 100-candidate pages without exposing the raw challenge file.
 
@@ -195,7 +195,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - No live improvement loop yet. Recruiter feedback and hiring outcomes are not being used to retrain or reweight the ranker automatically.
 - No complex PDF/DOC resume parsing yet.
 - No NLP-based candidate deduplication yet.
-- No production backend search service yet. The live Redrob demo uses a static compact search index.
+- No production backend search service yet. The live Redrob demo uses static 100-candidate pages plus page-level search.
 - No automated candidate status messaging yet.
 - No production ATS/HRIS webhooks yet.
 - No true protected-class parity report because the source data does not include protected attributes.

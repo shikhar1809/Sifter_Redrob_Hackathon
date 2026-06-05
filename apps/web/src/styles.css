@@ -1407,6 +1407,26 @@ textarea {
   text-align: center;
 }
 
+.page-jump {
+  display: grid;
+  grid-template-columns: auto 86px auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.page-jump label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.page-jump input {
+  min-height: 42px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
 .search-table {
   min-width: 980px;
 }
@@ -2145,10 +2165,15 @@ td {
   .top-actions,
   .button-row,
   .search-actions,
+  .search-pager,
   .danger-actions,
   .vision-notes,
   .stage-actions-split {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .page-jump {
     grid-template-columns: 1fr;
   }
 

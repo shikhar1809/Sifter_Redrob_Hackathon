@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
 import type { BiasAudit, CandidateInput, GateCandidate, PipelineResult, RedrobCandidateSearchRow, RedrobRankingRow } from "@seederpro/core";
 
@@ -1579,6 +1579,19 @@ function RedrobSearchPanel({
   const start = loadedRows ? pageStart : 0;
   const end = loadedRows ? pageEnd : 0;
   const visibleCount = query.trim() ? totalMatches : loadedRows;
+  const [pageInput, setPageInput] = useState(String(page + 1));
+
+  useEffect(() => {
+    setPageInput(String(page + 1));
+  }, [page]);
+
+  function goToTypedPage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const targetPage = Number(pageInput);
+    if (!Number.isFinite(targetPage)) return;
+    onPage(Math.max(0, Math.min(pageCount - 1, Math.floor(targetPage) - 1)));
+  }
+
   return (
     <section className="panel redrob-search-panel">
       <PanelTitle title="All 100,000 Ranked Candidates" meta={loadedRows ? `page ${page + 1} of ${pageCount}` : `${expected.toLocaleString()} available`} />
@@ -1617,6 +1630,22 @@ function RedrobSearchPanel({
             <span>
               Page {page + 1} of {pageCount} - ranks {start.toLocaleString()}-{end.toLocaleString()}
             </span>
+            <form className="page-jump" onSubmit={goToTypedPage}>
+              <label htmlFor="redrob-page-jump">Go to page</label>
+              <input
+                id="redrob-page-jump"
+                className="field-control compact-control"
+                type="number"
+                min={1}
+                max={pageCount}
+                value={pageInput}
+                onChange={(event) => setPageInput(event.target.value)}
+                disabled={status === "loading"}
+              />
+              <button className="btn btn-secondary" type="submit" disabled={status === "loading"}>
+                Open
+              </button>
+            </form>
             <button className="btn btn-secondary" type="button" onClick={() => onPage(Math.min(pageCount - 1, page + 1))} disabled={page >= pageCount - 1 || status === "loading"}>
               Next 100
             </button>
