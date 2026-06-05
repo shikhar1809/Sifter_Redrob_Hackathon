@@ -141,6 +141,7 @@ export default function App() {
   const [redrobSearchRows, setRedrobSearchRows] = useState<RedrobCandidateSearchRow[]>([]);
   const [redrobSearchStatus, setRedrobSearchStatus] = useState("not loaded");
   const [redrobSearchQuery, setRedrobSearchQuery] = useState("");
+  const [redrobSearchPage, setRedrobSearchPage] = useState(0);
   const [redrobSearchIndexFile, setRedrobSearchIndexFile] = useState("redrob-challenge-result-search-index.json");
   const [redrobSearchIndexRows, setRedrobSearchIndexRows] = useState(0);
   const [result, setResult] = useState<PipelineResult | null>(null);
@@ -182,10 +183,11 @@ export default function App() {
   const candidateLimitState = candidates.length > hardCandidateLimit ? "hard" : candidates.length > softCandidateLimit ? "soft" : "ok";
   const loadedCandidateCount = dataMode === "redrob" ? redrobCandidateCount : candidates.length;
   const rankedCount = dataMode === "redrob" ? redrobRows.length : finalWithScores.length;
+  const redrobSearchPageSize = 100;
   const filteredRedrobSearchRows = useMemo(() => {
     const query = redrobSearchQuery.trim().toLowerCase();
     const source = redrobSearchRows;
-    if (!query) return source.slice(0, 50);
+    if (!query) return source;
     return source
       .filter((row) =>
         [
@@ -201,9 +203,14 @@ export default function App() {
           .join(" ")
           .toLowerCase()
           .includes(query),
-      )
-      .slice(0, 50);
+      );
   }, [redrobSearchQuery, redrobSearchRows]);
+  const redrobSearchPageCount = Math.max(1, Math.ceil(filteredRedrobSearchRows.length / redrobSearchPageSize));
+  const safeRedrobSearchPage = Math.min(redrobSearchPage, redrobSearchPageCount - 1);
+  const visibleRedrobSearchRows = filteredRedrobSearchRows.slice(
+    safeRedrobSearchPage * redrobSearchPageSize,
+    safeRedrobSearchPage * redrobSearchPageSize + redrobSearchPageSize,
+  );
   const setupReady =
     dataMode === "redrob"
       ? roleReady && redrobCandidateCount > 0 && Boolean(outputFormat)
@@ -229,6 +236,10 @@ export default function App() {
       window.removeEventListener("resize", updateVisionNotes);
     };
   }, [phase]);
+
+  useEffect(() => {
+    setRedrobSearchPage(0);
+  }, [redrobSearchQuery]);
 
   async function parseCsvText(nextCsv = csv, nextMode: CandidateDataMode = dataMode) {
     setError(null);
@@ -399,9 +410,9 @@ export default function App() {
     setError(null);
     setStatus("showcasing");
     setRunProgress(5);
-    setProgressLabel("Loading Redrob challenge brief");
+    setProgressLabel("Step 1: loading Redrob role requirements");
     setDataMode("redrob");
-    setPhase("processing");
+    setPhase("role");
     applyRoleTemplate("Senior AI Engineer");
     setCandidates([]);
     setCsv("");
@@ -414,14 +425,20 @@ export default function App() {
     setUploadedFileName("Full Redrob challenge output");
     setOutputFormat("report_csv");
     try {
+      await delay(900);
       const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
       const payload = (await response.json()) as RedrobChallengeAsset;
       if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the bundled Redrob result.");
+      setRunProgress(18);
+      setProgressLabel("Step 2: attaching Redrob candidate data");
+      setPhase("setup");
       setRedrobCandidateCount(payload.processedCandidates);
       setRedrobSearchIndexFile(payload.searchIndexFile ?? "redrob-challenge-result-search-index.json");
       setRedrobSearchIndexRows(payload.searchIndexRows ?? payload.processedCandidates);
       setRedrobSearchRows([]);
       setRedrobSearchStatus("not loaded");
+      await delay(950);
+      setPhase("processing");
 
       await playRedrobShowcase(payload);
 
@@ -433,6 +450,7 @@ export default function App() {
       setRunProgress(100);
       setProgressLabel(`Final shortlist ready from ${payload.processedCandidates.toLocaleString()} candidates`);
       setStatus("complete");
+      void loadRedrobSearchIndex(payload.searchIndexFile ?? "redrob-challenge-result-search-index.json");
       window.setTimeout(() => setRunProgress(0), 1200);
     } catch (err) {
       setStatus("error");
@@ -470,12 +488,12 @@ export default function App() {
     setRedrobSearchIndexFile("redrob-challenge-result-search-index.json");
   }
 
-  async function loadRedrobSearchIndex() {
+  async function loadRedrobSearchIndex(fileOverride?: string) {
     if (redrobSearchRows.length) return;
     setRedrobSearchStatus("loading");
     setError(null);
     try {
-      const response = await fetch(`/${redrobSearchIndexFile}`, { cache: "no-cache" });
+      const response = await fetch(`/${fileOverride ?? redrobSearchIndexFile}`, { cache: "no-cache" });
       const payload = (await response.json()) as RedrobSearchAsset;
       if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the Redrob search index.");
       setRedrobSearchRows(payload.rows);
@@ -1081,11 +1099,16 @@ export default function App() {
             <RedrobSearchPanel
               totalCandidates={redrobCandidateCount}
               indexRows={redrobSearchIndexRows}
-              rows={filteredRedrobSearchRows}
+              rows={visibleRedrobSearchRows}
               loadedRows={redrobSearchRows.length}
+              totalMatches={filteredRedrobSearchRows.length}
+              page={safeRedrobSearchPage}
+              pageCount={redrobSearchPageCount}
+              pageSize={redrobSearchPageSize}
               status={redrobSearchStatus}
               query={redrobSearchQuery}
               setQuery={setRedrobSearchQuery}
+              setPage={setRedrobSearchPage}
               onLoad={loadRedrobSearchIndex}
             />
           ) : null}
@@ -1507,28 +1530,40 @@ function RedrobSearchPanel({
   indexRows,
   rows,
   loadedRows,
+  totalMatches,
+  page,
+  pageCount,
+  pageSize,
   status,
   query,
   setQuery,
+  setPage,
   onLoad,
 }: {
   totalCandidates: number;
   indexRows: number;
   rows: RedrobCandidateSearchRow[];
   loadedRows: number;
+  totalMatches: number;
+  page: number;
+  pageCount: number;
+  pageSize: number;
   status: string;
   query: string;
   setQuery: (value: string) => void;
+  setPage: (value: number) => void;
   onLoad: () => void;
 }) {
   const expected = indexRows || totalCandidates;
+  const start = loadedRows && totalMatches ? page * pageSize + 1 : 0;
+  const end = loadedRows && totalMatches ? Math.min((page + 1) * pageSize, totalMatches) : 0;
   return (
     <section className="panel redrob-search-panel">
       <PanelTitle title="Search All Redrob Candidates" meta={loadedRows ? `${loadedRows.toLocaleString()} indexed` : `${expected.toLocaleString()} available`} />
       <div className="search-explainer">
         <strong>Where are the other 99,900?</strong>
         <span>
-          They are in the compact search index. The table above is the submission shortlist; this search loads the full ranked index without exposing the raw 487 MB candidate file.
+          They are visible here page by page. The table above is only the official top-100 submission; this panel loads the full ranked index without exposing the raw 487 MB candidate file.
         </span>
       </div>
       <div className="search-actions">
@@ -1544,40 +1579,55 @@ function RedrobSearchPanel({
           placeholder="Search ID, rank, location, title, skill, experience"
         />
       </div>
-      <div className="search-status">{status}</div>
+      <div className="search-status">
+        {loadedRows ? `Showing ${start.toLocaleString()}-${end.toLocaleString()} of ${totalMatches.toLocaleString()} candidates` : status}
+      </div>
       {loadedRows ? (
-        <div className="table-frame">
-          <table className="search-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Candidate</th>
-                <th>Score</th>
-                <th>Profile</th>
-                <th>Evidence</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={`search-${row.candidate_id}`}>
-                  <td>#{row.rank}</td>
-                  <td className="strong-cell">{row.candidate_id}</td>
-                  <td>{row.score.toFixed(4)}</td>
-                  <td>
-                    <strong>{row.title}</strong>
-                    <span className="search-profile-line">
-                      {row.years} yrs · {row.location}
-                    </span>
-                    <span className="search-profile-line">{row.skills.slice(0, 4).join(", ")}</span>
-                  </td>
-                  <td>{row.evidence.slice(0, 3).join(", ") || row.concern || "Review profile details."}</td>
-                  <td>{statusLabel(row.status)}</td>
+        <>
+          <div className="search-pager">
+            <button className="btn btn-secondary" type="button" onClick={() => setPage(Math.max(0, page - 1))} disabled={page <= 0}>
+              Previous 100
+            </button>
+            <span>
+              Page {page + 1} of {pageCount}
+            </span>
+            <button className="btn btn-secondary" type="button" onClick={() => setPage(Math.min(pageCount - 1, page + 1))} disabled={page >= pageCount - 1}>
+              Next 100
+            </button>
+          </div>
+          <div className="table-frame">
+            <table className="search-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Candidate</th>
+                  <th>Score</th>
+                  <th>Profile</th>
+                  <th>Evidence</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr key={`search-${row.candidate_id}`}>
+                    <td>#{row.rank}</td>
+                    <td className="strong-cell">{row.candidate_id}</td>
+                    <td>{row.score.toFixed(4)}</td>
+                    <td>
+                      <strong>{row.title}</strong>
+                      <span className="search-profile-line">
+                        {row.years} yrs · {row.location}
+                      </span>
+                      <span className="search-profile-line">{row.skills.slice(0, 4).join(", ")}</span>
+                    </td>
+                    <td>{row.evidence.slice(0, 3).join(", ") || row.concern || "Review profile details."}</td>
+                    <td>{statusLabel(row.status)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       ) : null}
     </section>
   );
