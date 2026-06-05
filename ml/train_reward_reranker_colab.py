@@ -86,7 +86,7 @@ def main() -> None:
         args=training_args,
         train_dataset=tokenized["train"],
         eval_dataset=tokenized["validation"],
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer),
         compute_metrics=compute_metrics,
     )
@@ -110,7 +110,7 @@ def compute_metrics(eval_pred):
     if np.isnan(spearman):
         spearman = 0.0
     return {
-        "rmse": float(mean_squared_error(labels, preds, squared=False)),
+        "rmse": float(np.sqrt(mean_squared_error(labels, preds))),
         "mae": float(mean_absolute_error(labels, preds)),
         "spearman": float(spearman),
     }
