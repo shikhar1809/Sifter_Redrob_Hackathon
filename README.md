@@ -161,10 +161,12 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Added local semantic concept matching for the Redrob JD.
 - Added hybrid score breakdowns for semantic fit, production proof, behavior, penalties, and proxy guardrails.
 - Added generated evaluation reporting for keyword baseline vs semantic concept matcher vs hybrid ranker.
+- Moved the top candidate explanation and bias guardrail above the full `100,000` candidate list.
+- Added per-candidate info buttons so each visible row can show the exact ranker reason and score breakdown.
 - Produced `redrob_submission.csv`.
 - Passed the official Redrob submission validator.
-- Finished the batch-tournament official top-100 run in `46.9s` on local hardware.
-- Built the live 100,000-candidate page asset plus evaluation report in `275.4s`.
+- Finished the batch-tournament official top-100 run in `41.7s` on local hardware.
+- Built the live 100,000-candidate page asset plus evaluation report in `275.0s`.
 - Merged `10` initial batches down to the final ranking in `4` merge rounds.
 - Exported the required `candidate_id`, `rank`, `score`, and `reason` fields.
 - Kept challenge ranking CPU-only and no-network.
@@ -192,6 +194,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Redrob Challenge button in the hosted app.
 - Visible Redrob processing showcase before results appear.
 - Page-by-page Redrob candidate index for all `100,000` candidates.
+- Per-candidate reason dialog for the visible ranked index.
+- Top candidate "why they won" explanation above the full candidate list.
 - Cross-question reviewer agents on final results.
 - Bias audit and AI-review sanitization guardrail.
 - Firebase Hosting deployment.

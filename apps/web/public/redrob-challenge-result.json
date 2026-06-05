@@ -3,7 +3,7 @@
   "processedCandidates": 100000,
   "selectedRows": 100,
   "sourceFile": "candidates.jsonl",
-  "runtimeSeconds": 46.9,
+  "runtimeSeconds": 41.7,
   "rankingPlan": {
     "initialBatches": 10,
     "requestedBatches": 10,
@@ -41,7 +41,7 @@
   "searchPagePrefix": "redrob-candidate-pages/page-",
   "searchPageCount": 1000,
   "searchPageSize": 100,
-  "searchIndexRuntimeSeconds": 109,
+  "searchIndexRuntimeSeconds": 113.7,
   "biasAudit": {
     "status": "review",
     "summary": "Bias guardrail applied; proxy distribution still needs human review.",

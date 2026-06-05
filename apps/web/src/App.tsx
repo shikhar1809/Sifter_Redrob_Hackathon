@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Info, Play, ShieldCheck, Upload, X } from "lucide-react";
 import type { BiasAudit, CandidateInput, GateCandidate, PipelineResult, RedrobCandidateSearchRow, RedrobRankingRow } from "@seederpro/core";
 
 type RunResponse = {
@@ -1113,6 +1113,8 @@ export default function App() {
             />
           ) : null}
           {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
+          {dataMode === "redrob" && redrobRows.length ? <TopRedrobCandidateExplanation row={redrobRows[0]} /> : null}
+          {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "redrob" && redrobRows.length ? (
             <RedrobSearchPanel
               totalCandidates={redrobCandidateCount}
@@ -1131,7 +1133,6 @@ export default function App() {
               onPage={loadRedrobCandidatePage}
             />
           ) : null}
-          {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
           {dataMode === "standard" && result ? <BiasAuditPanel audit={result.biasAudit} /> : null}
           {dataMode === "standard" && result ? (
@@ -1142,7 +1143,6 @@ export default function App() {
               resultReady
             />
           ) : null}
-          {dataMode === "redrob" && outputFormat !== "report" ? <RedrobChallengeRanking rows={redrobRows} /> : null}
           {dataMode === "standard" && outputFormat !== "csv" ? <RecommendedCandidates rows={finalWithScores} inviteCap={inviteCap} /> : null}
           {dataMode === "standard" && result ? <EmailConnector rows={finalWithScores} allRows={result.gate1} roleTitle={roleTitle} inviteLink={inviteLink} onExport={exportEmailCsv} /> : null}
           {dataMode === "standard" ? <Simulation rows={result?.simulation ?? []} scores={simulationScores} setScores={setSimulationScores} /> : null}
@@ -1605,9 +1605,11 @@ function RedrobSearchPanel({
   const end = loadedRows ? pageEnd : 0;
   const visibleCount = query.trim() ? totalMatches : loadedRows;
   const [pageInput, setPageInput] = useState(String(page + 1));
+  const [selectedRow, setSelectedRow] = useState<RedrobCandidateSearchRow | null>(null);
 
   useEffect(() => {
     setPageInput(String(page + 1));
+    setSelectedRow(null);
   }, [page]);
 
   function goToTypedPage(event: FormEvent<HTMLFormElement>) {
@@ -1685,6 +1687,7 @@ function RedrobSearchPanel({
                   <th>Profile</th>
                   <th>Evidence</th>
                   <th>Status</th>
+                  <th>Why</th>
                 </tr>
               </thead>
               <tbody>
@@ -1702,14 +1705,61 @@ function RedrobSearchPanel({
                     </td>
                     <td>{row.evidence.slice(0, 3).join(", ") || row.concern || "Review profile details."}</td>
                     <td>{statusLabel(row.status)}</td>
+                    <td>
+                      <button className="icon-action" type="button" onClick={() => setSelectedRow(row)} aria-label={`Why ${row.candidate_id} is ranked #${row.rank}`}>
+                        <Info size={16} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          {selectedRow ? <CandidateReasonDialog row={selectedRow} onClose={() => setSelectedRow(null)} /> : null}
         </>
       ) : null}
     </section>
+  );
+}
+
+function CandidateReasonDialog({ row, onClose }: { row: RedrobCandidateSearchRow; onClose: () => void }) {
+  return (
+    <div className="reason-dialog" role="dialog" aria-modal="true" aria-label={`Reason for ${row.candidate_id}`}>
+      <div className="reason-dialog-card">
+        <div className="reason-dialog-head">
+          <div>
+            <span>Rank #{row.rank}</span>
+            <strong>{row.candidate_id}</strong>
+          </div>
+          <button className="icon-action" type="button" onClick={onClose} aria-label="Close candidate reason">
+            <X size={16} />
+          </button>
+        </div>
+        <div className="candidate-detail-grid">
+          <div>
+            <span>Exact ranker reason</span>
+            <p>{row.reasoning}</p>
+          </div>
+          <div>
+            <span>Profile</span>
+            <p>
+              {row.title}, {row.years} yrs, {row.location}. Skills: {row.skills.slice(0, 8).join(", ") || "not listed"}.
+            </p>
+          </div>
+        </div>
+        <ScoreBreakdownGrid breakdown={row.score_breakdown} />
+        <div className="candidate-detail-grid">
+          <div>
+            <span>Evidence</span>
+            <p>{row.evidence.length ? row.evidence.join(", ") : "No compact evidence list was generated for this row."}</p>
+          </div>
+          <div>
+            <span>Concern</span>
+            <p>{row.concern || "No top concern was flagged by the ranker."}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1760,32 +1810,70 @@ function BiasAuditPanel({ audit }: { audit: BiasAudit }) {
   );
 }
 
-function RedrobChallengeRanking({ rows }: { rows: RedrobRankingRow[] }) {
-  const reviewRows = rows.slice(0, 4);
+function TopRedrobCandidateExplanation({ row }: { row: RedrobRankingRow | undefined }) {
+  if (!row) {
+    return (
+      <section className="panel gate-panel">
+        <PanelTitle title="Why The Top Candidate Won" meta="waiting" />
+        <div className="empty-state">Run the Redrob challenge ranker to explain the top candidate.</div>
+      </section>
+    );
+  }
+
   return (
-    <section className="panel gate-panel">
-      <PanelTitle title="Top Candidate Cross-Questions" meta={rows.length ? "4 reviewer views" : "waiting"} />
-      {!rows.length ? (
-        <div className="empty-state">Run the Redrob challenge ranker to generate the top-100 submission rows.</div>
-      ) : (
+    <section className="panel top-candidate-panel">
+      <PanelTitle title="Why The Top Candidate Won" meta={`rank #${row.rank}`} />
+      <div className="top-candidate-hero">
         <div>
-          <div className="summary-message">
-            The official top-100 CSV is available from the export button. The visible candidate table is now the full ranked index above, so the top 100 is not repeated here.
-          </div>
-          <div className="challenge-agent-stack">
-            {reviewRows.map((row) => (
-              <article key={`agent-${row.candidate_id}`} className="challenge-agent-card">
-                <div className="challenge-agent-head">
-                  <span>#{row.rank}</span>
-                  <strong>{row.candidate_id}</strong>
-                </div>
-                <ReviewerOpinions opinions={buildRedrobAgentOpinions(row)} />
-              </article>
-            ))}
-          </div>
+          <span>Top candidate</span>
+          <strong>{row.candidate_id}</strong>
+          <p>{row.reasoning}</p>
         </div>
-      )}
+        <div className="top-score-card">
+          <span>Score</span>
+          <strong>{row.score.toFixed(4)}</strong>
+        </div>
+      </div>
+      <ScoreBreakdownGrid breakdown={row.score_breakdown} />
+      <div className="candidate-detail-grid">
+        <div>
+          <span>Evidence used</span>
+          <p>{row.evidence.length ? row.evidence.join(", ") : "Evidence is in the reasoning text."}</p>
+        </div>
+        <div>
+          <span>Risks checked</span>
+          <p>{row.concerns.length ? row.concerns.join("; ") : "No top concern was flagged by the ranker."}</p>
+        </div>
+      </div>
+      <div className="top-review-note">
+        <strong>Cross-question view</strong>
+        <ReviewerOpinions opinions={buildRedrobAgentOpinions(row)} />
+      </div>
     </section>
+  );
+}
+
+function ScoreBreakdownGrid({ breakdown }: { breakdown: RedrobRankingRow["score_breakdown"] | RedrobCandidateSearchRow["score_breakdown"] }) {
+  const items = [
+    ["Semantic fit", breakdown.semanticFit],
+    ["Technical evidence", breakdown.technicalEvidence],
+    ["Production proof", breakdown.productionProof],
+    ["Ranking/eval", breakdown.rankingEvaluation],
+    ["Experience fit", breakdown.experienceFit],
+    ["Behavior", breakdown.behavioralSignals],
+    ["Availability", breakdown.availability],
+    ["Proxy guardrail", breakdown.proxyGuardrail],
+  ] as const;
+
+  return (
+    <div className="score-breakdown-grid">
+      {items.map(([label, value]) => (
+        <div key={label}>
+          <span>{label}</span>
+          <strong>{value}%</strong>
+        </div>
+      ))}
+    </div>
   );
 }
 

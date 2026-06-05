@@ -307,6 +307,8 @@ export type RedrobCandidateSearchRow = {
   candidate_id: string;
   rank: number;
   score: number;
+  reasoning: string;
+  score_breakdown: RedrobScoreBreakdown;
   title: string;
   location: string;
   country: string;
@@ -488,6 +490,8 @@ export function createRedrobCandidateSearchIndex(candidates: RedrobCandidate[]):
         candidate_id: candidate.candidate_id,
         rank,
         score: redrobSubmissionScore(scored),
+        reasoning: buildRedrobReasoning(scored, rank),
+        score_breakdown: redrobScoreBreakdown(scored),
         title: candidate.profile.current_title || candidate.profile.headline || "Candidate",
         location: candidate.profile.location || candidate.profile.country || "unknown",
         country: candidate.profile.country || "unknown",

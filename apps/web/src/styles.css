@@ -422,6 +422,19 @@ textarea {
   color: #050505;
 }
 
+.icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #050505;
+  cursor: pointer;
+}
+
 .full-width {
   width: 100%;
 }
@@ -1440,6 +1453,137 @@ textarea {
   line-height: 1.3;
 }
 
+.top-candidate-panel {
+  border-color: #050505;
+}
+
+.top-candidate-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.top-candidate-hero > div,
+.top-score-card,
+.candidate-detail-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.top-candidate-hero span,
+.top-score-card span,
+.candidate-detail-grid span,
+.score-breakdown-grid span,
+.top-review-note > strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.top-candidate-hero strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.top-candidate-hero p,
+.candidate-detail-grid p {
+  margin: 0;
+  color: #30302c;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.top-score-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.top-score-card strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 28px;
+}
+
+.score-breakdown-grid,
+.candidate-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.score-breakdown-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 10px;
+}
+
+.score-breakdown-grid strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.top-review-note {
+  margin-top: 10px;
+}
+
+.reason-dialog {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(5, 5, 5, 0.52);
+}
+
+.reason-dialog-card {
+  width: min(860px, 100%);
+  max-height: min(760px, 88vh);
+  overflow: auto;
+  border: 1px solid #050505;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 14px;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.24);
+}
+
+.reason-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.reason-dialog-head span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.reason-dialog-head strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 24px;
+  font-weight: 950;
+}
+
 .reason-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -2222,7 +2366,8 @@ td {
   .challenge-agent-stack,
   .mechanics-grid,
   .mechanic-flow,
-  .mechanic-agent-grid {
+  .mechanic-agent-grid,
+  .top-candidate-hero {
     grid-template-columns: 1fr;
   }
 
