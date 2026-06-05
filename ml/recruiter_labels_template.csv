@@ -1,0 +1,4 @@
+candidate_id,label,notes
+CAND_0071974,strong_fit,Example: top ranked profile with strong retrieval/ranking evidence
+CAND_0044855,maybe,Example: useful profile but needs recruiter review
+CAND_0000001,not_fit,Example: replace with a real rejected candidate id

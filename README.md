@@ -221,12 +221,16 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Bias audit and AI-review sanitization guardrail.
 - Firebase Hosting deployment.
 - README screenshots and layman-first documentation.
+- Hugging Face training package for a learned reward/reranker model.
+- Colab-ready scripts for Redrob preference data preparation and model fine-tuning.
+- Hugging Face Spaces Gradio app template for deploying the trained reranker.
 
 ## What Is Not Done Yet
 
 - No trained proprietary ML model yet. The Redrob challenge path uses local vector/semantic matching plus hybrid scoring so it can stay CPU-only and network-off.
 - No hosted embedding service in production yet. The repo has an optional local Transformers.js reranker, but production search should still add an indexed embedding backend.
 - No team-wide learning database yet. Recruiter feedback is captured locally today; syncing it across users and retraining weights from hiring outcomes is still future work.
+- No completed uploaded fine-tuned model yet. The repo now includes the Colab training pipeline and Hugging Face Space app; the model still needs to be trained on GPU and pushed to your Hugging Face account.
 - No complex PDF/DOC resume parsing yet.
 - No NLP-based candidate deduplication yet.
 - No production backend search service yet. The live Redrob demo uses static 100-candidate pages plus page-level search.
@@ -262,6 +266,20 @@ API health check:
 ```text
 http://127.0.0.1:4000/health
 ```
+
+## Train The Learned Reranker
+
+The learned model setup lives in [ml/README.md](ml/README.md).
+
+It includes:
+
+- Redrob data preparation script.
+- Recruiter-label CSV template.
+- Cross-encoder reward/reranker fine-tuning script for Google Colab.
+- DPO-style preference export and optional DPO training script for LLM rank explanations.
+- Hugging Face Spaces Gradio deployment files.
+
+Use this when you want to move from the deterministic ranker to a trained model that learns from recruiter preferences.
 
 ## How To Run The Redrob Challenge Ranker
 
