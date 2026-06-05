@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Brain, ClipboardList, Database, Download, FileDown, Play, ShieldCheck, Upload } from "lucide-react";
-import type { BiasAudit, CandidateInput, GateCandidate, PipelineResult, RedrobRankingRow } from "@seederpro/core";
+import type { BiasAudit, CandidateInput, GateCandidate, PipelineResult, RedrobCandidateSearchRow, RedrobRankingRow } from "@seederpro/core";
 
 type RunResponse = {
   runId: string | null;
@@ -46,8 +46,14 @@ type RedrobChallengeAsset = {
   generatedAt: string;
   note: string;
   rankingPlan?: RedrobRankingPlan;
+  searchIndexFile?: string;
+  searchIndexRows?: number;
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
+};
+type RedrobSearchAsset = {
+  generatedAt: string;
+  rows: RedrobCandidateSearchRow[];
 };
 type ReviewAgentOpinion = {
   agent: string;
@@ -132,6 +138,11 @@ export default function App() {
   const [redrobCsv, setRedrobCsv] = useState("");
   const [redrobBiasAudit, setRedrobBiasAudit] = useState<BiasAudit | null>(null);
   const [redrobRankingPlan, setRedrobRankingPlan] = useState<RedrobRankingPlan | null>(null);
+  const [redrobSearchRows, setRedrobSearchRows] = useState<RedrobCandidateSearchRow[]>([]);
+  const [redrobSearchStatus, setRedrobSearchStatus] = useState("not loaded");
+  const [redrobSearchQuery, setRedrobSearchQuery] = useState("");
+  const [redrobSearchIndexFile, setRedrobSearchIndexFile] = useState("redrob-challenge-result-search-index.json");
+  const [redrobSearchIndexRows, setRedrobSearchIndexRows] = useState(0);
   const [result, setResult] = useState<PipelineResult | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -171,11 +182,34 @@ export default function App() {
   const candidateLimitState = candidates.length > hardCandidateLimit ? "hard" : candidates.length > softCandidateLimit ? "soft" : "ok";
   const loadedCandidateCount = dataMode === "redrob" ? redrobCandidateCount : candidates.length;
   const rankedCount = dataMode === "redrob" ? redrobRows.length : finalWithScores.length;
+  const filteredRedrobSearchRows = useMemo(() => {
+    const query = redrobSearchQuery.trim().toLowerCase();
+    const source = redrobSearchRows;
+    if (!query) return source.slice(0, 50);
+    return source
+      .filter((row) =>
+        [
+          row.candidate_id,
+          row.title,
+          row.location,
+          row.country,
+          String(row.years),
+          String(row.rank),
+          ...row.skills,
+          ...row.evidence,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(query),
+      )
+      .slice(0, 50);
+  }, [redrobSearchQuery, redrobSearchRows]);
   const setupReady =
     dataMode === "redrob"
       ? roleReady && redrobCandidateCount > 0 && Boolean(outputFormat)
       : roleReady && candidates.length > 0 && candidates.length <= hardCandidateLimit && inviteCap > 0 && Boolean(outputFormat);
   const ready = setupReady;
+  const isBusy = status === "running" || status === "showcasing";
 
   useEffect(() => {
     function updateVisionNotes() {
@@ -217,6 +251,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobRankingPlan(null);
+    resetRedrobSearch();
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -240,6 +275,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobRankingPlan(null);
+    resetRedrobSearch();
     setResult(null);
     setRunId(null);
     setPhase("setup");
@@ -343,6 +379,7 @@ export default function App() {
       setRedrobCandidateCount(typed.count);
       setRedrobBiasAudit(typed.biasAudit);
       setRedrobRankingPlan(null);
+      resetRedrobSearch();
       setResult(null);
       setRunId(null);
       setSimulationScores({});
@@ -360,35 +397,93 @@ export default function App() {
 
   async function loadRedrobChallengeOutput() {
     setError(null);
-    setStatus("loading Redrob challenge");
-    setProgressLabel("Loading full challenge output");
+    setStatus("showcasing");
+    setRunProgress(5);
+    setProgressLabel("Loading Redrob challenge brief");
     setDataMode("redrob");
-    setPhase("setup");
+    setPhase("processing");
     applyRoleTemplate("Senior AI Engineer");
+    setCandidates([]);
+    setCsv("");
+    setRedrobRows([]);
+    setRedrobCsv("");
+    setRedrobBiasAudit(null);
+    setRedrobRankingPlan(null);
+    setResult(null);
+    setRunId(null);
+    setUploadedFileName("Full Redrob challenge output");
+    setOutputFormat("report_csv");
     try {
       const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
       const payload = (await response.json()) as RedrobChallengeAsset;
       if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the bundled Redrob result.");
-      setCandidates([]);
-      setCsv("");
+      setRedrobCandidateCount(payload.processedCandidates);
+      setRedrobSearchIndexFile(payload.searchIndexFile ?? "redrob-challenge-result-search-index.json");
+      setRedrobSearchIndexRows(payload.searchIndexRows ?? payload.processedCandidates);
+      setRedrobSearchRows([]);
+      setRedrobSearchStatus("not loaded");
+
+      await playRedrobShowcase(payload);
+
       setRedrobCandidateCount(payload.processedCandidates);
       setRedrobRows(payload.rows);
       setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
       setRedrobBiasAudit(payload.biasAudit);
       setRedrobRankingPlan(payload.rankingPlan ?? null);
-      setResult(null);
-      setRunId(null);
-      setUploadedFileName("Full Redrob challenge output");
-      setOutputFormat("report_csv");
-      setRunProgress(0);
-      setProgressLabel(`Ready: ${payload.processedCandidates.toLocaleString()} Redrob candidates`);
-      setStatus("challenge ready");
-      setPhase("setup");
+      setRunProgress(100);
+      setProgressLabel(`Final shortlist ready from ${payload.processedCandidates.toLocaleString()} candidates`);
+      setStatus("complete");
+      window.setTimeout(() => setRunProgress(0), 1200);
     } catch (err) {
       setStatus("error");
       setRunProgress(0);
       setProgressLabel("challenge load stopped");
       setError(err instanceof Error ? err.message : "Could not load the Redrob challenge output");
+    }
+  }
+
+  async function playRedrobShowcase(payload: RedrobChallengeAsset) {
+    const plan = payload.rankingPlan;
+    const batchCount = plan?.initialBatches ?? 10;
+    const mergeRounds = plan?.rounds.length ?? 4;
+    const stages = [
+      { progress: 14, label: `Breaking ${payload.processedCandidates.toLocaleString()} candidates into ${batchCount} batches` },
+      { progress: 31, label: `Running ${batchCount} parallel batch rankings` },
+      { progress: 52, label: `Merging winners over ${mergeRounds} rounds` },
+      { progress: 72, label: "Building final top 100 ranking" },
+      { progress: 88, label: "Cross-questioning with 4 reviewer agents" },
+      { progress: 96, label: "Running bias guardrail and preparing search" },
+    ];
+
+    for (const stage of stages) {
+      setRunProgress(stage.progress);
+      setProgressLabel(stage.label);
+      await delay(650);
+    }
+  }
+
+  function resetRedrobSearch() {
+    setRedrobSearchRows([]);
+    setRedrobSearchStatus("not loaded");
+    setRedrobSearchQuery("");
+    setRedrobSearchIndexRows(0);
+    setRedrobSearchIndexFile("redrob-challenge-result-search-index.json");
+  }
+
+  async function loadRedrobSearchIndex() {
+    if (redrobSearchRows.length) return;
+    setRedrobSearchStatus("loading");
+    setError(null);
+    try {
+      const response = await fetch(`/${redrobSearchIndexFile}`, { cache: "no-cache" });
+      const payload = (await response.json()) as RedrobSearchAsset;
+      if (!response.ok || !Array.isArray(payload.rows)) throw new Error("Could not load the Redrob search index.");
+      setRedrobSearchRows(payload.rows);
+      setRedrobSearchStatus(`loaded ${payload.rows.length.toLocaleString()} candidates`);
+      setRedrobSearchIndexRows(payload.rows.length);
+    } catch (err) {
+      setRedrobSearchStatus("error");
+      setError(err instanceof Error ? err.message : "Could not load Redrob search index");
     }
   }
 
@@ -542,6 +637,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobRankingPlan(null);
+    resetRedrobSearch();
     setUploadedFileName(null);
     setResult(null);
     setRunId(null);
@@ -559,6 +655,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobRankingPlan(null);
+    resetRedrobSearch();
     setSimulationScores({});
     setStatus(loadedCandidateCount ? `parsed ${loadedCandidateCount} candidates` : "idle");
     setProgressLabel("waiting for inputs");
@@ -644,7 +741,7 @@ export default function App() {
               title="Step 1: Role Requirements"
               meta={roleReady ? "ready" : "required"}
               action={
-                <button className="btn btn-primary panel-title-button" type="button" onClick={loadRedrobChallengeOutput} disabled={status === "running"}>
+                <button className="btn btn-primary panel-title-button" type="button" onClick={loadRedrobChallengeOutput} disabled={isBusy}>
                   <Database size={15} />
                   Redrob Challenge
                 </button>
@@ -775,7 +872,7 @@ export default function App() {
                   <Upload size={16} />
                   Upload candidate data
                 </button>
-                <button className="btn btn-primary" type="button" onClick={loadRedrobChallengeOutput} disabled={status === "running"}>
+                <button className="btn btn-primary" type="button" onClick={loadRedrobChallengeOutput} disabled={isBusy}>
                   <Database size={16} />
                   Redrob Challenge
                 </button>
@@ -914,7 +1011,7 @@ export default function App() {
                 Back
               </button>
               {setupReady ? (
-                <button className="btn btn-primary run-step-button" onClick={runPipeline} disabled={status === "running"}>
+                <button className="btn btn-primary run-step-button" onClick={runPipeline} disabled={isBusy}>
                   <Play size={16} />
                   {status === "running" ? "Finding shortlist" : dataMode === "redrob" ? "Rank challenge" : "Find shortlist"}
                 </button>
@@ -971,7 +1068,7 @@ export default function App() {
             </div>
             {error ? <div className="error-box">{error}</div> : null}
           </section>
-          {(dataMode === "redrob" && redrobRows.length) || (dataMode === "standard" && result) ? (
+          {(dataMode === "redrob" && (redrobRows.length || status === "showcasing")) || (dataMode === "standard" && result) ? (
             <ProcessingMechanicsPanel
               mode={dataMode}
               candidateCount={loadedCandidateCount}
@@ -980,6 +1077,18 @@ export default function App() {
             />
           ) : null}
           {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
+          {dataMode === "redrob" && redrobRows.length ? (
+            <RedrobSearchPanel
+              totalCandidates={redrobCandidateCount}
+              indexRows={redrobSearchIndexRows}
+              rows={filteredRedrobSearchRows}
+              loadedRows={redrobSearchRows.length}
+              status={redrobSearchStatus}
+              query={redrobSearchQuery}
+              setQuery={setRedrobSearchQuery}
+              onLoad={loadRedrobSearchIndex}
+            />
+          ) : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "standard" && result ? <ResultSummary result={result} recommended={finalWithScores} inviteCap={inviteCap} strictMode={strictMode} /> : null}
           {dataMode === "standard" && result ? <BiasAuditPanel audit={result.biasAudit} /> : null}
@@ -1387,6 +1496,87 @@ function RedrobChallengeSummary({
           <p>
             Sifter ranks each batch, keeps the strongest candidates, combines {rankingPlan.mergeSize} batches at a time, and repeats until one final ranking remains.
           </p>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function RedrobSearchPanel({
+  totalCandidates,
+  indexRows,
+  rows,
+  loadedRows,
+  status,
+  query,
+  setQuery,
+  onLoad,
+}: {
+  totalCandidates: number;
+  indexRows: number;
+  rows: RedrobCandidateSearchRow[];
+  loadedRows: number;
+  status: string;
+  query: string;
+  setQuery: (value: string) => void;
+  onLoad: () => void;
+}) {
+  const expected = indexRows || totalCandidates;
+  return (
+    <section className="panel redrob-search-panel">
+      <PanelTitle title="Search All Redrob Candidates" meta={loadedRows ? `${loadedRows.toLocaleString()} indexed` : `${expected.toLocaleString()} available`} />
+      <div className="search-explainer">
+        <strong>Where are the other 99,900?</strong>
+        <span>
+          They are in the compact search index. The table above is the submission shortlist; this search loads the full ranked index without exposing the raw 487 MB candidate file.
+        </span>
+      </div>
+      <div className="search-actions">
+        <button className="btn btn-primary" type="button" onClick={onLoad} disabled={status === "loading" || Boolean(loadedRows)}>
+          <Database size={16} />
+          {loadedRows ? "Search index loaded" : status === "loading" ? "Loading index" : `Load ${expected.toLocaleString()} candidate index`}
+        </button>
+        <input
+          className="field-control compact-control search-input"
+          value={query}
+          disabled={!loadedRows}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search ID, rank, location, title, skill, experience"
+        />
+      </div>
+      <div className="search-status">{status}</div>
+      {loadedRows ? (
+        <div className="table-frame">
+          <table className="search-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Candidate</th>
+                <th>Score</th>
+                <th>Profile</th>
+                <th>Evidence</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={`search-${row.candidate_id}`}>
+                  <td>#{row.rank}</td>
+                  <td className="strong-cell">{row.candidate_id}</td>
+                  <td>{row.score.toFixed(4)}</td>
+                  <td>
+                    <strong>{row.title}</strong>
+                    <span className="search-profile-line">
+                      {row.years} yrs · {row.location}
+                    </span>
+                    <span className="search-profile-line">{row.skills.slice(0, 4).join(", ")}</span>
+                  </td>
+                  <td>{row.evidence.slice(0, 3).join(", ") || row.concern || "Review profile details."}</td>
+                  <td>{statusLabel(row.status)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : null}
     </section>
@@ -2116,6 +2306,12 @@ function outputFormatLabel(format: OutputFormat): string {
   if (format === "report") return "Report only";
   if (format === "csv") return "Data file only";
   return "Report + data file";
+}
+
+function statusLabel(status: RedrobCandidateSearchRow["status"]): string {
+  if (status === "shortlisted") return "Top 100";
+  if (status === "review") return "Near shortlist";
+  return "Not top 100";
 }
 
 function candidateModeFromFile(fileName: string, text: string): CandidateDataMode {

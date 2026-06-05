@@ -1,818 +1,823 @@
-{
-  "label": "Full Redrob challenge output",
-  "processedCandidates": 100000,
-  "selectedRows": 100,
-  "sourceFile": "candidates.jsonl",
-  "runtimeSeconds": 37.1,
-  "rankingPlan": {
-    "initialBatches": 10,
-    "requestedBatches": 10,
-    "mergeSize": 2,
-    "rounds": [
-      {
-        "round": 1,
-        "inputGroups": 10,
-        "outputGroups": 5,
-        "candidatesConsidered": 1000
-      },
-      {
-        "round": 2,
-        "inputGroups": 5,
-        "outputGroups": 3,
-        "candidatesConsidered": 500
-      },
-      {
-        "round": 3,
-        "inputGroups": 3,
-        "outputGroups": 2,
-        "candidatesConsidered": 300
-      },
-      {
-        "round": 4,
-        "inputGroups": 2,
-        "outputGroups": 1,
-        "candidatesConsidered": 200
-      }
-    ]
-  },
-  "generatedAt": "2026-06-05",
-  "note": "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
-  "biasAudit": {
-    "status": "review",
-    "summary": "Bias guardrail applied; proxy distribution still needs human review.",
-    "protectedAttributesAvailable": false,
-    "protectedAttributesUsed": [],
-    "excludedSignals": [
-      "candidate name",
-      "anonymized name",
-      "education institution",
-      "education tier",
-      "language",
-      "school prestige"
-    ],
-    "mitigations": [
-      "scores are built from job evidence before logistics signals",
-      "location and availability are capped as feasibility signals, not quality signals",
-      "proxy-heavy profiles lose lift when technical and production evidence is weak",
-      "tie-breaks use candidate id only for deterministic ordering"
-    ],
-    "proxyGroups": [
-      {
-        "field": "country",
-        "group": "India",
-        "poolCount": 75113,
-        "selectedCount": 86,
-        "poolShare": 0.7511,
-        "selectedShare": 0.86,
-        "ratio": 1.14,
-        "flag": "ok"
-      },
-      {
-        "field": "country",
-        "group": "outside India",
-        "poolCount": 24887,
-        "selectedCount": 14,
-        "poolShare": 0.2489,
-        "selectedShare": 0.14,
-        "ratio": 0.56,
-        "flag": "ok"
-      },
-      {
-        "field": "work mode",
-        "group": "hybrid",
-        "poolCount": 25076,
-        "selectedCount": 39,
-        "poolShare": 0.2508,
-        "selectedShare": 0.39,
-        "ratio": 1.56,
-        "flag": "ok"
-      },
-      {
-        "field": "work mode",
-        "group": "flexible",
-        "poolCount": 25000,
-        "selectedCount": 24,
-        "poolShare": 0.25,
-        "selectedShare": 0.24,
-        "ratio": 0.96,
-        "flag": "ok"
-      },
-      {
-        "field": "work mode",
-        "group": "onsite",
-        "poolCount": 25000,
-        "selectedCount": 19,
-        "poolShare": 0.25,
-        "selectedShare": 0.19,
-        "ratio": 0.76,
-        "flag": "ok"
-      },
-      {
-        "field": "work mode",
-        "group": "remote",
-        "poolCount": 24924,
-        "selectedCount": 18,
-        "poolShare": 0.2492,
-        "selectedShare": 0.18,
-        "ratio": 0.72,
-        "flag": "ok"
-      },
-      {
-        "field": "experience band",
-        "group": "5-9 years",
-        "poolCount": 34375,
-        "selectedCount": 91,
-        "poolShare": 0.3438,
-        "selectedShare": 0.91,
-        "ratio": 2.65,
-        "flag": "over_selected"
-      },
-      {
-        "field": "experience band",
-        "group": "3-4 years",
-        "poolCount": 17750,
-        "selectedCount": 6,
-        "poolShare": 0.1775,
-        "selectedShare": 0.06,
-        "ratio": 0.34,
-        "flag": "under_selected"
-      },
-      {
-        "field": "experience band",
-        "group": "0-2 years",
-        "poolCount": 16120,
-        "selectedCount": 1,
-        "poolShare": 0.1612,
-        "selectedShare": 0.01,
-        "ratio": 0.06,
-        "flag": "under_selected"
-      },
-      {
-        "field": "experience band",
-        "group": "10-14 years",
-        "poolCount": 27069,
-        "selectedCount": 0,
-        "poolShare": 0.2707,
-        "selectedShare": 0,
-        "ratio": 0,
-        "flag": "under_selected"
-      },
-      {
-        "field": "experience band",
-        "group": "15+ years",
-        "poolCount": 4686,
-        "selectedCount": 2,
-        "poolShare": 0.0469,
-        "selectedShare": 0.02,
-        "ratio": 0.43,
-        "flag": "ok"
-      },
-      {
-        "field": "notice period",
-        "group": "0-30 days",
-        "poolCount": 13809,
-        "selectedCount": 36,
-        "poolShare": 0.1381,
-        "selectedShare": 0.36,
-        "ratio": 2.61,
-        "flag": "over_selected"
-      },
-      {
-        "field": "notice period",
-        "group": "91+ days",
-        "poolCount": 30551,
-        "selectedCount": 7,
-        "poolShare": 0.3055,
-        "selectedShare": 0.07,
-        "ratio": 0.23,
-        "flag": "under_selected"
-      },
-      {
-        "field": "notice period",
-        "group": "31-60 days",
-        "poolCount": 24543,
-        "selectedCount": 38,
-        "poolShare": 0.2454,
-        "selectedShare": 0.38,
-        "ratio": 1.55,
-        "flag": "ok"
-      },
-      {
-        "field": "notice period",
-        "group": "61-90 days",
-        "poolCount": 31097,
-        "selectedCount": 19,
-        "poolShare": 0.311,
-        "selectedShare": 0.19,
-        "ratio": 0.61,
-        "flag": "ok"
-      }
-    ],
-    "warnings": [
-      "The Redrob file does not expose protected attributes such as gender, caste, religion, disability, or race. Sifter audits observable proxy fields instead.",
-      "6 proxy groups need human review before final hiring decisions."
-    ]
-  },
-  "rows": [
-    {
-      "candidate_id": "CAND_0081846",
-      "rank": 1,
-      "score": 0.9071,
-      "reasoning": "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03."
-    },
-    {
-      "candidate_id": "CAND_0077337",
-      "rank": 2,
-      "score": 0.9014,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26."
-    },
-    {
-      "candidate_id": "CAND_0071974",
-      "rank": 3,
-      "score": 0.8883,
-      "reasoning": "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16."
-    },
-    {
-      "candidate_id": "CAND_0055905",
-      "rank": 4,
-      "score": 0.8762,
-      "reasoning": "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0080766",
-      "rank": 5,
-      "score": 0.8671,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09."
-    },
-    {
-      "candidate_id": "CAND_0039754",
-      "rank": 6,
-      "score": 0.8661,
-      "reasoning": "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14."
-    },
-    {
-      "candidate_id": "CAND_0002025",
-      "rank": 7,
-      "score": 0.8596,
-      "reasoning": "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26."
-    },
-    {
-      "candidate_id": "CAND_0008425",
-      "rank": 8,
-      "score": 0.8573,
-      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25."
-    },
-    {
-      "candidate_id": "CAND_0018499",
-      "rank": 9,
-      "score": 0.8537,
-      "reasoning": "Strong fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13."
-    },
-    {
-      "candidate_id": "CAND_0046064",
-      "rank": 10,
-      "score": 0.8529,
-      "reasoning": "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26."
-    },
-    {
-      "candidate_id": "CAND_0011687",
-      "rank": 11,
-      "score": 0.8509,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10."
-    },
-    {
-      "candidate_id": "CAND_0046525",
-      "rank": 12,
-      "score": 0.8381,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23."
-    },
-    {
-      "candidate_id": "CAND_0011162",
-      "rank": 13,
-      "score": 0.8378,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10."
-    },
-    {
-      "candidate_id": "CAND_0030031",
-      "rank": 14,
-      "score": 0.8366,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22."
-    },
-    {
-      "candidate_id": "CAND_0086022",
-      "rank": 15,
-      "score": 0.8324,
-      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15."
-    },
-    {
-      "candidate_id": "CAND_0068811",
-      "rank": 16,
-      "score": 0.8318,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21."
-    },
-    {
-      "candidate_id": "CAND_0033861",
-      "rank": 17,
-      "score": 0.8276,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently."
-    },
-    {
-      "candidate_id": "CAND_0006418",
-      "rank": 18,
-      "score": 0.8268,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31."
-    },
-    {
-      "candidate_id": "CAND_0077285",
-      "rank": 19,
-      "score": 0.8258,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03."
-    },
-    {
-      "candidate_id": "CAND_0005538",
-      "rank": 20,
-      "score": 0.8249,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17."
-    },
-    {
-      "candidate_id": "CAND_0039838",
-      "rank": 21,
-      "score": 0.8249,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21."
-    },
-    {
-      "candidate_id": "CAND_0064326",
-      "rank": 22,
-      "score": 0.8239,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21."
-    },
-    {
-      "candidate_id": "CAND_0027691",
-      "rank": 23,
-      "score": 0.821,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31."
-    },
-    {
-      "candidate_id": "CAND_0032515",
-      "rank": 24,
-      "score": 0.8136,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0044883",
-      "rank": 25,
-      "score": 0.8122,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07."
-    },
-    {
-      "candidate_id": "CAND_0041669",
-      "rank": 26,
-      "score": 0.809,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06."
-    },
-    {
-      "candidate_id": "CAND_0005649",
-      "rank": 27,
-      "score": 0.8052,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14."
-    },
-    {
-      "candidate_id": "CAND_0041610",
-      "rank": 28,
-      "score": 0.8029,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14."
-    },
-    {
-      "candidate_id": "CAND_0006567",
-      "rank": 29,
-      "score": 0.8005,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03."
-    },
-    {
-      "candidate_id": "CAND_0005260",
-      "rank": 30,
-      "score": 0.7999,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10."
-    },
-    {
-      "candidate_id": "CAND_0014440",
-      "rank": 31,
-      "score": 0.7962,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10."
-    },
-    {
-      "candidate_id": "CAND_0079387",
-      "rank": 32,
-      "score": 0.7949,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25."
-    },
-    {
-      "candidate_id": "CAND_0045250",
-      "rank": 33,
-      "score": 0.7936,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29."
-    },
-    {
-      "candidate_id": "CAND_0098846",
-      "rank": 34,
-      "score": 0.7931,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23."
-    },
-    {
-      "candidate_id": "CAND_0088025",
-      "rank": 35,
-      "score": 0.7894,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14."
-    },
-    {
-      "candidate_id": "CAND_0083879",
-      "rank": 36,
-      "score": 0.7879,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17."
-    },
-    {
-      "candidate_id": "CAND_0042029",
-      "rank": 37,
-      "score": 0.7877,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13."
-    },
-    {
-      "candidate_id": "CAND_0017960",
-      "rank": 38,
-      "score": 0.7809,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27."
-    },
-    {
-      "candidate_id": "CAND_0028793",
-      "rank": 39,
-      "score": 0.7805,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0030468",
-      "rank": 40,
-      "score": 0.7803,
-      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03."
-    },
-    {
-      "candidate_id": "CAND_0050876",
-      "rank": 41,
-      "score": 0.7802,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26."
-    },
-    {
-      "candidate_id": "CAND_0010685",
-      "rank": 42,
-      "score": 0.7762,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16."
-    },
-    {
-      "candidate_id": "CAND_0078002",
-      "rank": 43,
-      "score": 0.7733,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21."
-    },
-    {
-      "candidate_id": "CAND_0093547",
-      "rank": 44,
-      "score": 0.7733,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10."
-    },
-    {
-      "candidate_id": "CAND_0044222",
-      "rank": 45,
-      "score": 0.7694,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15."
-    },
-    {
-      "candidate_id": "CAND_0011432",
-      "rank": 46,
-      "score": 0.7693,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16."
-    },
-    {
-      "candidate_id": "CAND_0022812",
-      "rank": 47,
-      "score": 0.7667,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19."
-    },
-    {
-      "candidate_id": "CAND_0075574",
-      "rank": 48,
-      "score": 0.7666,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17."
-    },
-    {
-      "candidate_id": "CAND_0041611",
-      "rank": 49,
-      "score": 0.7665,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate."
-    },
-    {
-      "candidate_id": "CAND_0007412",
-      "rank": 50,
-      "score": 0.7662,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0018549",
-      "rank": 51,
-      "score": 0.766,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28."
-    },
-    {
-      "candidate_id": "CAND_0049538",
-      "rank": 52,
-      "score": 0.7659,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27."
-    },
-    {
-      "candidate_id": "CAND_0042100",
-      "rank": 53,
-      "score": 0.7657,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23."
-    },
-    {
-      "candidate_id": "CAND_0013613",
-      "rank": 54,
-      "score": 0.7655,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.7 yrs in Singapore; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0010257",
-      "rank": 55,
-      "score": 0.7652,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0066999",
-      "rank": 56,
-      "score": 0.7648,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05."
-    },
-    {
-      "candidate_id": "CAND_0024620",
-      "rank": 57,
-      "score": 0.7629,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.9 yrs in New York; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12."
-    },
-    {
-      "candidate_id": "CAND_0070202",
-      "rank": 58,
-      "score": 0.7615,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20."
-    },
-    {
-      "candidate_id": "CAND_0055992",
-      "rank": 59,
-      "score": 0.7609,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28."
-    },
-    {
-      "candidate_id": "CAND_0092278",
-      "rank": 60,
-      "score": 0.7602,
-      "reasoning": "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate."
-    },
-    {
-      "candidate_id": "CAND_0037980",
-      "rank": 61,
-      "score": 0.7598,
-      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28."
-    },
-    {
-      "candidate_id": "CAND_0007411",
-      "rank": 62,
-      "score": 0.7596,
-      "reasoning": "Included as a lower-confidence fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate."
-    },
-    {
-      "candidate_id": "CAND_0081053",
-      "rank": 63,
-      "score": 0.7595,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31."
-    },
-    {
-      "candidate_id": "CAND_0053695",
-      "rank": 64,
-      "score": 0.7591,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02."
-    },
-    {
-      "candidate_id": "CAND_0000031",
-      "rank": 65,
-      "score": 0.7584,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24."
-    },
-    {
-      "candidate_id": "CAND_0043228",
-      "rank": 66,
-      "score": 0.7581,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22."
-    },
-    {
-      "candidate_id": "CAND_0039383",
-      "rank": 67,
-      "score": 0.7578,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19."
-    },
-    {
-      "candidate_id": "CAND_0081686",
-      "rank": 68,
-      "score": 0.7578,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0099401",
-      "rank": 69,
-      "score": 0.7575,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27."
-    },
-    {
-      "candidate_id": "CAND_0095528",
-      "rank": 70,
-      "score": 0.7571,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03."
-    },
-    {
-      "candidate_id": "CAND_0051292",
-      "rank": 71,
-      "score": 0.7543,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12."
-    },
-    {
-      "candidate_id": "CAND_0047721",
-      "rank": 72,
-      "score": 0.7526,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05."
-    },
-    {
-      "candidate_id": "CAND_0092255",
-      "rank": 73,
-      "score": 0.7526,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07."
-    },
-    {
-      "candidate_id": "CAND_0052328",
-      "rank": 74,
-      "score": 0.7515,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31."
-    },
-    {
-      "candidate_id": "CAND_0072660",
-      "rank": 75,
-      "score": 0.7515,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0061655",
-      "rank": 76,
-      "score": 0.7513,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21."
-    },
-    {
-      "candidate_id": "CAND_0094759",
-      "rank": 77,
-      "score": 0.7495,
-      "reasoning": "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate."
-    },
-    {
-      "candidate_id": "CAND_0096142",
-      "rank": 78,
-      "score": 0.7492,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0008978",
-      "rank": 79,
-      "score": 0.7487,
-      "reasoning": "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13."
-    },
-    {
-      "candidate_id": "CAND_0058688",
-      "rank": 80,
-      "score": 0.7485,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28."
-    },
-    {
-      "candidate_id": "CAND_0076482",
-      "rank": 81,
-      "score": 0.7485,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06."
-    },
-    {
-      "candidate_id": "CAND_0037944",
-      "rank": 82,
-      "score": 0.7484,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22."
-    },
-    {
-      "candidate_id": "CAND_0065878",
-      "rank": 83,
-      "score": 0.7466,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23."
-    },
-    {
-      "candidate_id": "CAND_0053591",
-      "rank": 84,
-      "score": 0.7462,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0083307",
-      "rank": 85,
-      "score": 0.7461,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0052682",
-      "rank": 86,
-      "score": 0.7456,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28."
-    },
-    {
-      "candidate_id": "CAND_0070398",
-      "rank": 87,
-      "score": 0.7424,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0061265",
-      "rank": 88,
-      "score": 0.7422,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days)."
-    },
-    {
-      "candidate_id": "CAND_0036121",
-      "rank": 89,
-      "score": 0.7413,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.49, notice 60d, last active 2026-03-07."
-    },
-    {
-      "candidate_id": "CAND_0041568",
-      "rank": 90,
-      "score": 0.7398,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation."
-    },
-    {
-      "candidate_id": "CAND_0015528",
-      "rank": 91,
-      "score": 0.7377,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16."
-    },
-    {
-      "candidate_id": "CAND_0067866",
-      "rank": 92,
-      "score": 0.7364,
-      "reasoning": "Included as a lower-confidence fit Senior Software Engineer (ML) with 6.4 yrs in Noida, Uttar Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.79, notice 45d, last active 2026-05-22."
-    },
-    {
-      "candidate_id": "CAND_0044855",
-      "rank": 93,
-      "score": 0.7358,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24."
-    },
-    {
-      "candidate_id": "CAND_0020877",
-      "rank": 94,
-      "score": 0.7352,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.1 yrs in Gurgaon, Haryana; matches embeddings, retrieval, evaluation, faiss from the Senior AI Engineer JD; production deployment proof is thin. Redrob signals: response rate 0.66, notice 60d, last active 2026-04-03."
-    },
-    {
-      "candidate_id": "CAND_0030953",
-      "rank": 95,
-      "score": 0.735,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11."
-    },
-    {
-      "candidate_id": "CAND_0091909",
-      "rank": 96,
-      "score": 0.734,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18."
-    },
-    {
-      "candidate_id": "CAND_0065195",
-      "rank": 97,
-      "score": 0.7333,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24."
-    },
-    {
-      "candidate_id": "CAND_0064904",
-      "rank": 98,
-      "score": 0.7327,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 4.9 yrs in Hyderabad, Telangana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.78, notice 90d, last active 2026-03-17."
-    },
-    {
-      "candidate_id": "CAND_0093912",
-      "rank": 99,
-      "score": 0.732,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Chandigarh, Chandigarh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.66, notice 30d, last active 2026-05-11."
-    },
-    {
-      "candidate_id": "CAND_0074735",
-      "rank": 100,
-      "score": 0.7317,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.5 yrs in Chandigarh, Chandigarh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.77, notice 90d, last active 2026-03-28."
-    }
-  ]
+﻿{
+    "label":  "Full Redrob challenge output",
+    "processedCandidates":  100000,
+    "selectedRows":  100,
+    "sourceFile":  "candidates.jsonl",
+    "runtimeSeconds":  82.1,
+    "rankingPlan":  {
+                        "initialBatches":  10,
+                        "requestedBatches":  10,
+                        "mergeSize":  2,
+                        "rounds":  [
+                                       {
+                                           "round":  1,
+                                           "inputGroups":  10,
+                                           "outputGroups":  5,
+                                           "candidatesConsidered":  1000
+                                       },
+                                       {
+                                           "round":  2,
+                                           "inputGroups":  5,
+                                           "outputGroups":  3,
+                                           "candidatesConsidered":  500
+                                       },
+                                       {
+                                           "round":  3,
+                                           "inputGroups":  3,
+                                           "outputGroups":  2,
+                                           "candidatesConsidered":  300
+                                       },
+                                       {
+                                           "round":  4,
+                                           "inputGroups":  2,
+                                           "outputGroups":  1,
+                                           "candidatesConsidered":  200
+                                       }
+                                   ]
+                    },
+    "generatedAt":  "2026-06-05",
+    "note":  "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
+    "searchIndexFile":  "redrob-challenge-result-search-index.json",
+    "searchIndexRows":  100000,
+    "searchIndexRuntimeSeconds":  294,
+    "biasAudit":  {
+                      "status":  "review",
+                      "summary":  "Bias guardrail applied; proxy distribution still needs human review.",
+                      "protectedAttributesAvailable":  false,
+                      "protectedAttributesUsed":  [
+
+                                                  ],
+                      "excludedSignals":  [
+                                              "candidate name",
+                                              "anonymized name",
+                                              "education institution",
+                                              "education tier",
+                                              "language",
+                                              "school prestige"
+                                          ],
+                      "mitigations":  [
+                                          "scores are built from job evidence before logistics signals",
+                                          "location and availability are capped as feasibility signals, not quality signals",
+                                          "proxy-heavy profiles lose lift when technical and production evidence is weak",
+                                          "tie-breaks use candidate id only for deterministic ordering"
+                                      ],
+                      "proxyGroups":  [
+                                          {
+                                              "field":  "country",
+                                              "group":  "India",
+                                              "poolCount":  75113,
+                                              "selectedCount":  86,
+                                              "poolShare":  0.7511,
+                                              "selectedShare":  0.86,
+                                              "ratio":  1.14,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "country",
+                                              "group":  "outside India",
+                                              "poolCount":  24887,
+                                              "selectedCount":  14,
+                                              "poolShare":  0.2489,
+                                              "selectedShare":  0.14,
+                                              "ratio":  0.56,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "work mode",
+                                              "group":  "hybrid",
+                                              "poolCount":  25076,
+                                              "selectedCount":  39,
+                                              "poolShare":  0.2508,
+                                              "selectedShare":  0.39,
+                                              "ratio":  1.56,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "work mode",
+                                              "group":  "flexible",
+                                              "poolCount":  25000,
+                                              "selectedCount":  24,
+                                              "poolShare":  0.25,
+                                              "selectedShare":  0.24,
+                                              "ratio":  0.96,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "work mode",
+                                              "group":  "onsite",
+                                              "poolCount":  25000,
+                                              "selectedCount":  19,
+                                              "poolShare":  0.25,
+                                              "selectedShare":  0.19,
+                                              "ratio":  0.76,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "work mode",
+                                              "group":  "remote",
+                                              "poolCount":  24924,
+                                              "selectedCount":  18,
+                                              "poolShare":  0.2492,
+                                              "selectedShare":  0.18,
+                                              "ratio":  0.72,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "experience band",
+                                              "group":  "5-9 years",
+                                              "poolCount":  34375,
+                                              "selectedCount":  91,
+                                              "poolShare":  0.3438,
+                                              "selectedShare":  0.91,
+                                              "ratio":  2.65,
+                                              "flag":  "over_selected"
+                                          },
+                                          {
+                                              "field":  "experience band",
+                                              "group":  "3-4 years",
+                                              "poolCount":  17750,
+                                              "selectedCount":  6,
+                                              "poolShare":  0.1775,
+                                              "selectedShare":  0.06,
+                                              "ratio":  0.34,
+                                              "flag":  "under_selected"
+                                          },
+                                          {
+                                              "field":  "experience band",
+                                              "group":  "0-2 years",
+                                              "poolCount":  16120,
+                                              "selectedCount":  1,
+                                              "poolShare":  0.1612,
+                                              "selectedShare":  0.01,
+                                              "ratio":  0.06,
+                                              "flag":  "under_selected"
+                                          },
+                                          {
+                                              "field":  "experience band",
+                                              "group":  "10-14 years",
+                                              "poolCount":  27069,
+                                              "selectedCount":  0,
+                                              "poolShare":  0.2707,
+                                              "selectedShare":  0,
+                                              "ratio":  0,
+                                              "flag":  "under_selected"
+                                          },
+                                          {
+                                              "field":  "experience band",
+                                              "group":  "15+ years",
+                                              "poolCount":  4686,
+                                              "selectedCount":  2,
+                                              "poolShare":  0.0469,
+                                              "selectedShare":  0.02,
+                                              "ratio":  0.43,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "notice period",
+                                              "group":  "0-30 days",
+                                              "poolCount":  13809,
+                                              "selectedCount":  36,
+                                              "poolShare":  0.1381,
+                                              "selectedShare":  0.36,
+                                              "ratio":  2.61,
+                                              "flag":  "over_selected"
+                                          },
+                                          {
+                                              "field":  "notice period",
+                                              "group":  "91+ days",
+                                              "poolCount":  30551,
+                                              "selectedCount":  7,
+                                              "poolShare":  0.3055,
+                                              "selectedShare":  0.07,
+                                              "ratio":  0.23,
+                                              "flag":  "under_selected"
+                                          },
+                                          {
+                                              "field":  "notice period",
+                                              "group":  "31-60 days",
+                                              "poolCount":  24543,
+                                              "selectedCount":  38,
+                                              "poolShare":  0.2454,
+                                              "selectedShare":  0.38,
+                                              "ratio":  1.55,
+                                              "flag":  "ok"
+                                          },
+                                          {
+                                              "field":  "notice period",
+                                              "group":  "61-90 days",
+                                              "poolCount":  31097,
+                                              "selectedCount":  19,
+                                              "poolShare":  0.311,
+                                              "selectedShare":  0.19,
+                                              "ratio":  0.61,
+                                              "flag":  "ok"
+                                          }
+                                      ],
+                      "warnings":  [
+                                       "The Redrob file does not expose protected attributes such as gender, caste, religion, disability, or race. Sifter audits observable proxy fields instead.",
+                                       "6 proxy groups need human review before final hiring decisions."
+                                   ]
+                  },
+    "rows":  [
+                 {
+                     "candidate_id":  "CAND_0081846",
+                     "rank":  1,
+                     "score":  0.9071,
+                     "reasoning":  "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0077337",
+                     "rank":  2,
+                     "score":  0.9014,
+                     "reasoning":  "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26."
+                 },
+                 {
+                     "candidate_id":  "CAND_0071974",
+                     "rank":  3,
+                     "score":  0.8883,
+                     "reasoning":  "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16."
+                 },
+                 {
+                     "candidate_id":  "CAND_0055905",
+                     "rank":  4,
+                     "score":  0.8762,
+                     "reasoning":  "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0080766",
+                     "rank":  5,
+                     "score":  0.8671,
+                     "reasoning":  "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09."
+                 },
+                 {
+                     "candidate_id":  "CAND_0039754",
+                     "rank":  6,
+                     "score":  0.8661,
+                     "reasoning":  "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14."
+                 },
+                 {
+                     "candidate_id":  "CAND_0002025",
+                     "rank":  7,
+                     "score":  0.8596,
+                     "reasoning":  "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26."
+                 },
+                 {
+                     "candidate_id":  "CAND_0008425",
+                     "rank":  8,
+                     "score":  0.8573,
+                     "reasoning":  "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25."
+                 },
+                 {
+                     "candidate_id":  "CAND_0018499",
+                     "rank":  9,
+                     "score":  0.8537,
+                     "reasoning":  "Strong fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13."
+                 },
+                 {
+                     "candidate_id":  "CAND_0046064",
+                     "rank":  10,
+                     "score":  0.8529,
+                     "reasoning":  "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26."
+                 },
+                 {
+                     "candidate_id":  "CAND_0011687",
+                     "rank":  11,
+                     "score":  0.8509,
+                     "reasoning":  "Good but not clean-cut fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10."
+                 },
+                 {
+                     "candidate_id":  "CAND_0046525",
+                     "rank":  12,
+                     "score":  0.8381,
+                     "reasoning":  "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23."
+                 },
+                 {
+                     "candidate_id":  "CAND_0011162",
+                     "rank":  13,
+                     "score":  0.8378,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10."
+                 },
+                 {
+                     "candidate_id":  "CAND_0030031",
+                     "rank":  14,
+                     "score":  0.8366,
+                     "reasoning":  "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22."
+                 },
+                 {
+                     "candidate_id":  "CAND_0086022",
+                     "rank":  15,
+                     "score":  0.8324,
+                     "reasoning":  "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15."
+                 },
+                 {
+                     "candidate_id":  "CAND_0068811",
+                     "rank":  16,
+                     "score":  0.8318,
+                     "reasoning":  "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21."
+                 },
+                 {
+                     "candidate_id":  "CAND_0033861",
+                     "rank":  17,
+                     "score":  0.8276,
+                     "reasoning":  "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently."
+                 },
+                 {
+                     "candidate_id":  "CAND_0006418",
+                     "rank":  18,
+                     "score":  0.8268,
+                     "reasoning":  "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31."
+                 },
+                 {
+                     "candidate_id":  "CAND_0077285",
+                     "rank":  19,
+                     "score":  0.8258,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0005538",
+                     "rank":  20,
+                     "score":  0.8249,
+                     "reasoning":  "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17."
+                 },
+                 {
+                     "candidate_id":  "CAND_0039838",
+                     "rank":  21,
+                     "score":  0.8249,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21."
+                 },
+                 {
+                     "candidate_id":  "CAND_0064326",
+                     "rank":  22,
+                     "score":  0.8239,
+                     "reasoning":  "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21."
+                 },
+                 {
+                     "candidate_id":  "CAND_0027691",
+                     "rank":  23,
+                     "score":  0.821,
+                     "reasoning":  "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31."
+                 },
+                 {
+                     "candidate_id":  "CAND_0032515",
+                     "rank":  24,
+                     "score":  0.8136,
+                     "reasoning":  "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0044883",
+                     "rank":  25,
+                     "score":  0.8122,
+                     "reasoning":  "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07."
+                 },
+                 {
+                     "candidate_id":  "CAND_0041669",
+                     "rank":  26,
+                     "score":  0.809,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06."
+                 },
+                 {
+                     "candidate_id":  "CAND_0005649",
+                     "rank":  27,
+                     "score":  0.8052,
+                     "reasoning":  "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14."
+                 },
+                 {
+                     "candidate_id":  "CAND_0041610",
+                     "rank":  28,
+                     "score":  0.8029,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14."
+                 },
+                 {
+                     "candidate_id":  "CAND_0006567",
+                     "rank":  29,
+                     "score":  0.8005,
+                     "reasoning":  "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0005260",
+                     "rank":  30,
+                     "score":  0.7999,
+                     "reasoning":  "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10."
+                 },
+                 {
+                     "candidate_id":  "CAND_0014440",
+                     "rank":  31,
+                     "score":  0.7962,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10."
+                 },
+                 {
+                     "candidate_id":  "CAND_0079387",
+                     "rank":  32,
+                     "score":  0.7949,
+                     "reasoning":  "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25."
+                 },
+                 {
+                     "candidate_id":  "CAND_0045250",
+                     "rank":  33,
+                     "score":  0.7936,
+                     "reasoning":  "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29."
+                 },
+                 {
+                     "candidate_id":  "CAND_0098846",
+                     "rank":  34,
+                     "score":  0.7931,
+                     "reasoning":  "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23."
+                 },
+                 {
+                     "candidate_id":  "CAND_0088025",
+                     "rank":  35,
+                     "score":  0.7894,
+                     "reasoning":  "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14."
+                 },
+                 {
+                     "candidate_id":  "CAND_0083879",
+                     "rank":  36,
+                     "score":  0.7879,
+                     "reasoning":  "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17."
+                 },
+                 {
+                     "candidate_id":  "CAND_0042029",
+                     "rank":  37,
+                     "score":  0.7877,
+                     "reasoning":  "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13."
+                 },
+                 {
+                     "candidate_id":  "CAND_0017960",
+                     "rank":  38,
+                     "score":  0.7809,
+                     "reasoning":  "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27."
+                 },
+                 {
+                     "candidate_id":  "CAND_0028793",
+                     "rank":  39,
+                     "score":  0.7805,
+                     "reasoning":  "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0030468",
+                     "rank":  40,
+                     "score":  0.7803,
+                     "reasoning":  "Good but not clean-cut fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0050876",
+                     "rank":  41,
+                     "score":  0.7802,
+                     "reasoning":  "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26."
+                 },
+                 {
+                     "candidate_id":  "CAND_0010685",
+                     "rank":  42,
+                     "score":  0.7762,
+                     "reasoning":  "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16."
+                 },
+                 {
+                     "candidate_id":  "CAND_0078002",
+                     "rank":  43,
+                     "score":  0.7733,
+                     "reasoning":  "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21."
+                 },
+                 {
+                     "candidate_id":  "CAND_0093547",
+                     "rank":  44,
+                     "score":  0.7733,
+                     "reasoning":  "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10."
+                 },
+                 {
+                     "candidate_id":  "CAND_0044222",
+                     "rank":  45,
+                     "score":  0.7694,
+                     "reasoning":  "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15."
+                 },
+                 {
+                     "candidate_id":  "CAND_0011432",
+                     "rank":  46,
+                     "score":  0.7693,
+                     "reasoning":  "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16."
+                 },
+                 {
+                     "candidate_id":  "CAND_0022812",
+                     "rank":  47,
+                     "score":  0.7667,
+                     "reasoning":  "Good but not clean-cut fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19."
+                 },
+                 {
+                     "candidate_id":  "CAND_0075574",
+                     "rank":  48,
+                     "score":  0.7666,
+                     "reasoning":  "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17."
+                 },
+                 {
+                     "candidate_id":  "CAND_0041611",
+                     "rank":  49,
+                     "score":  0.7665,
+                     "reasoning":  "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate."
+                 },
+                 {
+                     "candidate_id":  "CAND_0007412",
+                     "rank":  50,
+                     "score":  0.7662,
+                     "reasoning":  "Good but not clean-cut fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0018549",
+                     "rank":  51,
+                     "score":  0.766,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28."
+                 },
+                 {
+                     "candidate_id":  "CAND_0049538",
+                     "rank":  52,
+                     "score":  0.7659,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27."
+                 },
+                 {
+                     "candidate_id":  "CAND_0042100",
+                     "rank":  53,
+                     "score":  0.7657,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23."
+                 },
+                 {
+                     "candidate_id":  "CAND_0013613",
+                     "rank":  54,
+                     "score":  0.7655,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 4.7 yrs in Singapore; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0010257",
+                     "rank":  55,
+                     "score":  0.7652,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0066999",
+                     "rank":  56,
+                     "score":  0.7648,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05."
+                 },
+                 {
+                     "candidate_id":  "CAND_0024620",
+                     "rank":  57,
+                     "score":  0.7629,
+                     "reasoning":  "Included as a lower-confidence fit AI Engineer with 5.9 yrs in New York; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12."
+                 },
+                 {
+                     "candidate_id":  "CAND_0070202",
+                     "rank":  58,
+                     "score":  0.7615,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20."
+                 },
+                 {
+                     "candidate_id":  "CAND_0055992",
+                     "rank":  59,
+                     "score":  0.7609,
+                     "reasoning":  "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28."
+                 },
+                 {
+                     "candidate_id":  "CAND_0092278",
+                     "rank":  60,
+                     "score":  0.7602,
+                     "reasoning":  "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate."
+                 },
+                 {
+                     "candidate_id":  "CAND_0037980",
+                     "rank":  61,
+                     "score":  0.7598,
+                     "reasoning":  "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28."
+                 },
+                 {
+                     "candidate_id":  "CAND_0007411",
+                     "rank":  62,
+                     "score":  0.7596,
+                     "reasoning":  "Included as a lower-confidence fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate."
+                 },
+                 {
+                     "candidate_id":  "CAND_0081053",
+                     "rank":  63,
+                     "score":  0.7595,
+                     "reasoning":  "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31."
+                 },
+                 {
+                     "candidate_id":  "CAND_0053695",
+                     "rank":  64,
+                     "score":  0.7591,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02."
+                 },
+                 {
+                     "candidate_id":  "CAND_0000031",
+                     "rank":  65,
+                     "score":  0.7584,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24."
+                 },
+                 {
+                     "candidate_id":  "CAND_0043228",
+                     "rank":  66,
+                     "score":  0.7581,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22."
+                 },
+                 {
+                     "candidate_id":  "CAND_0039383",
+                     "rank":  67,
+                     "score":  0.7578,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19."
+                 },
+                 {
+                     "candidate_id":  "CAND_0081686",
+                     "rank":  68,
+                     "score":  0.7578,
+                     "reasoning":  "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0099401",
+                     "rank":  69,
+                     "score":  0.7575,
+                     "reasoning":  "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27."
+                 },
+                 {
+                     "candidate_id":  "CAND_0095528",
+                     "rank":  70,
+                     "score":  0.7571,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0051292",
+                     "rank":  71,
+                     "score":  0.7543,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12."
+                 },
+                 {
+                     "candidate_id":  "CAND_0047721",
+                     "rank":  72,
+                     "score":  0.7526,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05."
+                 },
+                 {
+                     "candidate_id":  "CAND_0092255",
+                     "rank":  73,
+                     "score":  0.7526,
+                     "reasoning":  "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07."
+                 },
+                 {
+                     "candidate_id":  "CAND_0052328",
+                     "rank":  74,
+                     "score":  0.7515,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31."
+                 },
+                 {
+                     "candidate_id":  "CAND_0072660",
+                     "rank":  75,
+                     "score":  0.7515,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0061655",
+                     "rank":  76,
+                     "score":  0.7513,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21."
+                 },
+                 {
+                     "candidate_id":  "CAND_0094759",
+                     "rank":  77,
+                     "score":  0.7495,
+                     "reasoning":  "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate."
+                 },
+                 {
+                     "candidate_id":  "CAND_0096142",
+                     "rank":  78,
+                     "score":  0.7492,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0008978",
+                     "rank":  79,
+                     "score":  0.7487,
+                     "reasoning":  "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13."
+                 },
+                 {
+                     "candidate_id":  "CAND_0058688",
+                     "rank":  80,
+                     "score":  0.7485,
+                     "reasoning":  "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28."
+                 },
+                 {
+                     "candidate_id":  "CAND_0076482",
+                     "rank":  81,
+                     "score":  0.7485,
+                     "reasoning":  "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06."
+                 },
+                 {
+                     "candidate_id":  "CAND_0037944",
+                     "rank":  82,
+                     "score":  0.7484,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22."
+                 },
+                 {
+                     "candidate_id":  "CAND_0065878",
+                     "rank":  83,
+                     "score":  0.7466,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23."
+                 },
+                 {
+                     "candidate_id":  "CAND_0053591",
+                     "rank":  84,
+                     "score":  0.7462,
+                     "reasoning":  "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0083307",
+                     "rank":  85,
+                     "score":  0.7461,
+                     "reasoning":  "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0052682",
+                     "rank":  86,
+                     "score":  0.7456,
+                     "reasoning":  "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28."
+                 },
+                 {
+                     "candidate_id":  "CAND_0070398",
+                     "rank":  87,
+                     "score":  0.7424,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0061265",
+                     "rank":  88,
+                     "score":  0.7422,
+                     "reasoning":  "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days)."
+                 },
+                 {
+                     "candidate_id":  "CAND_0036121",
+                     "rank":  89,
+                     "score":  0.7413,
+                     "reasoning":  "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.49, notice 60d, last active 2026-03-07."
+                 },
+                 {
+                     "candidate_id":  "CAND_0041568",
+                     "rank":  90,
+                     "score":  0.7398,
+                     "reasoning":  "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation."
+                 },
+                 {
+                     "candidate_id":  "CAND_0015528",
+                     "rank":  91,
+                     "score":  0.7377,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16."
+                 },
+                 {
+                     "candidate_id":  "CAND_0067866",
+                     "rank":  92,
+                     "score":  0.7364,
+                     "reasoning":  "Included as a lower-confidence fit Senior Software Engineer (ML) with 6.4 yrs in Noida, Uttar Pradesh; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.79, notice 45d, last active 2026-05-22."
+                 },
+                 {
+                     "candidate_id":  "CAND_0044855",
+                     "rank":  93,
+                     "score":  0.7358,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24."
+                 },
+                 {
+                     "candidate_id":  "CAND_0020877",
+                     "rank":  94,
+                     "score":  0.7352,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 5.1 yrs in Gurgaon, Haryana; matches embeddings, retrieval, evaluation, faiss from the Senior AI Engineer JD; production deployment proof is thin. Redrob signals: response rate 0.66, notice 60d, last active 2026-04-03."
+                 },
+                 {
+                     "candidate_id":  "CAND_0030953",
+                     "rank":  95,
+                     "score":  0.735,
+                     "reasoning":  "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11."
+                 },
+                 {
+                     "candidate_id":  "CAND_0091909",
+                     "rank":  96,
+                     "score":  0.734,
+                     "reasoning":  "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18."
+                 },
+                 {
+                     "candidate_id":  "CAND_0065195",
+                     "rank":  97,
+                     "score":  0.7333,
+                     "reasoning":  "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24."
+                 },
+                 {
+                     "candidate_id":  "CAND_0064904",
+                     "rank":  98,
+                     "score":  0.7327,
+                     "reasoning":  "Included as a lower-confidence fit AI Engineer with 4.9 yrs in Hyderabad, Telangana; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.78, notice 90d, last active 2026-03-17."
+                 },
+                 {
+                     "candidate_id":  "CAND_0093912",
+                     "rank":  99,
+                     "score":  0.732,
+                     "reasoning":  "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Chandigarh, Chandigarh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.66, notice 30d, last active 2026-05-11."
+                 },
+                 {
+                     "candidate_id":  "CAND_0074735",
+                     "rank":  100,
+                     "score":  0.7317,
+                     "reasoning":  "Included as a lower-confidence fit Applied ML Engineer with 5.5 yrs in Chandigarh, Chandigarh; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.77, notice 90d, last active 2026-03-28."
+                 }
+             ]
 }

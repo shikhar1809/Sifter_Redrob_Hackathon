@@ -254,6 +254,20 @@ export type RedrobRankingRow = {
   reasoning: string;
 };
 
+export type RedrobCandidateSearchRow = {
+  candidate_id: string;
+  rank: number;
+  score: number;
+  title: string;
+  location: string;
+  country: string;
+  years: number;
+  skills: string[];
+  status: "shortlisted" | "review" | "not_shortlisted";
+  evidence: string[];
+  concern: string;
+};
+
 const defaultSkills = [
   "python",
   "sql",
@@ -368,6 +382,37 @@ export function rankRedrobCandidates(input: RedrobRankerInput): RedrobRankingRow
       score: redrobSubmissionScore(scored),
       reasoning: buildRedrobReasoning(scored, index + 1),
     }));
+}
+
+export function createRedrobCandidateSearchIndex(candidates: RedrobCandidate[]): RedrobCandidateSearchRow[] {
+  if (!candidates.length) return [];
+  return candidates
+    .map(scoreRedrobCandidate)
+    .sort(
+      (a, b) =>
+        redrobSubmissionScore(b) - redrobSubmissionScore(a) ||
+        a.candidate.candidate_id.localeCompare(b.candidate.candidate_id),
+    )
+    .map((scored, index) => {
+      const rank = index + 1;
+      const candidate = scored.candidate;
+      const evidence = [...scored.evidence.coreHits, ...scored.evidence.productionSignals, scored.evidence.strongestSkill]
+        .filter(Boolean)
+        .slice(0, 5);
+      return {
+        candidate_id: candidate.candidate_id,
+        rank,
+        score: redrobSubmissionScore(scored),
+        title: candidate.profile.current_title || candidate.profile.headline || "Candidate",
+        location: candidate.profile.location || candidate.profile.country || "unknown",
+        country: candidate.profile.country || "unknown",
+        years: Number(candidate.profile.years_of_experience.toFixed(1)),
+        skills: candidate.skills.map((skill) => skill.name).filter(Boolean).slice(0, 8),
+        status: rank <= 100 ? "shortlisted" : rank <= 1000 ? "review" : "not_shortlisted",
+        evidence,
+        concern: scored.concerns[0] ?? "",
+      };
+    });
 }
 
 export function createRedrobBiasAudit(candidates: RedrobCandidate[], rows: RedrobRankingRow[]): BiasAudit {

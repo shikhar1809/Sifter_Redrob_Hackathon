@@ -6,6 +6,7 @@ import { createInterface } from "node:readline";
 import { Worker } from "node:worker_threads";
 import { createGunzip } from "node:zlib";
 import {
+  createRedrobCandidateSearchIndex,
   createRedrobBiasAudit,
   exportRedrobSubmissionCsv,
   parseRedrobCandidates,
@@ -30,32 +31,41 @@ const ranking = await rankRedrobCandidatesInBatches(candidates, {
   batches: args.batches,
   mergeSize: args.mergeSize,
 });
+const rankingRuntimeSeconds = Number(((Date.now() - started) / 1000).toFixed(1));
 const rows = ranking.rows;
 const outputPath = resolveOutputPath(args.output);
 await writeFile(outputPath, `${exportRedrobSubmissionCsv(rows)}\n`, "utf8");
 if (args.assetOutput) {
   const assetOutputPath = resolveOutputPath(args.assetOutput);
+  const searchOutputPath = assetOutputPath.replace(/\.json$/i, "-search-index.json");
+  const searchStarted = Date.now();
+  const searchIndex = createRedrobCandidateSearchIndex(candidates);
   const asset = {
     label: "Full Redrob challenge output",
     processedCandidates: candidates.length,
     selectedRows: rows.length,
     sourceFile: "candidates.jsonl",
-    runtimeSeconds: Number(((Date.now() - started) / 1000).toFixed(1)),
+    runtimeSeconds: rankingRuntimeSeconds,
     rankingPlan: ranking.plan,
     generatedAt: new Date().toISOString().slice(0, 10),
     note: "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
+    searchIndexFile: "redrob-challenge-result-search-index.json",
+    searchIndexRows: searchIndex.length,
+    searchIndexRuntimeSeconds: Number(((Date.now() - searchStarted) / 1000).toFixed(1)),
     biasAudit: createRedrobBiasAudit(candidates, rows),
     rows,
   };
   await writeFile(assetOutputPath, `${JSON.stringify(asset, null, 2)}\n`, "utf8");
+  await writeFile(searchOutputPath, `${JSON.stringify({ generatedAt: asset.generatedAt, rows: searchIndex })}\n`, "utf8");
 }
 
 console.log(
   [
-    `Ranked ${candidates.length} candidates in ${((Date.now() - started) / 1000).toFixed(1)}s.`,
+    `Ranked ${candidates.length} candidates in ${rankingRuntimeSeconds.toFixed(1)}s.`,
     `Batch plan: ${ranking.plan.initialBatches} initial batches, merge size ${ranking.plan.mergeSize}, ${ranking.plan.rounds.length} merge rounds.`,
+    args.assetOutput ? `Total asset build time with searchable index: ${((Date.now() - started) / 1000).toFixed(1)}s.` : "",
     `Wrote ${rows.length} rows to ${outputPath}.`,
-    args.assetOutput ? `Wrote live asset to ${resolveOutputPath(args.assetOutput)}.` : "",
+    args.assetOutput ? `Wrote live asset and search index to ${resolveOutputPath(args.assetOutput)}.` : "",
     rows[0] ? `Top candidate: ${rows[0].candidate_id} (${rows[0].score.toFixed(4)}).` : "No rows were produced.",
   ].filter(Boolean).join(" "),
 );

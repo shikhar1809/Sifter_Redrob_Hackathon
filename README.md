@@ -111,19 +111,19 @@ Important limitation: the Redrob dataset does not include protected demographic 
 
 **Decision:** Add a live Redrob Challenge button.
 
-**What we built:** The button loads the prepared Redrob challenge result state, waits for the user to click **Rank challenge**, then shows ranked output, CSV export, reviewer agents, and bias audit.
+**What we built:** The button now opens the processing/results screen, plays the visible batch-ranking showcase, then reveals ranked output, CSV export, reviewer agents, full-index search, and bias audit.
 
-**What is different:** The button does not silently jump ahead. It prepares the app and keeps the user in control.
+**What is different:** Judges can see the process instead of only seeing finished answers. The UI shows candidates being broken into batches, merged into final ranking, and re-evaluated by four reviewer agents.
 
 ## 10. Plan For Full Candidate Search
 
 **Problem:** Recruiters eventually need to search a full pool by candidate, location, skill, experience, salary, availability, rank, and score.
 
-**Decision:** Do not load the entire large dataset into every browser. Build search as a backend-indexed feature.
+**Decision:** Do not load the raw 487 MB dataset into every browser. For the live demo, load a compact search index on demand. For production, move the same idea behind a backend-indexed search service.
 
-**What we built today:** The README documents the production search plan. Normal uploads can support name search. Redrob challenge names are anonymized, so that flow should search by candidate ID, location, skills, experience, education, and ranking reason.
+**What we built today:** The live app can load a compact `100,000` candidate Redrob search index. Recruiters can search by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
 
-**What is different:** The right production design keeps raw candidate data private and only loads the current search result page in the browser.
+**What is different:** The top-100 table stays the official submission output, while the search panel answers "where are the other 99,900?" without exposing the raw challenge file.
 
 ## Research That Shaped The Product
 
@@ -164,6 +164,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Avoided using candidate names or school prestige as scoring boosts.
 - Added a visible bias guardrail and plain-English audit.
 - Added four reviewer agents on final output.
+- Added on-demand search across a compact `100,000` candidate Redrob index.
 - Deployed the web app on Firebase Hosting.
 
 ## What Is Done
@@ -180,6 +181,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - API endpoints for Redrob parsing and ranking.
 - Web UI support for smaller Redrob JSON/JSONL samples.
 - Redrob Challenge button in the hosted app.
+- Visible Redrob processing showcase before results appear.
+- On-demand Redrob search index for all `100,000` candidates.
 - Cross-question reviewer agents on final results.
 - Bias audit and AI-review sanitization guardrail.
 - Firebase Hosting deployment.
@@ -192,7 +195,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - No live improvement loop yet. Recruiter feedback and hiring outcomes are not being used to retrain or reweight the ranker automatically.
 - No complex PDF/DOC resume parsing yet.
 - No NLP-based candidate deduplication yet.
-- No full candidate search backend yet.
+- No production backend search service yet. The live Redrob demo uses a static compact search index.
 - No automated candidate status messaging yet.
 - No production ATS/HRIS webhooks yet.
 - No true protected-class parity report because the source data does not include protected attributes.
