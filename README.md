@@ -122,6 +122,31 @@ This project now has two major workflows.
 - Improved mobile readability after screenshot review found narrow-screen overflow.
 - Added README screenshots and a plain-language handoff.
 
+## Product Readiness Checklist
+
+| Capability | What recruiters and enterprises need | Where Sifter stands today |
+| --- | --- | --- |
+| Robust, scalable parsing and data quality | Ingest huge volumes from job boards, referrals, career sites, and complex PDF/DOC resumes. Extract skills, roles, education, experience, and deduplicate candidates with NLP. | **Partly done.** The Redrob pipeline processes the full 100,000-candidate challenge dataset locally, including compressed data. Normal CSV/JSON flows work in the app. Complex PDF/DOC parsing and NLP-based deduplication are not production-ready yet. |
+| Semantic matching instead of keyword filters | Understand that similar phrases mean the same thing, like "front-end engineer with JS frameworks" and "React developer". Match skills, seniority, location, salary, availability, and career path. | **Partly done.** Sifter already avoids simple keyword-only filtering by using multi-factor evidence and reasons. True embedding/transformer semantic matching is a next step. |
+| Ranking plus reason | Produce a ranked shortlist with plain explanations, configurable weights, and feedback learning from recruiter outcomes. | **Strongest area.** The app ranks candidates and explains why each person appears. Challenge ranking returns the top 100 with evidence. Fully configurable weights and recruiter feedback learning are planned next. |
+| Bias, fairness, and explainability | Mask protected attributes and obvious proxies. Show why a score happened and monitor score distributions for possible bias. | **Partly done.** The bias guardrail excludes protected/proxy fields from scoring and shows a plain-language audit. Full enterprise fairness dashboards across known demographic groups are not done because the challenge data does not safely provide those protected labels. |
+| Candidate experience at scale | Send timely updates when a candidate is received, shortlisted, rejected, or moved to assessment. Collect missing info without overloading recruiters. | **Early.** Sifter includes recruiter-facing outputs and email-ready workflows, but automated candidate messaging and chatbot-style follow-up flows are not complete. |
+| Enterprise integration and configurability | Provide APIs/webhooks for ATS/HRIS systems and support workflows by role, region, and compliance requirement. | **Early.** The project includes an API foundation, but full ATS integrations, webhooks, and enterprise workflow rules still need to be built. |
+| Performance and reliability | Handle bursty hiring loads where tens of thousands of resumes arrive quickly, while keeping shortlists fast enough for recruiters. | **Proven for the challenge run, not yet production infrastructure.** The local challenge pipeline processed all 100,000 Redrob candidates. Production-grade queues, monitoring, retries, and cloud scaling are still future work. |
+
+## Recruiter Problems And What We Fixed
+
+| Recruiter problem | What Sifter does now |
+| --- | --- |
+| "I have too many resumes and no time to read all of them." | Creates a ranked shortlist with reasons, so recruiters can start with the strongest matches instead of opening files one by one. |
+| "I do not trust a score if I cannot explain it." | Shows why each candidate ranked where they did, including the skills and role evidence that contributed. |
+| "AI screening can become biased and create legal risk." | Removes protected attributes and obvious proxy fields from scoring, then displays a bias guardrail audit in plain English. |
+| "Large datasets make browser apps slow or crash." | Processes the 100,000-candidate Redrob dataset through a local pipeline and only ships the lightweight shortlist/demo output to Firebase. |
+| "I need something anyone can try without setup." | Deploys the app on Firebase at [sifter1011.web.app](https://sifter1011.web.app/), with a Redrob button that loads challenge data instantly. |
+| "I do not want private candidate data sent everywhere." | Uses a local-first approach for heavy challenge processing, keeping raw candidate data off the public static website. |
+| "I need to find one specific candidate by name, location, skill, or rank." | This is designed as the next backend feature: index the full dataset server-side and let recruiters search/filter without loading 100,000 rows into the browser. |
+| "Candidates feel ignored after applying." | Sifter has the structure for recruiter outputs, but automatic candidate status updates are still on the roadmap. |
+
 ## In Plain English
 
 The Redrob challenge asks:
@@ -178,6 +203,36 @@ Yes, the challenge submission was produced by processing the full `candidates.js
 The hosted Firebase app does **not** bundle the raw 487 MB file into every visitor's browser. That would be slow, expensive, and unnecessary for public testing. Instead, the live `Redrob Challenge` button loads the validator-ready top-100 output created from the full run.
 
 That is also how the app stays usable on almost any device. Phones, tablets, and older laptops do not need to score 100,000 profiles in the browser. The heavy ranking path is the compiled local CLI, while the live demo loads a small static result file with the same top-100 output and bias audit, then waits for the user to choose when to show it.
+
+### Why The Website Shows Top 100, Not All 100,000
+
+The live Firebase site is a public, static demo. It intentionally shows the **top 100 ranked candidates**, not the raw 100,000-candidate file.
+
+That choice is deliberate:
+
+- Loading 100,000 full candidate records into every visitor's browser would be slow on phones, tablets, and low-power laptops.
+- Shipping the raw challenge file publicly would expose far more candidate data than a recruiter needs for a demo.
+- Recruiters usually need a shortlist first, then search and drill-down tools for specific people.
+- Firebase Hosting is great for the app and demo output, but the full searchable dataset belongs behind an API and indexed database.
+
+So the current site proves the ranking result quickly. The heavy processing still happens on the full 100,000 candidates.
+
+## Full Candidate Search Plan
+
+The right production version should let recruiters search all candidates without making the website carry all 100,000 records.
+
+For normal uploaded recruiter files, search can work by name, location, skill, experience, salary, availability, rank, and score band. For the Redrob challenge specifically, candidate names are anonymized, so search should use candidate ID, location, skills, experience, education, and ranking reason.
+
+Recommended architecture:
+
+1. Ingest the full dataset in the backend.
+2. Store clean candidate profiles and ranking evidence in an indexed database or search engine.
+3. Add filters for candidate ID/name, location, skills, years of experience, salary, availability, education, and score range.
+4. Add a "find candidate" endpoint that returns that candidate's rank, score, and explanation.
+5. Keep the browser fast by loading only the current search page, not the entire 100,000-row dataset.
+6. Keep the raw data private and expose only recruiter-approved fields in the UI.
+
+This is how Sifter can support huge hiring drives while still feeling fast on any device.
 
 ## What Is Innovative Here?
 
