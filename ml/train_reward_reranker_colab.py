@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import torch
 from datasets import load_dataset
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from scipy.stats import spearmanr
@@ -21,6 +22,15 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
+
+
+class RegressionTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        labels = inputs.pop("labels").float()
+        outputs = model(**inputs)
+        logits = outputs.logits.reshape(-1).float()
+        loss = torch.nn.functional.mse_loss(logits, labels.reshape(-1))
+        return (loss, outputs) if return_outputs else loss
 
 
 def main() -> None:
@@ -60,7 +70,9 @@ def main() -> None:
         args.base_model,
         num_labels=1,
         problem_type="regression",
+        torch_dtype=torch.float32,
     )
+    model.float()
 
     training_args = TrainingArguments(
         output_dir=args.output_dir,
@@ -78,12 +90,13 @@ def main() -> None:
         greater_is_better=True,
         fp16=args.precision == "fp16",
         bf16=args.precision == "bf16",
+        half_precision_backend="auto",
         report_to="none",
         push_to_hub=args.push_to_hub,
         hub_model_id=args.hub_model_id or None,
     )
 
-    trainer = Trainer(
+    trainer = RegressionTrainer(
         model=model,
         args=training_args,
         train_dataset=tokenized["train"],
