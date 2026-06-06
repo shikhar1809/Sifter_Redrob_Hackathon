@@ -6,29 +6,7 @@ Live demo: [sifter1011.web.app](https://sifter1011.web.app/)
 Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/)  
 Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
 
-## The Core Idea
-
-Recruiters do not lose great candidates because talent is missing. They lose them because keyword filters are shallow, manual review does not scale, and black-box AI is hard to trust.
-
-Sifter was built around one product belief:
-
-> A recruiter should see a ranked shortlist, the reason behind every rank, the bias guardrails used, and the questions still worth asking before making a decision.
-
-That is why this project is not just a scoring table. It is a full ranking workflow: role understanding, 100,000-candidate processing, learned reranking, explainable output, bias review, reviewer agents, and a validated Redrob submission file.
-
-## What We Built Differently
-
-| Hiring problem | Sifter decision | What exists in the product |
-| --- | --- | --- |
-| Keyword filters miss transferable talent | Match role concepts, profile evidence, and semantic similarity instead of only exact words | Hybrid ranking with skills, experience, production proof, ranking/evaluation depth, behavioral signals, and vector-style profile comparison |
-| Recruiters need trust, not mystery scores | Explain every rank in plain language | Candidate info modal with exact ranker reason, profile summary, score components, evidence, and concern |
-| Large files break normal browser demos | Keep heavy data processing outside the browser and serve prepared ranked pages | 100,000 Redrob candidates are processed into public result pages, 100 candidates per page |
-| AI hiring can be biased | Remove unsafe inputs and show bias checks clearly | No scoring boost from name, school prestige, language, protected traits, or identity-like fields; logistics signals are capped |
-| One AI opinion is risky | Challenge the shortlist from multiple viewpoints | Four reviewer agents: Hiring Manager, Interview Designer, Recruiter Ops, and Bias & Compliance |
-| Static heuristics are not enough | Add a trainable reranker that can improve with feedback | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
-| Many users cannot afford enterprise ATS tooling | Make the app local-first and accessible | Works as a lightweight web app with local/demo data paths and no paid AI dependency for the main ranking flow |
-
-## Dataset Understanding
+## What We Learned From The Data
 
 Redrob's founder was right to stress the data. The challenge is not only "rank candidates." It is "understand what the candidate data is trying to trick you into doing."
 
@@ -68,6 +46,40 @@ We also audited the current Sifter top 100 against those dataset patterns:
 ![Sifter submission alignment](docs/dataset-analysis/visuals/redrob_sifter_alignment.png)
 
 Full audit: [Redrob Dataset Structural Analysis](docs/dataset-analysis/redrob_dataset_analysis.md)
+
+### How Those Learnings Became The Product
+
+The dataset analysis became visible product decisions: role-first setup, Redrob challenge loading, batch processing, bias guardrail, top-candidate explanation, reviewer agents, full candidate pages, and per-candidate reasoning.
+
+![Sifter desktop app](docs/screenshots/sifter-home.png)
+
+![Sifter workflow](docs/screenshots/sifter-workflow.png)
+
+![Redrob submission preview](docs/screenshots/redrob-output.png)
+
+![Candidate info reason dialog](docs/screenshots/candidate-info.png)
+
+## The Core Idea
+
+Recruiters do not lose great candidates because talent is missing. They lose them because keyword filters are shallow, manual review does not scale, and black-box AI is hard to trust.
+
+Sifter was built around one product belief:
+
+> A recruiter should see a ranked shortlist, the reason behind every rank, the bias guardrails used, and the questions still worth asking before making a decision.
+
+That is why this project is not just a scoring table. It is a full ranking workflow: role understanding, 100,000-candidate processing, learned reranking, explainable output, bias review, reviewer agents, and a validated Redrob submission file.
+
+## What We Built Differently
+
+| Hiring problem | Sifter decision | What exists in the product |
+| --- | --- | --- |
+| Keyword filters miss transferable talent | Match role concepts, profile evidence, and semantic similarity instead of only exact words | Hybrid ranking with skills, experience, production proof, ranking/evaluation depth, behavioral signals, and vector-style profile comparison |
+| Recruiters need trust, not mystery scores | Explain every rank in plain language | Candidate info modal with exact ranker reason, profile summary, score components, evidence, and concern |
+| Large files break normal browser demos | Keep heavy data processing outside the browser and serve prepared ranked pages | 100,000 Redrob candidates are processed into public result pages, 100 candidates per page |
+| AI hiring can be biased | Remove unsafe inputs and show bias checks clearly | No scoring boost from name, school prestige, language, protected traits, or identity-like fields; logistics signals are capped |
+| One AI opinion is risky | Challenge the shortlist from multiple viewpoints | Four reviewer agents: Hiring Manager, Interview Designer, Recruiter Ops, and Bias & Compliance |
+| Static heuristics are not enough | Add a trainable reranker that can improve with feedback | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
+| Many users cannot afford enterprise ATS tooling | Make the app local-first and accessible | Works as a lightweight web app with local/demo data paths and no paid AI dependency for the main ranking flow |
 
 ## The Trained AI Model
 
@@ -190,8 +202,6 @@ Every ranked candidate can show:
 
 That matters because the challenge is not asking for a leaderboard only. It asks for a shortlist a recruiter can trust.
 
-![Candidate info reason dialog](docs/screenshots/candidate-info.png)
-
 ## Bias Guardrail
 
 The bias system is built around a simple rule: do not let identity-like signals decide who gets ranked.
@@ -250,24 +260,6 @@ Generated metrics: [Redrob Evaluation Report](docs/redrob-evaluation-report.json
 | Explains decisions | Candidate info modal shows reason, evidence, concern, and score components |
 | Shows process to judges | UI exposes batch processing, merge rounds, learned reranker status, bias guardrail, reviewer agents, and final output |
 | Is deployed | Firebase Hosting live at `sifter1011.web.app` |
-
-## Visuals
-
-### Main Product
-
-![Sifter desktop app](docs/screenshots/sifter-home.png)
-
-### Workflow
-
-![Sifter workflow](docs/screenshots/sifter-workflow.png)
-
-### Redrob Output
-
-![Redrob submission preview](docs/screenshots/redrob-output.png)
-
-### Candidate Reason
-
-![Candidate info reason dialog](docs/screenshots/candidate-info.png)
 
 ## Why This Is A Strong Challenge Submission
 
