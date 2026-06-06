@@ -76,6 +76,8 @@ notebook_login()
 
 This is the fast Colab setting. It trains on `2,000` candidates with a smaller model so the first Hugging Face model can finish and push. After that works, increase `--max-records` and move back to `microsoft/deberta-v3-small` for a stronger but slower run.
 
+The notebook version now makes the final training cell prepare the data first, verify `reranker_train.jsonl` and `reranker_valid.jsonl`, and only then start training. That keeps Colab from failing because a previous data-prep cell was skipped.
+
 Optional DPO preference fine-tuning for an LLM-style rank explanation model:
 
 ```bash
