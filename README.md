@@ -47,6 +47,25 @@ We also audited the current Sifter top 100 against those dataset patterns:
 
 Full audit: [Redrob Dataset Structural Analysis](docs/dataset-analysis/redrob_dataset_analysis.md)
 
+### What Global Hiring Data Confirmed
+
+We also compared Redrob against public hiring/resume datasets: a Hugging Face resume-screening dataset with select/reject labels, a Kaggle resume mirror on Hugging Face, and the Skill2vec job-description skill co-occurrence dataset.
+
+![Global hiring signal map](docs/dataset-analysis/visuals/global_hiring_signal_map.svg)
+
+The common pattern was clear: good screening is not skill-counting. Across Redrob and the public datasets, stronger signals are role consistency, production/ownership language, system/evaluation depth, and evidence that the candidate can actually be reached.
+
+| Shared Finding | How We Apply It In Sifter |
+| --- | --- |
+| Role context beats skill count | Skills only get strong credit when the title and career history support them. |
+| Production and ownership language beats buzzwords | Shipped systems, monitoring, scale, A/B testing, evaluation, and ownership are boosted. |
+| Public-footprint data is sparse | GitHub/activity is a bonus, never a hard rejection filter. |
+| Availability changes hireability but can become bias | Response rate, notice, relocation, and activity are capped and shown separately. |
+| Training data needs negatives and traps | The review set includes strong fits, maybes, hidden fits, logistics risks, keyword traps, and consistency traps. |
+
+Global comparison: [Global Hiring Dataset Comparison](docs/dataset-analysis/global_hiring_comparison.md)  
+Candidate review set for human labels: [redrob_candidate_review_set.csv](docs/dataset-analysis/redrob_candidate_review_set.csv)
+
 ### How Those Learnings Became The Product
 
 The dataset analysis became visible product decisions: role-first setup, Redrob challenge loading, batch processing, bias guardrail, top-candidate explanation, reviewer agents, full candidate pages, and per-candidate reasoning.
@@ -284,6 +303,8 @@ The result is a working product, not a slide-only idea: live web app, trained mo
 | Trained Hugging Face model | [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker) |
 | Raw Redrob candidates on Drive | [Google Drive file](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing) |
 | Dataset structural analysis | [docs/dataset-analysis/redrob_dataset_analysis.md](docs/dataset-analysis/redrob_dataset_analysis.md) |
+| Global hiring comparison | [docs/dataset-analysis/global_hiring_comparison.md](docs/dataset-analysis/global_hiring_comparison.md) |
+| Candidate review set | [docs/dataset-analysis/redrob_candidate_review_set.csv](docs/dataset-analysis/redrob_candidate_review_set.csv) |
 | Research decisions | [docs/research-backed-decisions.md](docs/research-backed-decisions.md) |
 | Evaluation report | [docs/redrob-evaluation-report.json](docs/redrob-evaluation-report.json) |
 | Model/training notes | [ml/README.md](ml/README.md) |

@@ -11,6 +11,7 @@ coverage
 uploads
 tmp
 data/*.csv
+data/external-hiring/
 *-preview.png
 pipeline_demo.html
 Challenge/

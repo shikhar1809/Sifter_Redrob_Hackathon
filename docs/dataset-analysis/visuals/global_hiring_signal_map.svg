@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="680" viewBox="0 0 1080 680" role="img" aria-labelledby="title desc">
+  <title id="title">Global hiring signal map</title>
+  <desc id="desc">A visual summary of hidden Redrob candidate buckets and hiring signals confirmed by global datasets.</desc>
+  <style>
+    .bg { fill: #fbfaf6; }
+    .title { font: 800 30px Arial, sans-serif; fill: #111; }
+    .subtitle { font: 400 15px Arial, sans-serif; fill: #444; }
+    .section { font: 800 17px Arial, sans-serif; fill: #111; text-transform: uppercase; }
+    .label { font: 700 13px Arial, sans-serif; fill: #222; }
+    .value { font: 800 13px Arial, sans-serif; fill: #111; }
+    .signal { font: 800 16px Arial, sans-serif; fill: #111; }
+    .small { font: 400 13px Arial, sans-serif; fill: #333; }
+    .white { fill: #fff; font-weight: 700; }
+  </style>
+  <rect class="bg" width="1080" height="680" />
+  <text x="40" y="52" class="title">What The Data Says Hiring Systems Should Learn</text>
+  <text x="40" y="82" class="subtitle">Redrob challenge data was compared with resume screening, Kaggle resume, and Skill2vec job-skill datasets.</text>
+  <rect x="40" y="112" width="500" height="510" rx="12" fill="#fff" stroke="#111" stroke-width="1.4" />
+  <rect x="580" y="112" width="460" height="510" rx="12" fill="#fff" stroke="#111" stroke-width="1.4" />
+  <text x="70" y="146" class="section">Hidden Redrob Buckets</text>
+  <text x="600" y="146" class="section">Signals Common Across Datasets</text>
+  <text x="40" y="187" class="label">low signal</text><rect x="230" y="170" width="440.0" height="20" rx="4" fill="#737373" /><text x="690.0" y="186" class="value">92,260</text><text x="40" y="215" class="label">keyword trap</text><rect x="230" y="198" width="338.7" height="20" rx="4" fill="#d94b4b" /><text x="588.7" y="214" class="value">3,692</text><text x="40" y="243" class="label">generic adjacent</text><rect x="230" y="226" width="332.8" height="20" rx="4" fill="#d9892b" /><text x="582.8" y="242" class="value">3,060</text><text x="40" y="271" class="label">services only risk</text><rect x="230" y="254" width="280.3" height="20" rx="4" fill="#b06fbd" /><text x="530.3" y="270" class="value">578</text><text x="40" y="299" class="label">cv speech mismatch</text><rect x="230" y="282" width="254.2" height="20" rx="4" fill="#aa5a44" /><text x="504.2" y="298" class="value">252</text><text x="40" y="327" class="label">strong fit</text><rect x="230" y="310" width="225.6" height="20" rx="4" fill="#248a5b" /><text x="475.6" y="326" class="value">101</text><text x="40" y="355" class="label">good but logistics risk</text><rect x="230" y="338" width="186.0" height="20" rx="4" fill="#2b7fd9" /><text x="436.0" y="354" class="value">28</text><text x="40" y="383" class="label">consistency trap</text><rect x="230" y="366" width="177.3" height="20" rx="4" fill="#c1a12f" /><text x="427.3" y="382" class="value">21</text><text x="40" y="411" class="label">hidden fit</text><rect x="230" y="394" width="149.2" height="20" rx="4" fill="#168f9b" /><text x="399.2" y="410" class="value">8</text>
+  <rect x="600" y="170" width="420" height="54" rx="8" fill="#f7f4ee" stroke="#222" stroke-width="1" /><text x="620" y="192" class="signal">Role context</text><text x="620" y="212" class="small">Skill count alone is not enough</text><rect x="600" y="246" width="420" height="54" rx="8" fill="#f7f4ee" stroke="#222" stroke-width="1" /><text x="620" y="268" class="signal">Ownership proof</text><text x="620" y="288" class="small">Shipped systems beat buzzwords</text><rect x="600" y="322" width="420" height="54" rx="8" fill="#f7f4ee" stroke="#222" stroke-width="1" /><text x="620" y="344" class="signal">Public footprint</text><text x="620" y="364" class="small">Bonus signal, never a hard reject</text><rect x="600" y="398" width="420" height="54" rx="8" fill="#f7f4ee" stroke="#222" stroke-width="1" /><text x="620" y="420" class="signal">Availability</text><text x="620" y="440" class="small">Useful but capped for fairness</text><rect x="600" y="474" width="420" height="54" rx="8" fill="#f7f4ee" stroke="#222" stroke-width="1" /><text x="620" y="496" class="signal">Review labels</text><text x="620" y="516" class="small">Negatives and traps improve learning</text>
+  <text x="600" y="566" class="section">180 Candidate Human Review Set</text>
+  <rect x="600.0" y="592" width="147.0" height="30" fill="#248a5b" /><text x="608.0" y="614" class="small white">strong_fit 63</text><rect x="747.0" y="592" width="144.7" height="30" fill="#d2a72f" /><text x="755.0" y="614" class="small white">maybe 62</text><rect x="891.7" y="592" width="128.3" height="30" fill="#d94b4b" /><text x="899.7" y="614" class="small white">not_fit 55</text>
+  <text x="40" y="652" class="subtitle">Application move: rank fast at 100k scale, then use human-reviewed labels to retrain the learned reranker.</text>
+</svg>
