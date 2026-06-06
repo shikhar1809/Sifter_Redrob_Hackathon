@@ -2,8 +2,6 @@
 
 This folder turns Sifter from a hand-weighted ranker into a trainable ranking system.
 
-For the simple repeatable Colab flow, read `TRAIN_MODEL_QUICK_GUIDE.md` first.
-
 It has three parts:
 
 1. `prepare_redrob_preference_data.py` builds train/validation data from the Redrob candidates, the ranked public pages, and optional recruiter labels.
