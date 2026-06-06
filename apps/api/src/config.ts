@@ -21,4 +21,5 @@ export const config = {
   sifterRerankerModel: process.env.SIFTER_RERANKER_MODEL ?? "shikharshahi/sifter-redrob-reranker",
   learnedRerankEnabled: process.env.SIFTER_LEARNED_RERANK_ENABLED === "true",
   learnedRerankWeight: Number(process.env.SIFTER_LEARNED_RERANK_WEIGHT ?? 0.3),
+  learnedRerankLimit: Number(process.env.SIFTER_LEARNED_RERANK_LIMIT ?? 25),
 };

@@ -289,6 +289,7 @@ HF_TOKEN=your_hugging_face_inference_token
 SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker
 SIFTER_LEARNED_RERANK_ENABLED=true
 SIFTER_LEARNED_RERANK_WEIGHT=0.3
+SIFTER_LEARNED_RERANK_LIMIT=25
 ```
 
 The browser never receives `HF_TOKEN`. The web app calls Sifter's API, and the API calls Hugging Face only for the finalist pool.
@@ -388,7 +389,7 @@ Deploy the API backend first:
 
 ```bash
 gcloud config set project sifter1011
-gcloud run deploy sifter-api --source . --region us-central1 --allow-unauthenticated --set-env-vars WEB_ORIGIN=https://sifter1011.web.app,SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker,SIFTER_LEARNED_RERANK_ENABLED=true,SIFTER_LEARNED_RERANK_WEIGHT=0.3,HF_TOKEN=your_hugging_face_token
+gcloud run deploy sifter-api --source . --region us-central1 --allow-unauthenticated --set-env-vars WEB_ORIGIN=https://sifter1011.web.app,SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker,SIFTER_LEARNED_RERANK_ENABLED=true,SIFTER_LEARNED_RERANK_WEIGHT=0.3,SIFTER_LEARNED_RERANK_LIMIT=25,HF_TOKEN=your_hugging_face_token
 ```
 
 Then deploy Firebase Hosting:

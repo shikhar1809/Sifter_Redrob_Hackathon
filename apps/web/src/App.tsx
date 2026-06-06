@@ -33,15 +33,16 @@ type RedrobRankResponse = {
   csv: string;
   count: number;
   biasAudit: BiasAudit;
-  learnedRerank?: {
-    enabled: boolean;
-    configured: boolean;
-    model: string;
-    status: "disabled" | "not_configured" | "completed" | "fallback";
-    reviewedCandidates: number;
-    weight: number;
-    message: string;
-  };
+  learnedRerank?: LearnedRerankStatus;
+};
+type LearnedRerankStatus = {
+  enabled: boolean;
+  configured: boolean;
+  model: string;
+  status: "disabled" | "not_configured" | "completed" | "fallback";
+  reviewedCandidates: number;
+  weight: number;
+  message: string;
 };
 type RedrobRankingPlan = {
   initialBatches: number;
@@ -59,6 +60,7 @@ type RedrobChallengeAsset = {
   searchPagePrefix?: string;
   searchPageCount?: number;
   searchPageSize?: number;
+  learnedRerank?: LearnedRerankStatus;
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
@@ -155,6 +157,7 @@ export default function App() {
   const [redrobRows, setRedrobRows] = useState<RedrobRankingRow[]>([]);
   const [redrobCsv, setRedrobCsv] = useState("");
   const [redrobBiasAudit, setRedrobBiasAudit] = useState<BiasAudit | null>(null);
+  const [redrobLearnedRerank, setRedrobLearnedRerank] = useState<LearnedRerankStatus | null>(null);
   const [redrobRankingPlan, setRedrobRankingPlan] = useState<RedrobRankingPlan | null>(null);
   const [redrobSearchRows, setRedrobSearchRows] = useState<RedrobCandidateSearchRow[]>([]);
   const [redrobSearchStatus, setRedrobSearchStatus] = useState("not loaded");
@@ -392,7 +395,7 @@ export default function App() {
       const response = await fetch(`${apiBase}/redrob/rank`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: csv, limit: 100, learnedRerank: true }),
+        body: JSON.stringify({ text: csv, limit: 100, learnedRerank: true, learnedRerankLimit: 25 }),
       });
       const payload: RedrobRankResponse | { error: unknown } = await response.json();
       if (!response.ok) {
@@ -410,6 +413,7 @@ export default function App() {
       setRedrobCsv(typed.csv);
       setRedrobCandidateCount(typed.count);
       setRedrobBiasAudit(typed.biasAudit);
+      setRedrobLearnedRerank(typed.learnedRerank ?? null);
       setRedrobRankingPlan(null);
       resetRedrobSearch();
       setResult(null);
@@ -440,6 +444,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobLearnedRerank(null);
     setRedrobRankingPlan(null);
     setResult(null);
     setRunId(null);
@@ -485,6 +490,7 @@ export default function App() {
       setRedrobRows(payload.rows);
       setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
       setRedrobBiasAudit(payload.biasAudit);
+      setRedrobLearnedRerank(payload.learnedRerank ?? null);
       setRedrobRankingPlan(payload.rankingPlan ?? null);
       setRunProgress(100);
       setProgressLabel(`Final shortlist ready from ${payload.processedCandidates.toLocaleString()} candidates`);
@@ -701,6 +707,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobLearnedRerank(null);
     setRedrobRankingPlan(null);
     resetRedrobSearch();
     setUploadedFileName(null);
@@ -1142,6 +1149,7 @@ export default function App() {
             />
           ) : null}
           {dataMode === "redrob" && redrobRows.length ? <TopRedrobCandidateExplanation row={redrobRows[0]} /> : null}
+          {dataMode === "redrob" && redrobLearnedRerank ? <LearnedRerankPanel status={redrobLearnedRerank} /> : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
           {dataMode === "redrob" && redrobRows.length ? <RedrobChallengeSummary rows={redrobRows} candidateCount={redrobCandidateCount} rankingPlan={redrobRankingPlan} /> : null}
           {dataMode === "redrob" && redrobRows.length ? (
@@ -1531,6 +1539,24 @@ function Final({ rows }: { rows: GateCandidate[] }) {
           </table>
         </div>
       )}
+    </section>
+  );
+}
+
+function LearnedRerankPanel({ status }: { status: LearnedRerankStatus }) {
+  const statusLabel =
+    status.status === "completed" ? "learned model used" : status.status === "not_configured" ? "token missing" : status.status === "fallback" ? "fallback used" : "disabled";
+  return (
+    <section className="panel learned-rerank-panel">
+      <PanelTitle title="Learned Reranker" meta={statusLabel} />
+      <div className="summary-grid">
+        <Metric value={status.reviewedCandidates} label="model-scored finalists" />
+        <Metric value={Math.round(status.weight * 100)} label="model weight %" />
+        <Metric value={status.configured ? 1 : 0} label="hf configured" />
+      </div>
+      <div className="summary-message">
+        {status.message} Model: {status.model}. Sifter keeps deterministic ranking as fallback if the model is unavailable.
+      </div>
     </section>
   );
 }

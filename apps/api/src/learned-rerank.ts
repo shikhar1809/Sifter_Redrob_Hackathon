@@ -51,7 +51,8 @@ export async function rerankRedrobRowsWithLearnedModel(
 
   try {
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidate_id, candidate]));
-    const rowsToScore = rows.slice(0, Math.min(options.limit ?? rows.length, rows.length));
+    const finalistLimit = Math.max(1, Math.min(options.limit ?? config.learnedRerankLimit, rows.length));
+    const rowsToScore = rows.slice(0, finalistLimit);
     const learnedScores = await mapWithConcurrency(rowsToScore, 4, async (row) => {
       const candidate = candidateById.get(row.candidate_id);
       return { row, learnedScore: candidate ? await scoreCandidateWithHuggingFace(candidate, model) : 0 };

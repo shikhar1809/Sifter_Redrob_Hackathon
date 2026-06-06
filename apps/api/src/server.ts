@@ -53,6 +53,7 @@ app.get("/health", async () => ({
     configured: Boolean(config.huggingFaceToken),
     model: config.sifterRerankerModel,
     weight: config.learnedRerankWeight,
+    finalistLimit: config.learnedRerankLimit,
   },
 }));
 
@@ -92,6 +93,7 @@ app.post("/redrob/rank", async (request, reply) => {
       transformerRerank: z.boolean().default(false),
       learnedRerank: z.boolean().default(false),
       learnedRerankWeight: z.number().min(0).max(1).optional(),
+      learnedRerankLimit: z.number().int().positive().max(100).optional(),
     })
     .refine((value) => value.text || value.candidates?.length, "Provide candidate text or candidate objects")
     .safeParse(request.body);
@@ -104,6 +106,7 @@ app.post("/redrob/rank", async (request, reply) => {
     const learned = await rerankRedrobRowsWithLearnedModel(candidates, transformerRows, {
       enabled: body.data.learnedRerank,
       weight: body.data.learnedRerankWeight,
+      limit: body.data.learnedRerankLimit,
     });
     const rows = learned.rows;
     return {
