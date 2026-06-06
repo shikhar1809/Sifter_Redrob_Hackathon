@@ -310,10 +310,11 @@ Direct download form:
 https://drive.google.com/uc?export=download&id=1wGx9_zm8hklndJbhdGscy15klHLK2bys
 ```
 
-PowerShell download:
+Recommended local download:
 
 ```powershell
-Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -OutFile "candidates.jsonl"
+python -m pip install gdown
+python -m gdown "https://drive.google.com/uc?id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -O candidates.jsonl
 ```
 
 Colab download:

@@ -85,7 +85,6 @@ const isFirebaseHosted =
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? (isFirebaseHosted ? "" : "http://127.0.0.1:4000");
 const redrobDriveFileId = "1wGx9_zm8hklndJbhdGscy15klHLK2bys";
 const redrobDriveUrl = `https://drive.google.com/file/d/${redrobDriveFileId}/view?usp=sharing`;
-const redrobDriveDownloadUrl = `https://drive.google.com/uc?export=download&id=${redrobDriveFileId}`;
 const softCandidateLimit = 500;
 const hardCandidateLimit = 2000;
 const aiReviewLimit = 5;
@@ -979,7 +978,7 @@ export default function App() {
                   <a href={redrobDriveUrl} target="_blank" rel="noreferrer">
                     Open Drive file
                   </a>
-                  <code>curl -L "{redrobDriveDownloadUrl}" -o candidates.jsonl</code>
+                  <code>python -m gdown "https://drive.google.com/uc?id={redrobDriveFileId}" -O candidates.jsonl</code>
                   <p>
                     The raw 100,000-candidate file stays in Drive/local tooling. The browser loads prepared result and search pages so the demo stays fast and does not paste private raw records into the page.
                   </p>
