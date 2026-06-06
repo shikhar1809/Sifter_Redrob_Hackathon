@@ -191,6 +191,8 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Added four reviewer agents on final output.
 - Added visible page-by-page access across the full `100,000` candidate Redrob index.
 - Kept the Redrob Challenge button on Step 1 so users choose when to continue and when to rank.
+- Trained and pushed a first Hugging Face learned reranker at `shikharshahi/sifter-redrob-reranker`.
+- Connected the backend to call the Hugging Face learned reranker for finalist-pool reranking.
 - Deployed the web app on Firebase Hosting.
 
 ## What Is Done
@@ -224,14 +226,16 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - README screenshots and layman-first documentation.
 - Hugging Face training package for a learned reward/reranker model.
 - Colab-ready scripts for Redrob preference data preparation and model fine-tuning.
+- First trained Hugging Face model: `shikharshahi/sifter-redrob-reranker`.
+- Backend hook for learned reranking with safe fallback when `HF_TOKEN` is missing or Hugging Face is unavailable.
 - Hugging Face Spaces Gradio app template for deploying the trained reranker.
 
 ## What Is Not Done Yet
 
-- No trained proprietary ML model yet. The Redrob challenge path uses local vector/semantic matching plus hybrid scoring so it can stay CPU-only and network-off.
+- The trained model is a first learned reranker, not a fully validated production hiring model.
 - No hosted embedding service in production yet. The repo has an optional local Transformers.js reranker, but production search should still add an indexed embedding backend.
 - No team-wide learning database yet. Recruiter feedback is captured locally today; syncing it across users and retraining weights from hiring outcomes is still future work.
-- No completed uploaded fine-tuned model yet. The repo now includes the Colab training pipeline and Hugging Face Space app; the model still needs to be trained on GPU and pushed to your Hugging Face account.
+- No large human-labeled recruiter holdout set yet. The first training run uses bootstrapped labels plus optional recruiter labels, so stronger validation is still needed.
 - No complex PDF/DOC resume parsing yet.
 - No NLP-based candidate deduplication yet.
 - No production backend search service yet. The live Redrob demo uses static 100-candidate pages plus page-level search.
@@ -270,17 +274,112 @@ http://127.0.0.1:4000/health
 
 ## Train The Learned Reranker
 
-The learned model setup lives in [ml/README.md](ml/README.md).
+The learned model setup lives in [ml/README.md](ml/README.md). In simple words, this is the part that turns Sifter from "rules plus evidence scoring" into "a system that can learn from recruiter judgment over time."
 
-It includes:
+### Which Model We Chose
 
-- Redrob data preparation script.
-- Recruiter-label CSV template.
-- Cross-encoder reward/reranker fine-tuning script for Google Colab.
-- DPO-style preference export and optional DPO training script for LLM rank explanations.
-- Hugging Face Spaces Gradio deployment files.
+For the first trained model, we used:
 
-Use this when you want to move from the deterministic ranker to a trained model that learns from recruiter preferences.
+```text
+distilbert-base-uncased
+```
+
+and pushed it to:
+
+```text
+shikharshahi/sifter-redrob-reranker
+```
+
+Why this model:
+
+- It is small enough to train on Google Colab without constantly crashing.
+- It is fast enough for a hackathon demo.
+- It can read a job description plus a candidate profile together and learn a fit score.
+- It is a practical first learned reranker before moving to a stronger but slower model.
+
+The stronger future option is:
+
+```text
+microsoft/deberta-v3-small
+```
+
+We tried to keep that path available, but for the first working Hugging Face model, DistilBERT was the safer choice because Colab was unstable with heavier training runs.
+
+### How We Trained It
+
+The model is trained as a reward/reranker model.
+
+Layman version:
+
+1. Take the job description.
+2. Take one candidate profile.
+3. Put them together as one training example.
+4. Give that example a fit label from `0` to `1`.
+5. Train the model to predict that fit label.
+
+The training data comes from three places:
+
+- The Redrob `candidates.jsonl` file.
+- Sifter's existing ranked Redrob pages, used as weak starter labels.
+- Optional recruiter labels from `ml/recruiter_labels_template.csv`.
+
+Weak starter labels are not treated as perfect truth. They are a bootstrap so the model has something to learn from before real recruiter feedback is added.
+
+The Colab quick run uses:
+
+```text
+2,000 candidates
+1 train/validation split
+1 epoch
+batch size 8
+fp32 precision
+```
+
+That produces a first working model and uploads it to Hugging Face. The script also writes validation metrics, so future versions can compare whether recruiter feedback actually improves ranking.
+
+### How It Is Used In Sifter
+
+The learned model does **not** replace the full local ranker.
+
+The flow is:
+
+1. Sifter ranks the full candidate pool locally first.
+2. The backend sends only the top finalist pool to Hugging Face.
+3. Hugging Face returns a learned fit score.
+4. Sifter blends the scores:
+
+```text
+70% Sifter evidence score
+30% learned reranker score
+```
+
+The default learned reranker limit is:
+
+```text
+top 25 finalists
+```
+
+Why only top 25:
+
+- It keeps the live demo fast.
+- It avoids sending the full 100,000-candidate file over the network.
+- It keeps the trained model as a second opinion, not an unchecked black box.
+
+If Hugging Face is unavailable, Sifter falls back to the deterministic ranking and shows that status in the UI.
+
+### Why This Is Honest AI
+
+This is not magic and not full RLHF yet. It is a practical learned reranker trained from bootstrapped ranking labels plus future recruiter labels.
+
+The improvement loop is:
+
+1. Recruiter reviews candidates.
+2. Recruiter marks candidates as Strong fit, Maybe, or Not fit.
+3. Those labels are added to the training CSV.
+4. The model is trained again.
+5. The model slowly becomes less hand-tuned and more recruiter-learned.
+
+Bias note: the learned model is not allowed to be the only judge. Sifter still keeps explainable scoring, excluded identity/proxy signals, a bias guardrail, and human review in the workflow.
 
 To connect the trained Hugging Face model to the backend, set these on the API server:
 

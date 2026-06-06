@@ -21,6 +21,41 @@ Then it learns to predict candidate fit as a scalar score.
 
 Important: weak labels are not ground truth. They are a bootstrap. The serious version is to add recruiter labels in `recruiter_labels_template.csv`, retrain, and compare validation metrics before claiming quality.
 
+## Model Choice
+
+The first trained model uses:
+
+```text
+distilbert-base-uncased
+```
+
+Why:
+
+- it is small enough for Google Colab T4 runs
+- it trains faster than heavier rerankers
+- it is stable enough for a repeatable demo
+- it can still read the job and candidate profile together as one pair
+
+The stronger next model path is:
+
+```text
+microsoft/deberta-v3-small
+```
+
+That should give more depth, but it is slower and was less Colab-friendly during the first working run.
+
+## Training Methodology
+
+Each training row looks like:
+
+```text
+Job description + candidate profile -> fit score from 0 to 1
+```
+
+The score comes from recruiter labels when available. When recruiter labels are missing, Sifter uses its existing ranked Redrob output as a weak starter label.
+
+This is reward-style fine-tuning for ranking. It is not full RLHF yet. The goal is to create a learned second opinion that can improve as more recruiter labels arrive.
+
 ## Colab Quick Start
 
 Use a GPU runtime in Google Colab.
