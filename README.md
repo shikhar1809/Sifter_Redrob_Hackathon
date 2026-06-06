@@ -28,6 +28,12 @@ Base model:
 distilbert-base-uncased
 ```
 
+Fine-tuning technique:
+
+```text
+Supervised reward-model regression fine-tuning
+```
+
 What it does in simple terms: it reads the job description and a candidate profile together, then predicts how strong the fit is. The backend uses it as a learned second opinion on the finalist pool, while the local Sifter ranker still does the full-scale explainable ranking first.
 
 Why this matters for the Redrob challenge:
@@ -47,6 +53,57 @@ Default model-backed rerank scope:
 
 ```text
 top 25 finalists
+```
+
+## How To Read This Repo
+
+| Reader | Start here | What you will understand |
+| --- | --- | --- |
+| Non-technical judge | Live Demo, Trained AI Model, Visual Overview | What the product does, why it is useful, and how the model improves ranking. |
+| Technical judge | Train The Learned Reranker, How To Run The Redrob Challenge Ranker, `apps/api/src/learned-rerank.ts` | How the model is trained, how it is called, and how fallback works. |
+| Recruiter/user | The Flow, Screenshots, Candidate Info Reason | How the workflow feels and how candidate decisions are explained. |
+| Compliance reviewer | Build Bias Guardrails, Bias Guardrail screenshot, Redrob Evaluation Report | What signals are excluded and how proxy risks are surfaced. |
+
+## Visual Overview
+
+### Product Flow
+
+```mermaid
+flowchart LR
+  A["Recruiter defines role"] --> B["Candidate data enters Sifter"]
+  B --> C["Local evidence ranker"]
+  C --> D["Batch processing for large files"]
+  D --> E["Top finalist pool"]
+  E --> F["Hugging Face learned reranker"]
+  F --> G["Blended final rank"]
+  G --> H["Reasons, bias guardrail, reviewer agents"]
+```
+
+### Large Redrob File Strategy
+
+```mermaid
+flowchart TD
+  A["100,000 candidates"] --> B["Split into 10 batches"]
+  B --> C["Rank batches in parallel"]
+  C --> D["Merge winners: 10 -> 5"]
+  D --> E["Merge winners: 5 -> 3"]
+  E --> F["Merge winners: 3 -> 2"]
+  F --> G["Final merge: 2 -> 1"]
+  G --> H["Top 100 submission + 100,000-candidate paged index"]
+```
+
+### Learned Reranker Training Loop
+
+```mermaid
+flowchart LR
+  A["Job description"] --> C["Training example"]
+  B["Candidate profile"] --> C
+  C --> D["Fit label from weak rank or recruiter feedback"]
+  D --> E["Fine-tune DistilBERT reward/reranker"]
+  E --> F["Hugging Face model"]
+  F --> G["Rerank top 25 finalists"]
+  G --> H["Recruiter feedback"]
+  H --> D
 ```
 
 ## The Flow
@@ -324,7 +381,22 @@ We tried to keep that path available, but for the first working Hugging Face mod
 
 ### How We Trained It
 
-The model is trained as a reward/reranker model.
+The model is trained with **supervised reward-model regression fine-tuning**.
+
+Non-technical translation: we showed the model many examples of "this candidate looks strong for this job" and "this candidate looks weaker for this job" until it learned to predict a fit score.
+
+Technical translation: we fine-tuned a cross-encoder sequence-classification model with `num_labels=1` and regression loss. The input is one text pair joined together:
+
+```text
+Job description + candidate profile
+```
+
+The target label is a numeric fit score:
+
+```text
+0.0 = poor fit
+1.0 = strong fit
+```
 
 Layman version:
 
@@ -341,6 +413,13 @@ The training data comes from three places:
 - Optional recruiter labels from `ml/recruiter_labels_template.csv`.
 
 Weak starter labels are not treated as perfect truth. They are a bootstrap so the model has something to learn from before real recruiter feedback is added.
+
+Why this technique:
+
+- A cross-encoder can compare the job and candidate together instead of scoring them separately.
+- Regression gives a smooth fit score, which is easier to blend with Sifter's explainable evidence score.
+- It works with weak labels now and stronger recruiter labels later.
+- It is simpler and more reliable for a hackathon than full reinforcement learning, while still creating a real learned ranking layer.
 
 The Colab quick run uses:
 
