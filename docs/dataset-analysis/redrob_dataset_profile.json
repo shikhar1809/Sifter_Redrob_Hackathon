@@ -1,0 +1,3517 @@
+{
+  "records": 100000,
+  "file_size_mb": 464.69,
+  "unique_candidate_ids": 100000,
+  "duplicate_candidate_ids": 0,
+  "missing_counts": {},
+  "profile_current_company_mismatch": 0,
+  "profile_current_title_mismatch": 0,
+  "role_fit_counts": {
+    "india": 75113,
+    "career_production_evidence_2plus": 74132,
+    "experience_4_to_12": 60567,
+    "has_services_company": 60221,
+    "jd_experience_5_to_9": 34375,
+    "services_only_career": 8991,
+    "must_have_skill_4plus": 5616,
+    "positive_title": 775,
+    "career_ir_evidence_2plus": 505,
+    "high_signal_profile_shape": 210
+  },
+  "honeypot_or_trap_flags": {
+    "nontechnical_title_high_ai_skills": 3077,
+    "keyword_stuffer_shape": 1706,
+    "cv_speech_without_ir": 252,
+    "expert_skill_with_zero_duration": 84,
+    "experience_history_gap_over_4y": 42
+  },
+  "top_exact_signal_fingerprint_duplicates": [
+    [
+      "True|60|onsite|False|True|True|False|86.9|0.3|177.8|9.2|0.7|0.6",
+      1
+    ],
+    [
+      "True|60|flexible|False|False|False|False|78.7|0.3|171.6|-1.0|0.6|-1.0",
+      1
+    ],
+    [
+      "False|150|hybrid|False|True|False|False|31.9|0.5|119.4|-1.0|0.9|-1.0",
+      1
+    ],
+    [
+      "False|120|onsite|True|True|True|True|28.5|0.3|104.1|-1.0|0.3|-1.0",
+      1
+    ],
+    [
+      "True|30|hybrid|True|False|True|True|84.6|0.4|116.7|-1.0|0.7|-1.0",
+      1
+    ],
+    [
+      "False|150|remote|True|True|True|False|29.7|0.1|172.1|-1.0|0.6|-1.0",
+      1
+    ],
+    [
+      "False|30|onsite|True|True|True|True|74.6|0.6|61.3|-1.0|0.5|-1.0",
+      1
+    ],
+    [
+      "False|90|onsite|False|True|False|False|63.0|0.4|98.4|-1.0|0.7|-1.0",
+      1
+    ],
+    [
+      "False|150|remote|False|True|True|False|39.6|0.5|202.0|-1.0|0.5|0.5",
+      1
+    ],
+    [
+      "False|120|hybrid|False|True|True|False|81.6|0.4|19.0|33.7|0.5|-1.0",
+      1
+    ]
+  ],
+  "top_text_fingerprint_duplicates": [
+    [
+      "backend engineer|6.9|Canada|apache beam,aws,bentoml,fine-tuning llms,flask,gans,gcp,image classification,lora,milvus",
+      1
+    ],
+    [
+      "operations manager|12.5|India|feature engineering,gcp,javascript,kafka,marketing,photoshop,project management,react,typescript",
+      1
+    ],
+    [
+      "customer support|1.1|USA|accounting,angular,databricks,excel,kubernetes,seo",
+      1
+    ],
+    [
+      "marketing manager|3.8|Australia|airflow,content writing,graphql,javascript,node.js,object detection,redux,sap,six sigma,webpack",
+      1
+    ],
+    [
+      "accountant|11.0|India|apache flink,image classification,photoshop,powerpoint,sql,tailwind",
+      1
+    ],
+    [
+      "business analyst|6.0|USA|content writing,django,grpc,redux,sales,seo,sql,terraform",
+      1
+    ],
+    [
+      "civil engineer|5.5|India|apache beam,content writing,illustrator,mongodb,sales,scrum,spark",
+      1
+    ],
+    [
+      "operations manager|3.6|India|accounting,bigquery,html,java,kubernetes,rust,spark,typescript",
+      1
+    ],
+    [
+      "mechanical engineer|11.0|USA|go,grpc,javascript,opencv,powerpoint,snowflake",
+      1
+    ],
+    [
+      "data engineer|4.6|UK|azure,bm25,cnn,elasticsearch,figma,gans,gcp,java,kubeflow,mlops",
+      1
+    ]
+  ],
+  "numeric": {
+    "avg_role_duration_months": {
+      "count": 100000,
+      "min": 8.0,
+      "p05": 15.3333,
+      "p25": 23.25,
+      "mean": 28.3611,
+      "p50": 28.0,
+      "p75": 33.0,
+      "p95": 42.0,
+      "max": 98.0
+    },
+    "career_ir_text_hint_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.2513,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p95": 1.0,
+      "max": 13
+    },
+    "career_production_text_hint_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 1.0,
+      "mean": 2.7107,
+      "p50": 3.0,
+      "p75": 4.0,
+      "p95": 5.0,
+      "max": 11
+    },
+    "career_roles": {
+      "count": 100000,
+      "min": 1,
+      "p05": 1.0,
+      "p25": 2.0,
+      "mean": 3.0017,
+      "p50": 3.0,
+      "p75": 4.0,
+      "p95": 6.0,
+      "max": 9
+    },
+    "certifications_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.3748,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p95": 2.0,
+      "max": 3
+    },
+    "cv_speech_skill_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.3805,
+      "p50": 0.0,
+      "p75": 1.0,
+      "p95": 2.0,
+      "max": 6
+    },
+    "education_items": {
+      "count": 100000,
+      "min": 1,
+      "p05": 1.0,
+      "p25": 1.0,
+      "mean": 1.3978,
+      "p50": 1.0,
+      "p75": 2.0,
+      "p95": 2.0,
+      "max": 2
+    },
+    "eval_skill_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.2099,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p95": 1.0,
+      "max": 4
+    },
+    "languages_count": {
+      "count": 100000,
+      "min": 2,
+      "p05": 2.0,
+      "p25": 2.0,
+      "mean": 2,
+      "p50": 2.0,
+      "p75": 2.0,
+      "p95": 2.0,
+      "max": 2
+    },
+    "must_have_skill_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.5147,
+      "p50": 0.0,
+      "p75": 0.0,
+      "p95": 4.0,
+      "max": 10
+    },
+    "nice_skill_count": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.5204,
+      "p50": 0.0,
+      "p75": 1.0,
+      "p95": 3.0,
+      "max": 7
+    },
+    "short_roles_under_18m": {
+      "count": 100000,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 0.0,
+      "mean": 0.6904,
+      "p50": 1.0,
+      "p75": 1.0,
+      "p95": 2.0,
+      "max": 6
+    },
+    "signals.applications_submitted_30d": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 0.0,
+      "p25": 2.0,
+      "mean": 5.3904,
+      "p50": 5.0,
+      "p75": 8.0,
+      "p95": 11.0,
+      "max": 24.0
+    },
+    "signals.avg_response_time_hours": {
+      "count": 100000,
+      "min": 2.1,
+      "p05": 19.1,
+      "p25": 68.3,
+      "mean": 132.7027,
+      "p50": 129.9,
+      "p75": 193.3,
+      "p95": 260.1,
+      "max": 280.0
+    },
+    "signals.connection_count": {
+      "count": 100000,
+      "min": 10.0,
+      "p05": 45.0,
+      "p25": 174.0,
+      "mean": 345.6649,
+      "p50": 335.0,
+      "p75": 497.0,
+      "p95": 708.0,
+      "max": 1898.0
+    },
+    "signals.endorsements_received": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 2.0,
+      "p25": 14.0,
+      "mean": 30.0686,
+      "p50": 28.0,
+      "p75": 43.0,
+      "p95": 68.0,
+      "max": 242.0
+    },
+    "signals.expected_salary_range_inr_lpa.max": {
+      "count": 100000,
+      "min": 6.0,
+      "p05": 7.6,
+      "p25": 13.5,
+      "mean": 19.8427,
+      "p50": 19.4,
+      "p75": 25.2,
+      "p95": 33.8,
+      "max": 74.5
+    },
+    "signals.expected_salary_range_inr_lpa.min": {
+      "count": 100000,
+      "min": 3.0,
+      "p05": 4.1,
+      "p25": 7.8,
+      "mean": 12.1721,
+      "p50": 11.9,
+      "p75": 15.8,
+      "p95": 21.1,
+      "max": 49.7
+    },
+    "signals.github_activity_score": {
+      "count": 100000,
+      "min": -1.0,
+      "p05": -1.0,
+      "p25": -1.0,
+      "mean": 9.6192,
+      "p50": -1.0,
+      "p75": 16.7,
+      "p95": 48.4,
+      "max": 96.9
+    },
+    "signals.interview_completion_rate": {
+      "count": 100000,
+      "min": 0.3,
+      "p05": 0.34,
+      "p25": 0.48,
+      "mean": 0.6195,
+      "p50": 0.62,
+      "p75": 0.76,
+      "p95": 0.88,
+      "max": 1.0
+    },
+    "signals.notice_period_days": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 30.0,
+      "p25": 60.0,
+      "mean": 87.3858,
+      "p50": 90.0,
+      "p75": 120.0,
+      "p95": 150.0,
+      "max": 150.0
+    },
+    "signals.offer_acceptance_rate": {
+      "count": 100000,
+      "min": -1.0,
+      "p05": -1.0,
+      "p25": -1.0,
+      "mean": -0.4036,
+      "p50": -1.0,
+      "p75": 0.4,
+      "p95": 0.7,
+      "max": 0.93
+    },
+    "signals.profile_completeness_score": {
+      "count": 100000,
+      "min": 25.0,
+      "p05": 29.4,
+      "p25": 42.2,
+      "mean": 56.7582,
+      "p50": 56.8,
+      "p75": 71.6,
+      "p95": 83.3,
+      "max": 99.9
+    },
+    "signals.profile_views_received_30d": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 4.0,
+      "p25": 23.0,
+      "mean": 47.9853,
+      "p50": 45.0,
+      "p75": 68.0,
+      "p95": 107.0,
+      "max": 374.0
+    },
+    "signals.recruiter_response_rate": {
+      "count": 100000,
+      "min": 0.02,
+      "p05": 0.1,
+      "p25": 0.25,
+      "mean": 0.4366,
+      "p50": 0.44,
+      "p75": 0.62,
+      "p95": 0.76,
+      "max": 0.95
+    },
+    "signals.saved_by_recruiters_30d": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 0.0,
+      "p25": 3.0,
+      "mean": 7.6587,
+      "p50": 7.0,
+      "p75": 11.0,
+      "p95": 18.0,
+      "max": 80.0
+    },
+    "signals.search_appearance_30d": {
+      "count": 100000,
+      "min": 0.0,
+      "p05": 10.0,
+      "p25": 52.0,
+      "mean": 117.5438,
+      "p50": 105.0,
+      "p75": 158.0,
+      "p95": 278.0,
+      "max": 1490.0
+    },
+    "signals.skill_assessment_scores.ASR": {
+      "count": 1124,
+      "min": 20.5,
+      "p05": 26.6,
+      "p25": 39.9,
+      "mean": 52.2748,
+      "p50": 52.3,
+      "p75": 64.9,
+      "p95": 76.97,
+      "max": 85.8
+    },
+    "signals.skill_assessment_scores.BM25": {
+      "count": 309,
+      "min": 25.1,
+      "p05": 31.18,
+      "p25": 43.5,
+      "mean": 54.7887,
+      "p50": 53.4,
+      "p75": 66.8,
+      "p95": 76.66,
+      "max": 91.8
+    },
+    "signals.skill_assessment_scores.BentoML": {
+      "count": 1157,
+      "min": 20.1,
+      "p05": 26.26,
+      "p25": 38.5,
+      "mean": 51.5828,
+      "p50": 51.6,
+      "p75": 64.5,
+      "p95": 76.7,
+      "max": 87.8
+    },
+    "signals.skill_assessment_scores.CNN": {
+      "count": 1174,
+      "min": 20.2,
+      "p05": 26.1,
+      "p25": 38.0,
+      "mean": 51.2854,
+      "p50": 51.8,
+      "p75": 64.25,
+      "p95": 76.035,
+      "max": 87.5
+    },
+    "signals.skill_assessment_scores.Computer Vision": {
+      "count": 1111,
+      "min": 20.2,
+      "p05": 25.95,
+      "p25": 39.9,
+      "mean": 52.1068,
+      "p50": 52.5,
+      "p75": 64.9,
+      "p95": 76.45,
+      "max": 87.0
+    },
+    "signals.skill_assessment_scores.Data Science": {
+      "count": 1147,
+      "min": 20.0,
+      "p05": 25.8,
+      "p25": 37.75,
+      "mean": 51.0636,
+      "p50": 51.5,
+      "p75": 64.1,
+      "p95": 76.37,
+      "max": 87.5
+    },
+    "signals.skill_assessment_scores.Deep Learning": {
+      "count": 284,
+      "min": 26.9,
+      "p05": 32.975,
+      "p25": 42.375,
+      "mean": 55.25,
+      "p50": 54.15,
+      "p75": 67.1,
+      "p95": 77.885,
+      "max": 94.0
+    },
+    "signals.skill_assessment_scores.Diffusion Models": {
+      "count": 1133,
+      "min": 20.1,
+      "p05": 25.1,
+      "p25": 38.4,
+      "mean": 51.3804,
+      "p50": 52.0,
+      "p75": 65.3,
+      "p95": 77.1,
+      "max": 87.4
+    },
+    "signals.skill_assessment_scores.Elasticsearch": {
+      "count": 285,
+      "min": 25.0,
+      "p05": 29.12,
+      "p25": 41.4,
+      "mean": 55.8933,
+      "p50": 57.0,
+      "p75": 69.6,
+      "p95": 78.32,
+      "max": 91.4
+    },
+    "signals.skill_assessment_scores.Embeddings": {
+      "count": 327,
+      "min": 25.2,
+      "p05": 30.6,
+      "p25": 43.25,
+      "mean": 55.3263,
+      "p50": 55.1,
+      "p75": 68.35,
+      "p95": 77.77,
+      "max": 92.9
+    },
+    "signals.skill_assessment_scores.FAISS": {
+      "count": 303,
+      "min": 25.2,
+      "p05": 30.52,
+      "p25": 42.6,
+      "mean": 54.8096,
+      "p50": 54.7,
+      "p75": 68.6,
+      "p95": 80.6,
+      "max": 87.8
+    },
+    "signals.skill_assessment_scores.Feature Engineering": {
+      "count": 1174,
+      "min": 20.1,
+      "p05": 26.865,
+      "p25": 39.5,
+      "mean": 51.951,
+      "p50": 51.6,
+      "p75": 64.5,
+      "p95": 76.435,
+      "max": 88.0
+    },
+    "signals.skill_assessment_scores.Fine-tuning LLMs": {
+      "count": 282,
+      "min": 25.3,
+      "p05": 31.005,
+      "p25": 42.025,
+      "mean": 55.0592,
+      "p50": 55.0,
+      "p75": 67.675,
+      "p95": 77.895,
+      "max": 96.5
+    },
+    "signals.skill_assessment_scores.Forecasting": {
+      "count": 1167,
+      "min": 20.1,
+      "p05": 25.7,
+      "p25": 39.0,
+      "mean": 51.2696,
+      "p50": 51.0,
+      "p75": 64.3,
+      "p95": 76.17,
+      "max": 87.2
+    },
+    "signals.skill_assessment_scores.GANs": {
+      "count": 1122,
+      "min": 20.2,
+      "p05": 27.4,
+      "p25": 39.9,
+      "mean": 52.7826,
+      "p50": 53.0,
+      "p75": 65.675,
+      "p95": 76.595,
+      "max": 87.2
+    },
+    "signals.skill_assessment_scores.Haystack": {
+      "count": 314,
+      "min": 25.1,
+      "p05": 29.095,
+      "p25": 43.7,
+      "mean": 56.0637,
+      "p50": 56.75,
+      "p75": 67.95,
+      "p95": 79.17,
+      "max": 90.0
+    },
+    "signals.skill_assessment_scores.Hugging Face Transformers": {
+      "count": 319,
+      "min": 25.3,
+      "p05": 30.4,
+      "p25": 43.15,
+      "mean": 55.8771,
+      "p50": 56.8,
+      "p75": 67.8,
+      "p95": 79.03,
+      "max": 87.1
+    },
+    "signals.skill_assessment_scores.Image Classification": {
+      "count": 1120,
+      "min": 20.1,
+      "p05": 25.795,
+      "p25": 38.1,
+      "mean": 51.3288,
+      "p50": 51.4,
+      "p75": 64.2,
+      "p95": 77.2,
+      "max": 89.5
+    },
+    "signals.skill_assessment_scores.Information Retrieval": {
+      "count": 343,
+      "min": 25.3,
+      "p05": 30.02,
+      "p25": 42.35,
+      "mean": 55.728,
+      "p50": 55.0,
+      "p75": 69.7,
+      "p95": 79.96,
+      "max": 87.8
+    },
+    "signals.skill_assessment_scores.Kubeflow": {
+      "count": 1105,
+      "min": 20.0,
+      "p05": 25.72,
+      "p25": 38.4,
+      "mean": 51.0964,
+      "p50": 50.8,
+      "p75": 64.4,
+      "p95": 76.0,
+      "max": 87.1
+    },
+    "signals.skill_assessment_scores.LLMs": {
+      "count": 323,
+      "min": 25.3,
+      "p05": 27.71,
+      "p25": 41.15,
+      "mean": 54.2765,
+      "p50": 55.3,
+      "p75": 67.65,
+      "p95": 78.44,
+      "max": 87.4
+    },
+    "signals.skill_assessment_scores.LangChain": {
+      "count": 295,
+      "min": 25.0,
+      "p05": 31.6,
+      "p25": 43.55,
+      "mean": 56.1024,
+      "p50": 56.3,
+      "p75": 69.35,
+      "p95": 78.49,
+      "max": 96.5
+    },
+    "signals.skill_assessment_scores.Learning to Rank": {
+      "count": 327,
+      "min": 25.1,
+      "p05": 29.23,
+      "p25": 41.6,
+      "mean": 53.8324,
+      "p50": 52.9,
+      "p75": 67.55,
+      "p95": 78.17,
+      "max": 90.2
+    },
+    "signals.skill_assessment_scores.LlamaIndex": {
+      "count": 291,
+      "min": 25.0,
+      "p05": 31.85,
+      "p25": 44.95,
+      "mean": 56.499,
+      "p50": 56.0,
+      "p75": 68.45,
+      "p95": 80.05,
+      "max": 96.1
+    },
+    "signals.skill_assessment_scores.LoRA": {
+      "count": 320,
+      "min": 25.5,
+      "p05": 30.915,
+      "p25": 42.675,
+      "mean": 55.1475,
+      "p50": 53.55,
+      "p75": 67.75,
+      "p95": 80.605,
+      "max": 91.8
+    },
+    "signals.skill_assessment_scores.MLOps": {
+      "count": 1159,
+      "min": 20.0,
+      "p05": 26.3,
+      "p25": 39.95,
+      "mean": 52.6081,
+      "p50": 53.0,
+      "p75": 65.65,
+      "p95": 76.6,
+      "max": 87.2
+    },
+    "signals.skill_assessment_scores.MLflow": {
+      "count": 1085,
+      "min": 20.0,
+      "p05": 25.42,
+      "p25": 39.4,
+      "mean": 52.4009,
+      "p50": 53.4,
+      "p75": 65.7,
+      "p95": 77.1,
+      "max": 89.9
+    },
+    "signals.skill_assessment_scores.Machine Learning": {
+      "count": 335,
+      "min": 25.2,
+      "p05": 28.4,
+      "p25": 43.45,
+      "mean": 55.5893,
+      "p50": 56.0,
+      "p75": 67.75,
+      "p95": 79.12,
+      "max": 90.6
+    },
+    "signals.skill_assessment_scores.Milvus": {
+      "count": 340,
+      "min": 25.4,
+      "p05": 28.495,
+      "p25": 42.175,
+      "mean": 54.1353,
+      "p50": 53.75,
+      "p75": 67.3,
+      "p95": 76.825,
+      "max": 87.8
+    },
+    "signals.skill_assessment_scores.NLP": {
+      "count": 306,
+      "min": 25.3,
+      "p05": 29.375,
+      "p25": 40.325,
+      "mean": 53.9673,
+      "p50": 53.5,
+      "p75": 68.075,
+      "p95": 79.975,
+      "max": 87.7
+    },
+    "signals.skill_assessment_scores.Object Detection": {
+      "count": 1145,
+      "min": 20.4,
+      "p05": 28.2,
+      "p25": 39.6,
+      "mean": 52.222,
+      "p50": 52.1,
+      "p75": 65.0,
+      "p95": 76.58,
+      "max": 88.7
+    },
+    "signals.skill_assessment_scores.OpenCV": {
+      "count": 1155,
+      "min": 20.0,
+      "p05": 26.27,
+      "p25": 39.6,
+      "mean": 52.1936,
+      "p50": 52.4,
+      "p75": 64.8,
+      "p95": 77.0,
+      "max": 87.2
+    },
+    "signals.skill_assessment_scores.OpenSearch": {
+      "count": 319,
+      "min": 25.1,
+      "p05": 30.66,
+      "p25": 43.4,
+      "mean": 56.1545,
+      "p50": 55.7,
+      "p75": 69.35,
+      "p95": 79.32,
+      "max": 90.5
+    },
+    "signals.skill_assessment_scores.PEFT": {
+      "count": 341,
+      "min": 25.0,
+      "p05": 31.0,
+      "p25": 42.5,
+      "mean": 55.7422,
+      "p50": 55.5,
+      "p75": 68.4,
+      "p95": 79.5,
+      "max": 89.8
+    },
+    "signals.skill_assessment_scores.Pinecone": {
+      "count": 325,
+      "min": 25.4,
+      "p05": 29.54,
+      "p25": 43.1,
+      "mean": 56.0305,
+      "p50": 57.0,
+      "p75": 68.6,
+      "p95": 79.8,
+      "max": 93.6
+    },
+    "signals.skill_assessment_scores.Prompt Engineering": {
+      "count": 312,
+      "min": 25.2,
+      "p05": 30.61,
+      "p25": 42.475,
+      "mean": 54.7561,
+      "p50": 54.55,
+      "p75": 67.55,
+      "p95": 77.7,
+      "max": 90.8
+    },
+    "signals.skill_assessment_scores.PyTorch": {
+      "count": 340,
+      "min": 25.1,
+      "p05": 28.78,
+      "p25": 43.1,
+      "mean": 55.1729,
+      "p50": 55.85,
+      "p75": 67.35,
+      "p95": 79.21,
+      "max": 91.0
+    },
+    "signals.skill_assessment_scores.Python": {
+      "count": 312,
+      "min": 25.3,
+      "p05": 29.7,
+      "p25": 43.75,
+      "mean": 55.6228,
+      "p50": 55.55,
+      "p75": 68.925,
+      "p95": 77.745,
+      "max": 92.0
+    },
+    "signals.skill_assessment_scores.QLoRA": {
+      "count": 329,
+      "min": 25.0,
+      "p05": 30.08,
+      "p25": 43.0,
+      "mean": 54.9799,
+      "p50": 54.0,
+      "p75": 67.8,
+      "p95": 79.3,
+      "max": 88.8
+    },
+    "signals.skill_assessment_scores.Qdrant": {
+      "count": 336,
+      "min": 25.3,
+      "p05": 30.075,
+      "p25": 43.825,
+      "mean": 55.9738,
+      "p50": 56.8,
+      "p75": 69.525,
+      "p95": 79.45,
+      "max": 90.6
+    },
+    "signals.skill_assessment_scores.RAG": {
+      "count": 326,
+      "min": 25.4,
+      "p05": 30.225,
+      "p25": 42.725,
+      "mean": 55.6448,
+      "p50": 55.95,
+      "p75": 68.575,
+      "p95": 77.65,
+      "max": 97.3
+    },
+    "signals.skill_assessment_scores.Recommendation Systems": {
+      "count": 325,
+      "min": 25.2,
+      "p05": 28.36,
+      "p25": 40.8,
+      "mean": 54.2243,
+      "p50": 54.1,
+      "p75": 67.9,
+      "p95": 78.1,
+      "max": 89.4
+    },
+    "signals.skill_assessment_scores.Reinforcement Learning": {
+      "count": 1124,
+      "min": 20.1,
+      "p05": 26.515,
+      "p25": 40.2,
+      "mean": 52.3049,
+      "p50": 52.85,
+      "p75": 64.5,
+      "p95": 75.57,
+      "max": 90.5
+    },
+    "signals.skill_assessment_scores.Semantic Search": {
+      "count": 301,
+      "min": 25.8,
+      "p05": 31.1,
+      "p25": 43.6,
+      "mean": 55.7359,
+      "p50": 55.9,
+      "p75": 67.6,
+      "p95": 77.9,
+      "max": 89.2
+    },
+    "signals.skill_assessment_scores.Sentence Transformers": {
+      "count": 328,
+      "min": 25.0,
+      "p05": 29.28,
+      "p25": 42.725,
+      "mean": 55.018,
+      "p50": 56.35,
+      "p75": 67.825,
+      "p95": 78.325,
+      "max": 97.0
+    },
+    "signals.skill_assessment_scores.Speech Recognition": {
+      "count": 1159,
+      "min": 20.1,
+      "p05": 26.2,
+      "p25": 38.7,
+      "mean": 51.7846,
+      "p50": 52.1,
+      "p75": 64.9,
+      "p95": 75.62,
+      "max": 87.0
+    },
+    "signals.skill_assessment_scores.Statistical Modeling": {
+      "count": 1088,
+      "min": 20.1,
+      "p05": 26.035,
+      "p25": 39.75,
+      "mean": 51.6168,
+      "p50": 51.4,
+      "p75": 64.35,
+      "p95": 75.33,
+      "max": 84.5
+    },
+    "signals.skill_assessment_scores.TTS": {
+      "count": 1140,
+      "min": 20.0,
+      "p05": 26.8,
+      "p25": 40.1,
+      "mean": 52.4149,
+      "p50": 52.5,
+      "p75": 65.525,
+      "p95": 76.5,
+      "max": 90.9
+    },
+    "signals.skill_assessment_scores.TensorFlow": {
+      "count": 326,
+      "min": 25.2,
+      "p05": 30.2,
+      "p25": 43.1,
+      "mean": 55.3224,
+      "p50": 55.0,
+      "p75": 68.425,
+      "p95": 77.675,
+      "max": 89.9
+    },
+    "signals.skill_assessment_scores.Time Series": {
+      "count": 1111,
+      "min": 20.0,
+      "p05": 26.7,
+      "p25": 39.45,
+      "mean": 52.2388,
+      "p50": 51.7,
+      "p75": 65.7,
+      "p95": 76.85,
+      "max": 89.1
+    },
+    "signals.skill_assessment_scores.Vector Search": {
+      "count": 326,
+      "min": 25.3,
+      "p05": 28.5,
+      "p25": 41.225,
+      "mean": 55.269,
+      "p50": 56.6,
+      "p75": 68.475,
+      "p95": 79.025,
+      "max": 92.7
+    },
+    "signals.skill_assessment_scores.Weaviate": {
+      "count": 321,
+      "min": 25.2,
+      "p05": 28.6,
+      "p25": 41.8,
+      "mean": 56.062,
+      "p50": 56.8,
+      "p75": 70.1,
+      "p95": 80.1,
+      "max": 88.3
+    },
+    "signals.skill_assessment_scores.Weights & Biases": {
+      "count": 1173,
+      "min": 20.2,
+      "p05": 26.8,
+      "p25": 40.3,
+      "mean": 51.988,
+      "p50": 51.8,
+      "p75": 64.4,
+      "p95": 76.3,
+      "max": 86.2
+    },
+    "signals.skill_assessment_scores.YOLO": {
+      "count": 1195,
+      "min": 20.0,
+      "p05": 26.5,
+      "p25": 39.0,
+      "mean": 52.024,
+      "p50": 52.2,
+      "p75": 64.95,
+      "p95": 77.1,
+      "max": 89.3
+    },
+    "signals.skill_assessment_scores.pgvector": {
+      "count": 340,
+      "min": 25.6,
+      "p05": 29.57,
+      "p25": 41.25,
+      "mean": 53.9638,
+      "p50": 53.6,
+      "p75": 66.125,
+      "p95": 79.22,
+      "max": 88.6
+    },
+    "signals.skill_assessment_scores.scikit-learn": {
+      "count": 317,
+      "min": 25.2,
+      "p05": 30.18,
+      "p25": 42.9,
+      "mean": 55.3946,
+      "p50": 56.1,
+      "p75": 68.6,
+      "p95": 77.62,
+      "max": 89.9
+    },
+    "skill_duration_months": {
+      "count": 960302,
+      "min": 0,
+      "p05": 4.0,
+      "p25": 10.0,
+      "mean": 18.0286,
+      "p50": 16.0,
+      "p75": 25.0,
+      "p95": 36.0,
+      "max": 96
+    },
+    "skill_endorsements": {
+      "count": 960302,
+      "min": 0,
+      "p05": 0.0,
+      "p25": 3.0,
+      "mean": 8.9709,
+      "p50": 8.0,
+      "p75": 12.0,
+      "p95": 22.0,
+      "max": 60
+    },
+    "skills_count": {
+      "count": 100000,
+      "min": 5,
+      "p05": 5.0,
+      "p25": 7.0,
+      "mean": 9.603,
+      "p50": 9.0,
+      "p75": 11.0,
+      "p95": 16.0,
+      "max": 23
+    },
+    "summary_chars": {
+      "count": 100000,
+      "min": 452,
+      "p05": 452.0,
+      "p25": 462.0,
+      "mean": 524.0272,
+      "p50": 463.0,
+      "p75": 599.0,
+      "p95": 771.0,
+      "max": 999
+    },
+    "total_career_months": {
+      "count": 100000,
+      "min": 8,
+      "p05": 19.0,
+      "p25": 46.0,
+      "mean": 84.757,
+      "p50": 81.0,
+      "p75": 118.0,
+      "p95": 166.0,
+      "max": 365
+    },
+    "years_of_experience": {
+      "count": 100000,
+      "min": 1.0,
+      "p05": 1.6,
+      "p25": 3.9,
+      "mean": 7.1663,
+      "p50": 6.8,
+      "p75": 9.9,
+      "p95": 14.0,
+      "max": 16.9
+    }
+  },
+  "top_counters": {
+    "certification_issuers": [
+      [
+        "AWS",
+        12630
+      ],
+      [
+        "ASQ",
+        12280
+      ],
+      [
+        "Scrum Alliance",
+        12147
+      ],
+      [
+        "Coursera/DeepLearning.AI",
+        216
+      ],
+      [
+        "Google Cloud",
+        111
+      ],
+      [
+        "DeepLearning.AI",
+        100
+      ]
+    ],
+    "certifications": [
+      [
+        "AWS Certified Cloud Practitioner",
+        12499
+      ],
+      [
+        "Six Sigma Green Belt",
+        12280
+      ],
+      [
+        "Scrum Master Certified",
+        12147
+      ],
+      [
+        "AWS Certified Machine Learning Specialty",
+        131
+      ],
+      [
+        "Deep Learning Specialization",
+        111
+      ],
+      [
+        "Google Cloud Professional ML Engineer",
+        111
+      ],
+      [
+        "NLP Specialization",
+        105
+      ],
+      [
+        "LangChain for LLM Application Development",
+        100
+      ]
+    ],
+    "company_sizes": [
+      [
+        "10001+",
+        40464
+      ],
+      [
+        "1001-5000",
+        18201
+      ],
+      [
+        "201-500",
+        15096
+      ],
+      [
+        "51-200",
+        7727
+      ],
+      [
+        "11-50",
+        7568
+      ],
+      [
+        "501-1000",
+        7525
+      ],
+      [
+        "5001-10000",
+        3419
+      ]
+    ],
+    "countries": [
+      [
+        "India",
+        75113
+      ],
+      [
+        "USA",
+        9978
+      ],
+      [
+        "Australia",
+        2579
+      ],
+      [
+        "Canada",
+        2506
+      ],
+      [
+        "UK",
+        2472
+      ],
+      [
+        "Germany",
+        2469
+      ],
+      [
+        "Singapore",
+        2453
+      ],
+      [
+        "UAE",
+        2430
+      ]
+    ],
+    "current_companies": [
+      [
+        "Infosys",
+        7590
+      ],
+      [
+        "Wayne Enterprises",
+        7571
+      ],
+      [
+        "Wipro",
+        7566
+      ],
+      [
+        "Initech",
+        7528
+      ],
+      [
+        "Pied Piper",
+        7500
+      ],
+      [
+        "Globex Inc",
+        7492
+      ],
+      [
+        "Acme Corp",
+        7490
+      ],
+      [
+        "Dunder Mifflin",
+        7467
+      ],
+      [
+        "TCS",
+        7451
+      ],
+      [
+        "Hooli",
+        7378
+      ],
+      [
+        "Stark Industries",
+        7323
+      ],
+      [
+        "Swiggy",
+        1288
+      ],
+      [
+        "Accenture",
+        1274
+      ],
+      [
+        "Capgemini",
+        1265
+      ],
+      [
+        "CRED",
+        1257
+      ],
+      [
+        "HCL",
+        1250
+      ],
+      [
+        "Razorpay",
+        1246
+      ],
+      [
+        "Zomato",
+        1226
+      ],
+      [
+        "Mindtree",
+        1225
+      ],
+      [
+        "Cognizant",
+        1213
+      ],
+      [
+        "Flipkart",
+        1171
+      ],
+      [
+        "Tech Mahindra",
+        1168
+      ],
+      [
+        "Mphasis",
+        1153
+      ],
+      [
+        "Meesho",
+        186
+      ],
+      [
+        "InMobi",
+        172
+      ]
+    ],
+    "current_titles": [
+      [
+        "Business Analyst",
+        5833
+      ],
+      [
+        "HR Manager",
+        5830
+      ],
+      [
+        "Mechanical Engineer",
+        5791
+      ],
+      [
+        "Accountant",
+        5764
+      ],
+      [
+        "Project Manager",
+        5754
+      ],
+      [
+        "Customer Support",
+        5750
+      ],
+      [
+        "Operations Manager",
+        5744
+      ],
+      [
+        "Content Writer",
+        5727
+      ],
+      [
+        "Sales Executive",
+        5713
+      ],
+      [
+        "Civil Engineer",
+        5702
+      ],
+      [
+        "Graphic Designer",
+        5689
+      ],
+      [
+        "Marketing Manager",
+        5524
+      ],
+      [
+        "Software Engineer",
+        3450
+      ],
+      [
+        "Full Stack Developer",
+        2873
+      ],
+      [
+        "Cloud Engineer",
+        2836
+      ],
+      [
+        "Java Developer",
+        2809
+      ],
+      [
+        ".NET Developer",
+        2788
+      ],
+      [
+        "DevOps Engineer",
+        2787
+      ],
+      [
+        "Mobile Developer",
+        2757
+      ],
+      [
+        "Frontend Engineer",
+        2738
+      ],
+      [
+        "QA Engineer",
+        2682
+      ],
+      [
+        "Analytics Engineer",
+        764
+      ],
+      [
+        "Data Engineer",
+        744
+      ],
+      [
+        "Data Analyst",
+        728
+      ],
+      [
+        "Backend Engineer",
+        704
+      ]
+    ],
+    "education_degrees": [
+      [
+        "M.E.",
+        17650
+      ],
+      [
+        "M.S.",
+        17604
+      ],
+      [
+        "M.Sc",
+        17562
+      ],
+      [
+        "M.Tech",
+        17535
+      ],
+      [
+        "Ph.D",
+        17526
+      ],
+      [
+        "B.Tech",
+        17465
+      ],
+      [
+        "B.E.",
+        17259
+      ],
+      [
+        "B.Sc",
+        17177
+      ]
+    ],
+    "education_fields": [
+      [
+        "Information Technology",
+        12328
+      ],
+      [
+        "Data Science",
+        12222
+      ],
+      [
+        "Machine Learning",
+        12216
+      ],
+      [
+        "Computer Engineering",
+        12114
+      ],
+      [
+        "Artificial Intelligence",
+        12009
+      ],
+      [
+        "Computer Science",
+        11868
+      ],
+      [
+        "Statistics",
+        6762
+      ],
+      [
+        "Chemical Engineering",
+        6740
+      ],
+      [
+        "Electronics",
+        6726
+      ],
+      [
+        "Physics",
+        6726
+      ],
+      [
+        "Civil Engineering",
+        6723
+      ],
+      [
+        "MBA",
+        6718
+      ],
+      [
+        "Electrical Engineering",
+        6714
+      ],
+      [
+        "Mechanical Engineering",
+        6696
+      ],
+      [
+        "Commerce",
+        6670
+      ],
+      [
+        "Mathematics",
+        6546
+      ]
+    ],
+    "education_tiers": [
+      [
+        "tier_3",
+        53220
+      ],
+      [
+        "tier_4",
+        51885
+      ],
+      [
+        "tier_2",
+        27821
+      ],
+      [
+        "tier_1",
+        6852
+      ]
+    ],
+    "industries": [
+      [
+        "IT Services",
+        29881
+      ],
+      [
+        "Software",
+        22417
+      ],
+      [
+        "Manufacturing",
+        22305
+      ],
+      [
+        "Conglomerate",
+        7571
+      ],
+      [
+        "Paper Products",
+        7467
+      ],
+      [
+        "Fintech",
+        2808
+      ],
+      [
+        "Food Delivery",
+        2514
+      ],
+      [
+        "E-commerce",
+        1529
+      ],
+      [
+        "Consulting",
+        1274
+      ],
+      [
+        "EdTech",
+        610
+      ],
+      [
+        "SaaS",
+        328
+      ],
+      [
+        "AI/ML",
+        278
+      ],
+      [
+        "AdTech",
+        172
+      ],
+      [
+        "Transportation",
+        162
+      ],
+      [
+        "Insurance Tech",
+        155
+      ],
+      [
+        "Gaming",
+        149
+      ],
+      [
+        "HealthTech",
+        147
+      ],
+      [
+        "HealthTech AI",
+        68
+      ],
+      [
+        "Conversational AI",
+        62
+      ],
+      [
+        "AI Services",
+        42
+      ],
+      [
+        "Voice AI",
+        31
+      ],
+      [
+        "Internet",
+        22
+      ],
+      [
+        "Media",
+        6
+      ],
+      [
+        "Consumer Electronics",
+        2
+      ]
+    ],
+    "language_proficiencies": [
+      [
+        "professional",
+        83512
+      ],
+      [
+        "native",
+        83381
+      ],
+      [
+        "conversational",
+        33107
+      ]
+    ],
+    "languages": [
+      [
+        "English",
+        100000
+      ],
+      [
+        "Hindi",
+        100000
+      ]
+    ],
+    "locations": [
+      [
+        "Bhubaneswar, Odisha",
+        4321
+      ],
+      [
+        "Noida, Uttar Pradesh",
+        4283
+      ],
+      [
+        "Hyderabad, Telangana",
+        4283
+      ],
+      [
+        "Jaipur, Rajasthan",
+        4268
+      ],
+      [
+        "Bangalore, Karnataka",
+        4238
+      ],
+      [
+        "Kolkata, West Bengal",
+        4230
+      ],
+      [
+        "Indore, Madhya Pradesh",
+        4198
+      ],
+      [
+        "Pune, Maharashtra",
+        4186
+      ],
+      [
+        "Chennai, Tamil Nadu",
+        4164
+      ],
+      [
+        "Delhi, Delhi",
+        4161
+      ],
+      [
+        "Trivandrum, Kerala",
+        4151
+      ],
+      [
+        "Ahmedabad, Gujarat",
+        4143
+      ],
+      [
+        "Chandigarh, Chandigarh",
+        4128
+      ],
+      [
+        "Coimbatore, Tamil Nadu",
+        4113
+      ],
+      [
+        "Vizag, Andhra Pradesh",
+        4093
+      ],
+      [
+        "Kochi, Kerala",
+        4073
+      ],
+      [
+        "Mumbai, Maharashtra",
+        4043
+      ],
+      [
+        "Gurgaon, Haryana",
+        4037
+      ],
+      [
+        "Sydney",
+        2579
+      ],
+      [
+        "San Francisco",
+        2536
+      ],
+      [
+        "Austin",
+        2531
+      ],
+      [
+        "New York",
+        2518
+      ],
+      [
+        "Toronto",
+        2506
+      ],
+      [
+        "London",
+        2472
+      ],
+      [
+        "Berlin",
+        2469
+      ]
+    ],
+    "signals.last_active_date": [
+      [
+        "2026-04-26",
+        542
+      ],
+      [
+        "2026-05-22",
+        529
+      ],
+      [
+        "2026-02-20",
+        519
+      ],
+      [
+        "2026-04-24",
+        512
+      ],
+      [
+        "2026-04-09",
+        505
+      ],
+      [
+        "2026-05-10",
+        505
+      ],
+      [
+        "2026-05-03",
+        504
+      ],
+      [
+        "2026-04-20",
+        504
+      ],
+      [
+        "2026-05-19",
+        504
+      ],
+      [
+        "2026-02-19",
+        503
+      ],
+      [
+        "2026-05-17",
+        503
+      ],
+      [
+        "2026-05-23",
+        502
+      ],
+      [
+        "2026-03-20",
+        502
+      ],
+      [
+        "2026-04-30",
+        501
+      ],
+      [
+        "2026-05-27",
+        500
+      ],
+      [
+        "2026-02-18",
+        499
+      ],
+      [
+        "2026-05-07",
+        499
+      ],
+      [
+        "2026-04-08",
+        496
+      ],
+      [
+        "2026-03-12",
+        496
+      ],
+      [
+        "2026-02-06",
+        495
+      ],
+      [
+        "2026-04-28",
+        495
+      ],
+      [
+        "2026-04-01",
+        495
+      ],
+      [
+        "2026-01-30",
+        495
+      ],
+      [
+        "2026-02-24",
+        493
+      ],
+      [
+        "2026-05-08",
+        493
+      ]
+    ],
+    "signals.linkedin_connected": [
+      [
+        "False",
+        64001
+      ],
+      [
+        "True",
+        35999
+      ]
+    ],
+    "signals.open_to_work_flag": [
+      [
+        "False",
+        64661
+      ],
+      [
+        "True",
+        35339
+      ]
+    ],
+    "signals.preferred_work_mode": [
+      [
+        "hybrid",
+        25076
+      ],
+      [
+        "onsite",
+        25000
+      ],
+      [
+        "flexible",
+        25000
+      ],
+      [
+        "remote",
+        24924
+      ]
+    ],
+    "signals.signup_date": [
+      [
+        "2023-04-23",
+        99
+      ],
+      [
+        "2025-06-29",
+        99
+      ],
+      [
+        "2024-09-09",
+        98
+      ],
+      [
+        "2024-11-01",
+        97
+      ],
+      [
+        "2025-10-14",
+        97
+      ],
+      [
+        "2023-06-10",
+        96
+      ],
+      [
+        "2025-12-30",
+        96
+      ],
+      [
+        "2024-07-20",
+        95
+      ],
+      [
+        "2025-09-23",
+        94
+      ],
+      [
+        "2026-02-06",
+        94
+      ],
+      [
+        "2025-11-19",
+        94
+      ],
+      [
+        "2024-03-01",
+        94
+      ],
+      [
+        "2026-02-10",
+        93
+      ],
+      [
+        "2026-02-28",
+        92
+      ],
+      [
+        "2023-10-01",
+        92
+      ],
+      [
+        "2024-01-09",
+        92
+      ],
+      [
+        "2024-04-09",
+        92
+      ],
+      [
+        "2026-03-22",
+        92
+      ],
+      [
+        "2024-05-07",
+        92
+      ],
+      [
+        "2024-04-02",
+        92
+      ],
+      [
+        "2024-01-23",
+        91
+      ],
+      [
+        "2024-09-14",
+        91
+      ],
+      [
+        "2025-11-08",
+        91
+      ],
+      [
+        "2025-07-14",
+        91
+      ],
+      [
+        "2026-03-04",
+        91
+      ]
+    ],
+    "signals.verified_email": [
+      [
+        "True",
+        72003
+      ],
+      [
+        "False",
+        27997
+      ]
+    ],
+    "signals.verified_phone": [
+      [
+        "True",
+        61789
+      ],
+      [
+        "False",
+        38211
+      ]
+    ],
+    "signals.willing_to_relocate": [
+      [
+        "False",
+        71196
+      ],
+      [
+        "True",
+        28804
+      ]
+    ],
+    "skill_proficiency": [
+      [
+        "intermediate",
+        470309
+      ],
+      [
+        "beginner",
+        379097
+      ],
+      [
+        "advanced",
+        109585
+      ],
+      [
+        "expert",
+        1311
+      ]
+    ],
+    "skills": [
+      [
+        "HTML",
+        12246
+      ],
+      [
+        "Databricks",
+        12244
+      ],
+      [
+        "Redux",
+        12222
+      ],
+      [
+        "Terraform",
+        12187
+      ],
+      [
+        "Angular",
+        12173
+      ],
+      [
+        "Figma",
+        12157
+      ],
+      [
+        "Salesforce CRM",
+        12157
+      ],
+      [
+        "Vue.js",
+        12142
+      ],
+      [
+        "Sales",
+        12138
+      ],
+      [
+        "Accounting",
+        12136
+      ],
+      [
+        "Agile",
+        12135
+      ],
+      [
+        "Kafka",
+        12114
+      ],
+      [
+        "Excel",
+        12109
+      ],
+      [
+        "BigQuery",
+        12108
+      ],
+      [
+        "CI/CD",
+        12108
+      ],
+      [
+        "Project Management",
+        12106
+      ],
+      [
+        "Airflow",
+        12105
+      ],
+      [
+        "AWS",
+        12104
+      ],
+      [
+        "Flask",
+        12104
+      ],
+      [
+        "Scrum",
+        12083
+      ],
+      [
+        "Illustrator",
+        12072
+      ],
+      [
+        "Kubernetes",
+        12071
+      ],
+      [
+        "ETL",
+        12068
+      ],
+      [
+        "CSS",
+        12065
+      ],
+      [
+        "Docker",
+        12062
+      ]
+    ]
+  },
+  "top_pairs": {
+    "title_country": [
+      [
+        [
+          "Business Analyst",
+          "India"
+        ],
+        4374
+      ],
+      [
+        [
+          "Customer Support",
+          "India"
+        ],
+        4360
+      ],
+      [
+        [
+          "Mechanical Engineer",
+          "India"
+        ],
+        4358
+      ],
+      [
+        [
+          "HR Manager",
+          "India"
+        ],
+        4357
+      ],
+      [
+        [
+          "Operations Manager",
+          "India"
+        ],
+        4321
+      ],
+      [
+        [
+          "Project Manager",
+          "India"
+        ],
+        4301
+      ],
+      [
+        [
+          "Content Writer",
+          "India"
+        ],
+        4299
+      ],
+      [
+        [
+          "Sales Executive",
+          "India"
+        ],
+        4271
+      ],
+      [
+        [
+          "Civil Engineer",
+          "India"
+        ],
+        4270
+      ],
+      [
+        [
+          "Accountant",
+          "India"
+        ],
+        4266
+      ],
+      [
+        [
+          "Graphic Designer",
+          "India"
+        ],
+        4256
+      ],
+      [
+        [
+          "Marketing Manager",
+          "India"
+        ],
+        4142
+      ],
+      [
+        [
+          "Software Engineer",
+          "India"
+        ],
+        2625
+      ],
+      [
+        [
+          "Full Stack Developer",
+          "India"
+        ],
+        2129
+      ],
+      [
+        [
+          "Cloud Engineer",
+          "India"
+        ],
+        2124
+      ],
+      [
+        [
+          "Java Developer",
+          "India"
+        ],
+        2093
+      ],
+      [
+        [
+          "DevOps Engineer",
+          "India"
+        ],
+        2092
+      ],
+      [
+        [
+          ".NET Developer",
+          "India"
+        ],
+        2086
+      ],
+      [
+        [
+          "Mobile Developer",
+          "India"
+        ],
+        2078
+      ],
+      [
+        [
+          "QA Engineer",
+          "India"
+        ],
+        2048
+      ]
+    ]
+  },
+  "examples": {
+    "services_only_career": [
+      {
+        "candidate_id": "CAND_0000003",
+        "title": "Customer Support",
+        "country": "USA",
+        "location": "Austin",
+        "years": 1.1,
+        "skills": [
+          "Angular",
+          "SEO",
+          "Excel",
+          "Accounting",
+          "Kubernetes",
+          "Databricks"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.46,
+        "notice_period_days": 150,
+        "last_active_date": "2026-03-21",
+        "career_titles": [
+          "Customer Support"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000008",
+        "title": "Operations Manager",
+        "country": "India",
+        "location": "Noida, Uttar Pradesh",
+        "years": 3.6,
+        "skills": [
+          "Java",
+          "BigQuery",
+          "Spark",
+          "Accounting",
+          "Kubernetes",
+          "TypeScript",
+          "Rust",
+          "HTML"
+        ],
+        "current_company": "Wipro",
+        "response_rate": 0.42,
+        "notice_period_days": 90,
+        "last_active_date": "2025-12-13",
+        "career_titles": [
+          "Operations Manager"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000024",
+        "title": "HR Manager",
+        "country": "India",
+        "location": "Trivandrum, Kerala",
+        "years": 7.5,
+        "skills": [
+          "Figma",
+          "Kubernetes",
+          "Forecasting",
+          "ETL",
+          "Node.js",
+          "Docker"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.78,
+        "notice_period_days": 60,
+        "last_active_date": "2026-01-20",
+        "career_titles": [
+          "HR Manager",
+          "Accountant"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000027",
+        "title": "DevOps Engineer",
+        "country": "India",
+        "location": "Kolkata, West Bengal",
+        "years": 3.9,
+        "skills": [
+          "Docker",
+          "YOLO",
+          "PEFT",
+          "Webpack",
+          "Data Science",
+          "AWS",
+          "Java",
+          "Angular",
+          "Databricks",
+          "ETL",
+          "Marketing",
+          "Information Retrieval"
+        ],
+        "current_company": "Infosys",
+        "response_rate": 0.58,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-07",
+        "career_titles": [
+          "DevOps Engineer",
+          "DevOps Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000028",
+        "title": "Operations Manager",
+        "country": "UAE",
+        "location": "Dubai",
+        "years": 1.1,
+        "skills": [
+          "Snowflake",
+          "React",
+          "JavaScript",
+          "Tailwind",
+          "REST APIs",
+          "Photoshop",
+          "Data Pipelines",
+          "Terraform",
+          "CNN",
+          "Content Writing"
+        ],
+        "current_company": "Wipro",
+        "response_rate": 0.14,
+        "notice_period_days": 60,
+        "last_active_date": "2026-03-31",
+        "career_titles": [
+          "Operations Manager"
+        ]
+      }
+    ],
+    "high_signal_profile_shape": [
+      {
+        "candidate_id": "CAND_0000031",
+        "title": "Recommendation Systems Engineer",
+        "country": "India",
+        "location": "Hyderabad, Telangana",
+        "years": 6.0,
+        "skills": [
+          "Go",
+          "MLflow",
+          "FAISS",
+          "Pinecone",
+          "Angular",
+          "Image Classification",
+          "Machine Learning",
+          "Speech Recognition",
+          "BentoML",
+          "MLOps",
+          "Embeddings",
+          "Information Retrieval"
+        ],
+        "current_company": "Swiggy",
+        "response_rate": 0.91,
+        "notice_period_days": 60,
+        "last_active_date": "2026-05-24",
+        "career_titles": [
+          "Recommendation Systems Engineer",
+          "Search Engineer",
+          "NLP Engineer",
+          "Applied ML Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000422",
+        "title": "AI Research Engineer",
+        "country": "India",
+        "location": "Kolkata, West Bengal",
+        "years": 6.3,
+        "skills": [
+          "MLflow",
+          "Python",
+          "Photoshop",
+          "Milvus",
+          "Java",
+          "OpenCV",
+          "Learning to Rank",
+          "OpenSearch",
+          "CNN",
+          "YOLO",
+          "Reinforcement Learning"
+        ],
+        "current_company": "Haptik",
+        "response_rate": 0.79,
+        "notice_period_days": 90,
+        "last_active_date": "2026-03-24",
+        "career_titles": [
+          "AI Research Engineer",
+          "Data Scientist",
+          "Data Scientist"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0001940",
+        "title": "AI Research Engineer",
+        "country": "USA",
+        "location": "San Francisco",
+        "years": 4.3,
+        "skills": [
+          "PyTorch",
+          "Elasticsearch",
+          "Feature Engineering",
+          "Forecasting",
+          "Recommendation Systems",
+          "Tailwind",
+          "TensorFlow",
+          "Computer Vision",
+          "FAISS",
+          "Haystack",
+          "MLflow",
+          "Vector Search"
+        ],
+        "current_company": "Nykaa",
+        "response_rate": 0.87,
+        "notice_period_days": 90,
+        "last_active_date": "2026-04-06",
+        "career_titles": [
+          "AI Research Engineer",
+          "Junior ML Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0002025",
+        "title": "Senior AI Engineer",
+        "country": "India",
+        "location": "Trivandrum, Kerala",
+        "years": 5.9,
+        "skills": [
+          "Diffusion Models",
+          "FAISS",
+          "TensorFlow",
+          "scikit-learn",
+          "OpenSearch",
+          "Haystack",
+          "Weaviate",
+          "Sentence Transformers",
+          "QLoRA",
+          "NLP",
+          "Pinecone",
+          "Recommendation Systems"
+        ],
+        "current_company": "Apple",
+        "response_rate": 0.8,
+        "notice_period_days": 30,
+        "last_active_date": "2026-05-26",
+        "career_titles": [
+          "Senior AI Engineer",
+          "Lead AI Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0002120",
+        "title": "ML Engineer",
+        "country": "Germany",
+        "location": "Berlin",
+        "years": 6.5,
+        "skills": [
+          "RAG",
+          "ETL",
+          "Hugging Face Transformers",
+          "Information Retrieval",
+          "Six Sigma",
+          "Pinecone",
+          "Reinforcement Learning",
+          "Data Science",
+          "Object Detection",
+          "Statistical Modeling",
+          "PostgreSQL",
+          "Embeddings"
+        ],
+        "current_company": "HCL",
+        "response_rate": 0.72,
+        "notice_period_days": 45,
+        "last_active_date": "2026-05-20",
+        "career_titles": [
+          "ML Engineer",
+          "AI Specialist"
+        ]
+      }
+    ],
+    "nontechnical_title_high_ai_skills": [
+      {
+        "candidate_id": "CAND_0000074",
+        "title": "Operations Manager",
+        "country": "India",
+        "location": "Indore, Madhya Pradesh",
+        "years": 1.9,
+        "skills": [
+          "Go",
+          "gRPC",
+          "Next.js",
+          "Webpack",
+          "AWS",
+          "Information Retrieval",
+          "Hugging Face Transformers",
+          "Sentence Transformers",
+          "Recommendation Systems",
+          "Embeddings",
+          "RAG",
+          "LLMs"
+        ],
+        "current_company": "Dunder Mifflin",
+        "response_rate": 0.73,
+        "notice_period_days": 60,
+        "last_active_date": "2025-11-03",
+        "career_titles": [
+          "Operations Manager"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000083",
+        "title": "Graphic Designer",
+        "country": "Germany",
+        "location": "Berlin",
+        "years": 6.7,
+        "skills": [
+          "BigQuery",
+          "Flask",
+          "Figma",
+          "SAP",
+          "Vue.js",
+          "Marketing",
+          "Semantic Search",
+          "Pinecone",
+          "Fine-tuning LLMs",
+          "RAG",
+          "Hugging Face Transformers",
+          "Recommendation Systems"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.49,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-06",
+        "career_titles": [
+          "Graphic Designer",
+          "Graphic Designer",
+          "Customer Support"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000120",
+        "title": "Graphic Designer",
+        "country": "India",
+        "location": "Bhubaneswar, Odisha",
+        "years": 5.7,
+        "skills": [
+          "FastAPI",
+          "AWS",
+          "Redux",
+          "Marketing",
+          "SQL",
+          "React",
+          "Salesforce CRM",
+          "Forecasting",
+          "Content Writing",
+          "RAG",
+          "Hugging Face Transformers",
+          "Vector Search"
+        ],
+        "current_company": "Wayne Enterprises",
+        "response_rate": 0.58,
+        "notice_period_days": 60,
+        "last_active_date": "2026-03-10",
+        "career_titles": [
+          "Graphic Designer",
+          "Accountant",
+          "Sales Executive"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000121",
+        "title": "Customer Support",
+        "country": "India",
+        "location": "Mumbai, Maharashtra",
+        "years": 3.7,
+        "skills": [
+          "Airflow",
+          "Marketing",
+          "Excel",
+          "SEO",
+          "Sales",
+          "FAISS",
+          "Vector Search",
+          "Recommendation Systems",
+          "RAG",
+          "Fine-tuning LLMs",
+          "Hugging Face Transformers",
+          "Prompt Engineering"
+        ],
+        "current_company": "Wayne Enterprises",
+        "response_rate": 0.54,
+        "notice_period_days": 30,
+        "last_active_date": "2026-03-10",
+        "career_titles": [
+          "Customer Support",
+          "Project Manager"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000201",
+        "title": "Marketing Manager",
+        "country": "India",
+        "location": "Mumbai, Maharashtra",
+        "years": 14.1,
+        "skills": [
+          "Sales",
+          "Data Pipelines",
+          "Vue.js",
+          "GraphQL",
+          "Marketing",
+          "Apache Flink",
+          "Information Retrieval",
+          "Embeddings",
+          "Fine-tuning LLMs",
+          "Hugging Face Transformers",
+          "LangChain",
+          "RAG"
+        ],
+        "current_company": "Stark Industries",
+        "response_rate": 0.72,
+        "notice_period_days": 60,
+        "last_active_date": "2026-05-02",
+        "career_titles": [
+          "Marketing Manager",
+          "Business Analyst",
+          "Marketing Manager",
+          "Content Writer"
+        ]
+      }
+    ],
+    "keyword_stuffer_shape": [
+      {
+        "candidate_id": "CAND_0000083",
+        "title": "Graphic Designer",
+        "country": "Germany",
+        "location": "Berlin",
+        "years": 6.7,
+        "skills": [
+          "BigQuery",
+          "Flask",
+          "Figma",
+          "SAP",
+          "Vue.js",
+          "Marketing",
+          "Semantic Search",
+          "Pinecone",
+          "Fine-tuning LLMs",
+          "RAG",
+          "Hugging Face Transformers",
+          "Recommendation Systems"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.49,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-06",
+        "career_titles": [
+          "Graphic Designer",
+          "Graphic Designer",
+          "Customer Support"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000120",
+        "title": "Graphic Designer",
+        "country": "India",
+        "location": "Bhubaneswar, Odisha",
+        "years": 5.7,
+        "skills": [
+          "FastAPI",
+          "AWS",
+          "Redux",
+          "Marketing",
+          "SQL",
+          "React",
+          "Salesforce CRM",
+          "Forecasting",
+          "Content Writing",
+          "RAG",
+          "Hugging Face Transformers",
+          "Vector Search"
+        ],
+        "current_company": "Wayne Enterprises",
+        "response_rate": 0.58,
+        "notice_period_days": 60,
+        "last_active_date": "2026-03-10",
+        "career_titles": [
+          "Graphic Designer",
+          "Accountant",
+          "Sales Executive"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000212",
+        "title": "Customer Support",
+        "country": "USA",
+        "location": "Austin",
+        "years": 13.0,
+        "skills": [
+          "Airflow",
+          "Scrum",
+          "Content Writing",
+          "HTML",
+          "Vue.js",
+          "Redux",
+          "Next.js",
+          "Kubernetes",
+          "Marketing",
+          "Go",
+          "Fine-tuning LLMs",
+          "Hugging Face Transformers"
+        ],
+        "current_company": "Wayne Enterprises",
+        "response_rate": 0.06,
+        "notice_period_days": 30,
+        "last_active_date": "2025-12-03",
+        "career_titles": [
+          "Customer Support",
+          "HR Manager",
+          "Business Analyst",
+          "Business Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000312",
+        "title": "Content Writer",
+        "country": "India",
+        "location": "Delhi, Delhi",
+        "years": 11.5,
+        "skills": [
+          "HTML",
+          "Kubernetes",
+          "GCP",
+          "Rust",
+          "Microservices",
+          "Databricks",
+          "Airflow",
+          "YOLO",
+          "Redux",
+          "FAISS",
+          "Embeddings",
+          "Prompt Engineering"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.62,
+        "notice_period_days": 120,
+        "last_active_date": "2025-11-25",
+        "career_titles": [
+          "Content Writer",
+          "Customer Support",
+          "Mechanical Engineer",
+          "HR Manager"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000330",
+        "title": "Civil Engineer",
+        "country": "India",
+        "location": "Kolkata, West Bengal",
+        "years": 12.0,
+        "skills": [
+          "JavaScript",
+          "GraphQL",
+          "Six Sigma",
+          "Microservices",
+          "FastAPI",
+          "Excel",
+          "SAP",
+          "Databricks",
+          "Rust",
+          "Photoshop",
+          "MLOps",
+          "RAG"
+        ],
+        "current_company": "Acme Corp",
+        "response_rate": 0.6,
+        "notice_period_days": 60,
+        "last_active_date": "2026-01-09",
+        "career_titles": [
+          "Civil Engineer",
+          "Operations Manager",
+          "Graphic Designer",
+          "Customer Support"
+        ]
+      }
+    ],
+    "cv_speech_without_ir": [
+      {
+        "candidate_id": "CAND_0000112",
+        "title": "AI Specialist",
+        "country": "India",
+        "location": "Vizag, Andhra Pradesh",
+        "years": 3.8,
+        "skills": [
+          "Deep Learning",
+          "TensorFlow",
+          "Time Series",
+          "Speech Recognition",
+          "GANs",
+          "ASR",
+          "LlamaIndex",
+          "Object Detection",
+          "Haystack",
+          "Go",
+          "Hugging Face Transformers",
+          "Redux"
+        ],
+        "current_company": "Zomato",
+        "response_rate": 0.31,
+        "notice_period_days": 45,
+        "last_active_date": "2026-03-26",
+        "career_titles": [
+          "AI Specialist"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000584",
+        "title": "Analytics Engineer",
+        "country": "India",
+        "location": "Indore, Madhya Pradesh",
+        "years": 7.3,
+        "skills": [
+          "BM25",
+          "Semantic Search",
+          "ASR",
+          "CI/CD",
+          "JavaScript",
+          "Node.js",
+          "YOLO",
+          "OpenCV",
+          "GCP",
+          "TTS",
+          "Tally",
+          "MLflow"
+        ],
+        "current_company": "Stark Industries",
+        "response_rate": 0.8,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-18",
+        "career_titles": [
+          "Analytics Engineer",
+          "Analytics Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0000790",
+        "title": "Data Analyst",
+        "country": "India",
+        "location": "Pune, Maharashtra",
+        "years": 7.9,
+        "skills": [
+          "Image Classification",
+          "TensorFlow",
+          "Redux",
+          "Go",
+          "Python",
+          "HTML",
+          "LangChain",
+          "Speech Recognition",
+          "JavaScript",
+          "MLOps",
+          "GANs",
+          "Reinforcement Learning"
+        ],
+        "current_company": "Razorpay",
+        "response_rate": 0.33,
+        "notice_period_days": 120,
+        "last_active_date": "2026-04-16",
+        "career_titles": [
+          "Data Analyst",
+          "Data Engineer",
+          "Analytics Engineer",
+          "Data Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0001378",
+        "title": "Software Engineer",
+        "country": "India",
+        "location": "Vizag, Andhra Pradesh",
+        "years": 4.8,
+        "skills": [
+          "ASR",
+          "Image Classification",
+          "Speech Recognition",
+          "CNN",
+          "YOLO",
+          "Terraform",
+          "OpenCV",
+          "Haystack",
+          "SQL",
+          "Computer Vision",
+          "Photoshop"
+        ],
+        "current_company": "Paytm",
+        "response_rate": 0.77,
+        "notice_period_days": 60,
+        "last_active_date": "2026-02-12",
+        "career_titles": [
+          "Software Engineer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0001547",
+        "title": "Software Engineer",
+        "country": "USA",
+        "location": "San Francisco",
+        "years": 5.7,
+        "skills": [
+          "Project Management",
+          "LLMs",
+          "Computer Vision",
+          "Feature Engineering",
+          "Figma",
+          "Object Detection",
+          "SQL",
+          "YOLO",
+          "LoRA",
+          "dbt",
+          "Information Retrieval",
+          "Image Classification"
+        ],
+        "current_company": "Dream11",
+        "response_rate": 0.64,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-04",
+        "career_titles": [
+          "Software Engineer",
+          "Data Engineer"
+        ]
+      }
+    ],
+    "experience_history_gap_over_4y": [
+      {
+        "candidate_id": "CAND_0003430",
+        "title": "Business Analyst",
+        "country": "India",
+        "location": "Pune, Maharashtra",
+        "years": 13.7,
+        "skills": [
+          "Go",
+          "TTS",
+          "Kubernetes",
+          "Content Writing",
+          "Snowflake",
+          "JavaScript"
+        ],
+        "current_company": "Infosys",
+        "response_rate": 0.48,
+        "notice_period_days": 60,
+        "last_active_date": "2025-10-23",
+        "career_titles": [
+          "Business Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0005291",
+        "title": "Business Analyst",
+        "country": "India",
+        "location": "Indore, Madhya Pradesh",
+        "years": 12.8,
+        "skills": [
+          "ETL",
+          "Kafka",
+          "Rust",
+          "React",
+          "Next.js",
+          "Sales",
+          "Content Writing"
+        ],
+        "current_company": "Hooli",
+        "response_rate": 0.14,
+        "notice_period_days": 60,
+        "last_active_date": "2026-03-04",
+        "career_titles": [
+          "Business Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0007353",
+        "title": "Frontend Engineer",
+        "country": "India",
+        "location": "Noida, Uttar Pradesh",
+        "years": 9.9,
+        "skills": [
+          "Tailwind",
+          "Apache Flink",
+          "Content Writing",
+          "Hadoop",
+          "RAG",
+          "Reinforcement Learning",
+          "Microservices"
+        ],
+        "current_company": "Wayne Enterprises",
+        "response_rate": 0.65,
+        "notice_period_days": 120,
+        "last_active_date": "2026-03-21",
+        "career_titles": [
+          "Frontend Engineer",
+          "Full Stack Developer",
+          "DevOps Engineer",
+          "Full Stack Developer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0007413",
+        "title": "Business Analyst",
+        "country": "India",
+        "location": "Coimbatore, Tamil Nadu",
+        "years": 13.3,
+        "skills": [
+          "Weights & Biases",
+          "ETL",
+          "Java",
+          "Rust",
+          "Terraform",
+          "dbt"
+        ],
+        "current_company": "Globex Inc",
+        "response_rate": 0.25,
+        "notice_period_days": 60,
+        "last_active_date": "2026-04-21",
+        "career_titles": [
+          "Business Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0008960",
+        "title": "Graphic Designer",
+        "country": "India",
+        "location": "Mumbai, Maharashtra",
+        "years": 10.3,
+        "skills": [
+          "Project Management",
+          "HTML",
+          "Data Pipelines",
+          "CSS",
+          "Image Classification",
+          "Marketing",
+          "SQL",
+          "Databricks"
+        ],
+        "current_company": "Stark Industries",
+        "response_rate": 0.47,
+        "notice_period_days": 90,
+        "last_active_date": "2025-12-21",
+        "career_titles": [
+          "Graphic Designer",
+          "Customer Support",
+          "Customer Support",
+          "Project Manager"
+        ]
+      }
+    ],
+    "expert_skill_with_zero_duration": [
+      {
+        "candidate_id": "CAND_0003582",
+        "title": "Mobile Developer",
+        "country": "India",
+        "location": "Kolkata, West Bengal",
+        "years": 8.2,
+        "skills": [
+          "Docker",
+          "Image Classification",
+          "MLflow",
+          "Photoshop",
+          "TTS",
+          "Spring Boot",
+          "JavaScript",
+          "Content Writing"
+        ],
+        "current_company": "Mphasis",
+        "response_rate": 0.29,
+        "notice_period_days": 120,
+        "last_active_date": "2026-02-10",
+        "career_titles": [
+          "Mobile Developer",
+          "DevOps Engineer",
+          ".NET Developer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0016000",
+        "title": "Full Stack Developer",
+        "country": "Australia",
+        "location": "Sydney",
+        "years": 2.0,
+        "skills": [
+          "Flask",
+          "Spring Boot",
+          "TypeScript",
+          "Go",
+          "REST APIs",
+          "Docker",
+          "Terraform",
+          "Hadoop",
+          "AWS",
+          "Photoshop"
+        ],
+        "current_company": "Initech",
+        "response_rate": 0.55,
+        "notice_period_days": 90,
+        "last_active_date": "2026-03-22",
+        "career_titles": [
+          "Full Stack Developer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0033817",
+        "title": "HR Manager",
+        "country": "Germany",
+        "location": "Berlin",
+        "years": 13.3,
+        "skills": [
+          "FastAPI",
+          "JavaScript",
+          "Diffusion Models",
+          "BigQuery",
+          "PostgreSQL",
+          "Illustrator",
+          "Six Sigma",
+          "gRPC"
+        ],
+        "current_company": "Pied Piper",
+        "response_rate": 0.34,
+        "notice_period_days": 150,
+        "last_active_date": "2026-04-24",
+        "career_titles": [
+          "HR Manager",
+          "Civil Engineer",
+          "Graphic Designer",
+          "Business Analyst"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0033972",
+        "title": "QA Engineer",
+        "country": "India",
+        "location": "Coimbatore, Tamil Nadu",
+        "years": 6.0,
+        "skills": [
+          "MLOps",
+          "Airflow",
+          "OpenCV",
+          "Figma",
+          "PostgreSQL",
+          "Tally",
+          "Excel"
+        ],
+        "current_company": "Swiggy",
+        "response_rate": 0.25,
+        "notice_period_days": 90,
+        "last_active_date": "2026-05-02",
+        "career_titles": [
+          "QA Engineer",
+          "Full Stack Developer"
+        ]
+      },
+      {
+        "candidate_id": "CAND_0036839",
+        "title": "Operations Manager",
+        "country": "India",
+        "location": "Ahmedabad, Gujarat",
+        "years": 8.1,
+        "skills": [
+          "SAP",
+          "GCP",
+          "Django",
+          "Go",
+          "TTS",
+          "Rust"
+        ],
+        "current_company": "TCS",
+        "response_rate": 0.38,
+        "notice_period_days": 60,
+        "last_active_date": "2026-04-26",
+        "career_titles": [
+          "Operations Manager",
+          "Project Manager",
+          "Graphic Designer"
+        ]
+      }
+    ]
+  },
+  "current_sifter_submission": {
+    "submitted_candidates_found": 100,
+    "trap_flag_total": 0,
+    "trap_flags": [],
+    "jd_experience_5_to_9": 90,
+    "avg_must_have_skill_count": 5.04,
+    "avg_career_ir_hint_count": 6.36,
+    "avg_career_production_hint_count": 5.02,
+    "top_titles": [
+      [
+        "Recommendation Systems Engineer",
+        13
+      ],
+      [
+        "Applied ML Engineer",
+        13
+      ],
+      [
+        "Machine Learning Engineer",
+        12
+      ],
+      [
+        "Senior Data Scientist",
+        10
+      ],
+      [
+        "Search Engineer",
+        10
+      ],
+      [
+        "AI Engineer",
+        9
+      ],
+      [
+        "Senior NLP Engineer",
+        6
+      ],
+      [
+        "Senior Machine Learning Engineer",
+        5
+      ],
+      [
+        "NLP Engineer",
+        5
+      ],
+      [
+        "Senior AI Engineer",
+        4
+      ],
+      [
+        "Senior Applied Scientist",
+        4
+      ],
+      [
+        "Staff Machine Learning Engineer",
+        4
+      ],
+      [
+        "ML Engineer",
+        2
+      ],
+      [
+        "Lead AI Engineer",
+        2
+      ],
+      [
+        "Junior ML Engineer",
+        1
+      ]
+    ],
+    "top_countries": [
+      [
+        "India",
+        85
+      ],
+      [
+        "USA",
+        5
+      ],
+      [
+        "Germany",
+        3
+      ],
+      [
+        "Singapore",
+        2
+      ],
+      [
+        "Australia",
+        2
+      ],
+      [
+        "Canada",
+        1
+      ],
+      [
+        "UK",
+        1
+      ],
+      [
+        "UAE",
+        1
+      ]
+    ],
+    "top_10": [
+      {
+        "rank": 1,
+        "candidate_id": "CAND_0071974",
+        "title": "Senior AI Engineer",
+        "country": "India",
+        "years": 7.8,
+        "must_have_skill_count": 9,
+        "career_ir_hint_count": 7,
+        "career_production_hint_count": 8,
+        "response_rate": 0.76,
+        "notice_period_days": 45,
+        "trap_flags": []
+      },
+      {
+        "rank": 2,
+        "candidate_id": "CAND_0077337",
+        "title": "Staff Machine Learning Engineer",
+        "country": "India",
+        "years": 7.0,
+        "must_have_skill_count": 9,
+        "career_ir_hint_count": 10,
+        "career_production_hint_count": 8,
+        "response_rate": 0.95,
+        "notice_period_days": 60,
+        "trap_flags": []
+      },
+      {
+        "rank": 3,
+        "candidate_id": "CAND_0081846",
+        "title": "Lead AI Engineer",
+        "country": "India",
+        "years": 6.7,
+        "must_have_skill_count": 10,
+        "career_ir_hint_count": 10,
+        "career_production_hint_count": 6,
+        "response_rate": 0.73,
+        "notice_period_days": 30,
+        "trap_flags": []
+      },
+      {
+        "rank": 4,
+        "candidate_id": "CAND_0055905",
+        "title": "Senior Machine Learning Engineer",
+        "country": "UK",
+        "years": 8.1,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 10,
+        "career_production_hint_count": 8,
+        "response_rate": 0.87,
+        "notice_period_days": 30,
+        "trap_flags": []
+      },
+      {
+        "rank": 5,
+        "candidate_id": "CAND_0008425",
+        "title": "Senior NLP Engineer",
+        "country": "India",
+        "years": 7.8,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 11,
+        "career_production_hint_count": 8,
+        "response_rate": 0.66,
+        "notice_period_days": 90,
+        "trap_flags": []
+      },
+      {
+        "rank": 6,
+        "candidate_id": "CAND_0080766",
+        "title": "Staff Machine Learning Engineer",
+        "country": "India",
+        "years": 8.8,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 8,
+        "career_production_hint_count": 9,
+        "response_rate": 0.66,
+        "notice_period_days": 0,
+        "trap_flags": []
+      },
+      {
+        "rank": 7,
+        "candidate_id": "CAND_0046064",
+        "title": "Senior NLP Engineer",
+        "country": "India",
+        "years": 8.9,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 12,
+        "career_production_hint_count": 6,
+        "response_rate": 0.78,
+        "notice_period_days": 30,
+        "trap_flags": []
+      },
+      {
+        "rank": 8,
+        "candidate_id": "CAND_0039754",
+        "title": "Senior Applied Scientist",
+        "country": "India",
+        "years": 16.2,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 13,
+        "career_production_hint_count": 6,
+        "response_rate": 0.81,
+        "notice_period_days": 30,
+        "trap_flags": []
+      },
+      {
+        "rank": 9,
+        "candidate_id": "CAND_0002025",
+        "title": "Senior AI Engineer",
+        "country": "India",
+        "years": 5.9,
+        "must_have_skill_count": 6,
+        "career_ir_hint_count": 5,
+        "career_production_hint_count": 7,
+        "response_rate": 0.8,
+        "notice_period_days": 30,
+        "trap_flags": []
+      },
+      {
+        "rank": 10,
+        "candidate_id": "CAND_0011687",
+        "title": "Senior NLP Engineer",
+        "country": "India",
+        "years": 7.8,
+        "must_have_skill_count": 5,
+        "career_ir_hint_count": 7,
+        "career_production_hint_count": 5,
+        "response_rate": 0.89,
+        "notice_period_days": 15,
+        "trap_flags": []
+      }
+    ]
+  }
+}

@@ -28,6 +28,47 @@ That is why this project is not just a scoring table. It is a full ranking workf
 | Static heuristics are not enough | Add a trainable reranker that can improve with feedback | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
 | Many users cannot afford enterprise ATS tooling | Make the app local-first and accessible | Works as a lightweight web app with local/demo data paths and no paid AI dependency for the main ranking flow |
 
+## Dataset Understanding
+
+Redrob's founder was right to stress the data. The challenge is not only "rank candidates." It is "understand what the candidate data is trying to trick you into doing."
+
+We read the challenge docs, schema, Redrob behavioral-signal reference, job description, submission spec, sample candidates, and then streamed the full `100,000` candidate file. The dataset is deliberately adversarial: the docs mention keyword stuffers, plain-language strong fits, behavioral twins, and about `80` honeypots with subtly impossible profiles.
+
+The biggest insight: the real fit pool is tiny. The job asks for production retrieval, ranking, evaluation, vector/hybrid search, Python, and shipping judgment. Most candidates are broad, adjacent, unavailable, or keyword-heavy but not actually a fit.
+
+![Redrob signal rarity](docs/dataset-analysis/visuals/redrob_signal_rarity.png)
+
+What the structural audit showed:
+
+| Finding | Why It Matters For Ranking |
+| --- | --- |
+| `100,000` candidates, `464.69 MB`, `0` duplicate IDs | The data is large but clean enough for streaming and reproducible ranking. |
+| Only `5,616` candidates have 4+ must-have retrieval/search skills | Raw AI keyword matching is too broad. |
+| Only `505` candidates show 2+ career-history retrieval/search/ranking hints | Career evidence is rarer and more valuable than skill-list volume. |
+| Only `210` candidates match a strict high-signal shape | The top 100 needs precision, not a loose "AI profile" filter. |
+| `1,706` keyword-stuffer shaped profiles | A model that rewards skill count will get trapped. |
+| `3,077` nontechnical-title profiles still list many AI skills | Title/career context must check whether the skills make sense. |
+| `84` expert skills with zero duration | Honeypot-style consistency checks matter. |
+| Median recruiter response rate is `0.44`; median notice is `90` days | Behavioral signals should affect availability, but not overpower job fit. |
+
+![Redrob trap landscape](docs/dataset-analysis/visuals/redrob_trap_landscape.png)
+
+This analysis changed the ranker. Sifter does not simply count AI words. It rewards career-history evidence, production proof, retrieval/ranking/evaluation depth, and practical availability. It down-weights suspicious profiles where the skill list says "AI expert" but the title, career story, or consistency signals do not support it.
+
+![Redrob behavioral signals](docs/dataset-analysis/visuals/redrob_behavioral_signals.png)
+
+We also audited the current Sifter top 100 against those dataset patterns:
+
+- `100/100` submitted candidates exist in the dataset.
+- `0` trap-flag hits were detected in the submitted top 100.
+- `90/100` are in the JD's intended `5-9` year band.
+- The submitted top 100 averages `5.04` must-have retrieval/search skills, versus `0.51` across the full dataset.
+- The submitted top 100 averages `6.36` career IR/search/ranking evidence hints, versus `0.25` across the full dataset.
+
+![Sifter submission alignment](docs/dataset-analysis/visuals/redrob_sifter_alignment.png)
+
+Full audit: [Redrob Dataset Structural Analysis](docs/dataset-analysis/redrob_dataset_analysis.md)
+
 ## The Trained AI Model
 
 Sifter includes a real fine-tuned model, not only hand-written weights.
@@ -187,12 +228,14 @@ This makes the output feel closer to a real hiring panel: one rank, multiple cha
 | --- | --- |
 | Redrob problem statement asks for understanding, not keyword matching | Ranking uses role concepts, profile evidence, and learned reranking rather than exact-word filtering only |
 | Redrob data size is large enough to break naive demos | Browser receives prepared pages; heavy ranking uses streaming and batch merging |
+| Full dataset structural analysis | Trap-aware ranking, evidence-first scoring, and capped behavioral multipliers were added because the data contains keyword stuffers, behavioral twins, and honeypot-like profiles. |
 | Recruiters need defensible shortlists | Candidate output includes reasons, score components, evidence, and concerns |
 | AI hiring tools carry bias risk | Protected/proxy attributes are excluded or capped, and bias checks are visible |
 | Judges need proof the system works | The repo includes a Redrob evaluation report, generated submission CSV, and official validator pass |
 | Small teams need access | The main ranking path is local-first, cheap, and does not require a paid AI API |
 
 Full notes: [Research-Backed Product Decisions](docs/research-backed-decisions.md)  
+Dataset audit: [Redrob Dataset Structural Analysis](docs/dataset-analysis/redrob_dataset_analysis.md)  
 Generated metrics: [Redrob Evaluation Report](docs/redrob-evaluation-report.json)
 
 ## Proof Points
@@ -248,6 +291,7 @@ The result is a working product, not a slide-only idea: live web app, trained mo
 | Firebase mirror | [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/) |
 | Trained Hugging Face model | [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker) |
 | Raw Redrob candidates on Drive | [Google Drive file](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing) |
+| Dataset structural analysis | [docs/dataset-analysis/redrob_dataset_analysis.md](docs/dataset-analysis/redrob_dataset_analysis.md) |
 | Research decisions | [docs/research-backed-decisions.md](docs/research-backed-decisions.md) |
 | Evaluation report | [docs/redrob-evaluation-report.json](docs/redrob-evaluation-report.json) |
 | Model/training notes | [ml/README.md](ml/README.md) |
