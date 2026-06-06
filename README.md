@@ -1,650 +1,236 @@
 # Sifter
 
-Sifter helps recruiters turn a messy candidate list into a clear, explainable shortlist.
+Sifter is an AI hiring ranker built for the Redrob challenge: it reads a job description, understands what the role actually needs, ranks candidates across the full pool, and explains why each person is placed where they are.
 
-It is built for people who need hiring help but may not have a big budget, a paid AI account, a GPU, or a technical team beside them. A recruiter should be able to open the app, describe the role, load candidates, and understand why someone was ranked.
+Live demo: [sifter1011.web.app](https://sifter1011.web.app/)  
+Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/)  
+Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
 
-Sifter is not trying to replace the recruiter. It does the heavy first pass, explains the evidence, points out risks, and leaves the final decision with a human.
+## The Core Idea
 
-Every major product decision is backed by research, challenge specs, or measured Redrob dataset facts. See [Research-Backed Product Decisions](docs/research-backed-decisions.md) and the generated [Redrob Evaluation Report](docs/redrob-evaluation-report.json).
+Recruiters do not lose great candidates because talent is missing. They lose them because keyword filters are shallow, manual review does not scale, and black-box AI is hard to trust.
 
-## Live Demo
+Sifter was built around one product belief:
 
-[Open Sifter on Firebase](https://sifter1011.web.app/)
+> A recruiter should see a ranked shortlist, the reason behind every rank, the bias guardrails used, and the questions still worth asking before making a decision.
 
-Mirror URL: [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/)
+That is why this project is not just a scoring table. It is a full ranking workflow: role understanding, 100,000-candidate processing, learned reranking, explainable output, bias review, reviewer agents, and a validated Redrob submission file.
 
-The Firebase project id is `sifter1011`, so the default free Firebase domain is `sifter1011.web.app`.
+## What We Built Differently
 
-## Trained AI Model
-
-Sifter now includes a trained Hugging Face reranker:
-
-[shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
-
-Base model:
-
-```text
-distilbert-base-uncased
-```
-
-Fine-tuning technique:
-
-```text
-Supervised reward-model regression fine-tuning
-```
-
-What it does in simple terms: it reads the job description and a candidate profile together, then predicts how strong the fit is. The backend uses it as a learned second opinion on the finalist pool, while the local Sifter ranker still does the full-scale explainable ranking first.
-
-Why this matters for the Redrob challenge:
-
-- It moves Sifter beyond fixed hand-tuned weights.
-- It gives the product a real trainable ranking layer.
-- It can improve as recruiters add labels like Strong fit, Maybe, and Not fit.
-- It keeps the demo fast by reranking only the top finalist pool instead of sending all `100,000` candidates to Hugging Face.
-
-Current blend:
-
-```text
-70% Sifter evidence score + 30% learned reranker score
-```
-
-Default model-backed rerank scope:
-
-```text
-top 25 finalists
-```
-
-## How To Read This Repo
-
-| Reader | Start here | What you will understand |
+| Hiring problem | Sifter decision | What exists in the product |
 | --- | --- | --- |
-| Non-technical judge | Live Demo, Trained AI Model, Visual Overview | What the product does, why it is useful, and how the model improves ranking. |
-| Technical judge | Train The Learned Reranker, How To Run The Redrob Challenge Ranker, `apps/api/src/learned-rerank.ts` | How the model is trained, how it is called, and how fallback works. |
-| Recruiter/user | The Flow, Screenshots, Candidate Info Reason | How the workflow feels and how candidate decisions are explained. |
-| Compliance reviewer | Build Bias Guardrails, Bias Guardrail screenshot, Redrob Evaluation Report | What signals are excluded and how proxy risks are surfaced. |
+| Keyword filters miss transferable talent | Match role concepts, profile evidence, and semantic similarity instead of only exact words | Hybrid ranking with skills, experience, production proof, ranking/evaluation depth, behavioral signals, and vector-style profile comparison |
+| Recruiters need trust, not mystery scores | Explain every rank in plain language | Candidate info modal with exact ranker reason, profile summary, score components, evidence, and concern |
+| Large files break normal browser demos | Keep heavy data processing outside the browser and serve prepared ranked pages | 100,000 Redrob candidates are processed into public result pages, 100 candidates per page |
+| AI hiring can be biased | Remove unsafe inputs and show bias checks clearly | No scoring boost from name, school prestige, language, protected traits, or identity-like fields; logistics signals are capped |
+| One AI opinion is risky | Challenge the shortlist from multiple viewpoints | Four reviewer agents: Hiring Manager, Interview Designer, Recruiter Ops, and Bias & Compliance |
+| Static heuristics are not enough | Add a trainable reranker that can improve with feedback | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
+| Many users cannot afford enterprise ATS tooling | Make the app local-first and accessible | Works as a lightweight web app with local/demo data paths and no paid AI dependency for the main ranking flow |
 
-## Visual Overview
+## The Trained AI Model
 
-### Product Flow
+Sifter includes a real fine-tuned model, not only hand-written weights.
+
+Model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)  
+Base model: `distilbert-base-uncased`  
+Fine-tuning method: supervised reward-model regression fine-tuning  
+Output: a `0-1` job-fit score for a job description and candidate profile pair
+
+### Why This Model
+
+The challenge rewards outcome quality, but the demo also has to be practical. We chose `distilbert-base-uncased` because it is small enough to train on Google Colab T4, fast enough to use as a reranker, and strong enough to learn relationships between a role brief and a candidate profile.
+
+This is the first learned layer in Sifter. The deterministic ranker handles the full 100,000-candidate pass, then the Hugging Face model gives a second learned opinion on the finalist pool. That keeps the system fast while moving beyond only manually tuned scoring.
+
+Current production blend:
+
+```text
+70% explainable Sifter evidence score
+30% fine-tuned Hugging Face reranker score
+```
+
+The model is intentionally used on finalists, not all 100,000 rows. That is a product decision: full-pool ranking must stay fast, explainable, and cheap; learned reranking is most valuable where the shortlist decision is closest.
+
+### How It Was Trained
+
+The training data was prepared from Redrob candidate profiles and job-fit signals. Each example contains:
+
+- the job description,
+- the candidate profile,
+- a fit label derived from ranked evidence and optional recruiter-style feedback.
+
+The model learns to predict the fit label from the job-candidate pair. In layman terms, it repeatedly sees examples of "this candidate looks stronger for this job than that one" until it learns a reusable sense of fit.
+
+This is not full RLHF yet. It is a reward-model style supervised reranker, which is the right first step before reinforcement learning because the system needs a stable scoring model before it can safely optimize from recruiter feedback.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-  A["Recruiter defines role"] --> B["Candidate data enters Sifter"]
-  B --> C["Local evidence ranker"]
-  C --> D["Batch processing for large files"]
-  D --> E["Top finalist pool"]
-  E --> F["Hugging Face learned reranker"]
-  F --> G["Blended final rank"]
-  G --> H["Reasons, bias guardrail, reviewer agents"]
+  A["Job description"] --> B["Role understanding"]
+  C["Candidate data"] --> D["Streaming parser"]
+  B --> E["Explainable evidence ranker"]
+  D --> E
+  E --> F["Top finalist pool"]
+  F --> G["Fine-tuned Hugging Face reranker"]
+  E --> H["Bias guardrail"]
+  G --> I["Blended final ranking"]
+  H --> I
+  I --> J["Reasons + reviewer agents + CSV output"]
 ```
 
-### Large Redrob File Strategy
+The important design choice is separation of jobs:
+
+- The local ranker is responsible for scale and auditability.
+- The fine-tuned model is responsible for learned semantic judgment on finalists.
+- The UI is responsible for making the decision understandable to a recruiter or judge.
+
+## Handling 100,000 Candidates
+
+The Redrob candidate file is about `464.7 MB` and contains `100,000` candidates. Loading that raw file directly into every browser would be slow, fragile, and unfair to users on weaker devices.
+
+Sifter handles it like a real system would:
 
 ```mermaid
 flowchart TD
   A["100,000 candidates"] --> B["Split into 10 batches"]
   B --> C["Rank batches in parallel"]
-  C --> D["Merge winners: 10 -> 5"]
-  D --> E["Merge winners: 5 -> 3"]
-  E --> F["Merge winners: 3 -> 2"]
-  F --> G["Final merge: 2 -> 1"]
-  G --> H["Top 100 submission + 100,000-candidate paged index"]
+  C --> D["Merge 10 -> 5"]
+  D --> E["Merge 5 -> 3"]
+  E --> F["Merge 3 -> 2"]
+  F --> G["Final merge 2 -> 1"]
+  G --> H["Submission top 100"]
+  G --> I["Full ranked index, paged 100 at a time"]
 ```
 
-### Learned Reranker Training Loop
+This reduces pressure on one giant run and makes the result easier to inspect. The live app shows the full ranked candidate index through pages: page 1 is ranks `1-100`, page 2 is ranks `101-200`, and so on.
 
-```mermaid
-flowchart LR
-  A["Job description"] --> C["Training example"]
-  B["Candidate profile"] --> C
-  C --> D["Fit label from weak rank or recruiter feedback"]
-  D --> E["Fine-tune DistilBERT reward/reranker"]
-  E --> F["Hugging Face model"]
-  F --> G["Rerank top 25 finalists"]
-  G --> H["Recruiter feedback"]
-  H --> D
-```
+The raw public dataset source is shown in the app through Google Drive:
 
-## The Flow
+[Redrob candidates file on Google Drive](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing)
 
-Sifter was built as a chain of product decisions. Each feature exists because of a real recruiting problem.
+For people reproducing the dataset fetch, the app documents the public-file pattern: convert the Drive file id into a direct download URL and fetch it with `gdown`.
 
-## 1. Start With A Role, Not A Magic Score
+## Explainability
 
-**Problem:** Recruiters do not need a random AI score. They need to know what the job actually requires.
+Sifter is designed so a recruiter can answer "Why this candidate?" without reading the code.
 
-**Decision:** Make the role the first step. The user defines title, experience, stack, location, salary, project expectations, and extra notes.
+Every ranked candidate can show:
 
-**What we built:** A role builder with templates for common roles, including the Redrob Senior AI Engineer role.
+- exact ranker reason,
+- profile summary,
+- semantic fit,
+- technical evidence,
+- production proof,
+- ranking/evaluation evidence,
+- experience fit,
+- behavior and availability signals,
+- proxy guardrail impact,
+- evidence used,
+- concern or missing proof.
 
-**What is different:** Sifter does not start by ranking blindly. It first builds a job brief, then judges candidates against that brief.
-
-## 2. Accept Simple Candidate Data
-
-**Problem:** Many recruiters do not have a clean ATS export. They may only have a CSV or challenge file.
-
-**Decision:** Support practical file formats first instead of forcing users into a heavy enterprise setup.
-
-**What we built:** Candidate ingestion for CSV, JSON, JSONL, and gzipped Redrob challenge data. The normal app flow works with simple recruiter CSVs. The Redrob ranker works with the challenge candidate files.
-
-**What is different:** Sifter is usable by a founder, recruiter, student, or hackathon reviewer without buying a recruiting platform first.
-
-## 3. Keep Large Processing Out Of The Browser
-
-**Problem:** Huge candidate lists can crash browser apps or make phones and older laptops unusable.
-
-**Decision:** Use the browser for interaction and the local CLI for very large ranking jobs. For the large path, split the candidate pool into parallel batches, rank each batch, then merge the winners in rounds.
-
-**What we built:** A batch-tournament Redrob ranker. By default, `100,000` candidates are split into `10` batches. Each batch is ranked in parallel. Then Sifter combines two ranked batches at a time, ranks that smaller winner pool, and repeats until one final top list remains.
-
-**What is different:** The website stays lightweight, while the heavy ranking path becomes easier to scale. Instead of making one giant ranking pass carry all the pressure, Sifter reduces the problem in stages: `10 batches -> 5 merged batches -> 3 -> 2 -> 1 final ranking`.
-
-## 4. Rank With Evidence, Not Just Keywords
-
-**Problem:** Keyword filters miss good candidates and reward people who stuff resumes with exact words.
-
-**Decision:** Use multiple evidence signals instead of a single keyword match.
-
-**What we built:** The Redrob ranker now uses a hybrid score: semantic concept matching, normalized JD/profile vector similarity, structured skill evidence, production proof, ranking/evaluation depth, recruiter-learning fit, Redrob behavioral signals, penalties, and proxy guardrails. The API/CLI also has an optional Transformers.js reranker using `Xenova/all-MiniLM-L6-v2` for environments where the local model is available, plus a Hugging Face learned reranker hook for the trained `shikharshahi/sifter-redrob-reranker` model.
-
-**What is different:** The rank is not only "does the resume contain this word?" It embeds the job and candidate profile into a comparable vector space, then asks whether the candidate shows evidence for the role concepts Redrob actually requested: retrieval, ranking, evaluation, production ML, shipping ownership, and LLM depth.
-
-## 5. Learn From Recruiter Judgment
-
-**Problem:** A ranker should improve from recruiter behavior, not freeze one set of weights forever.
-
-**Decision:** Add a recruiter-learning signal and let users mark candidates while reviewing.
-
-**What we built:** The score now includes a recruiter-learning component that favors production proof, ranking/evaluation depth, vector fit, and role evidence over shallow activity. Candidate info dialogs also include local feedback buttons: Strong fit, Maybe, and Not fit.
-
-**What is different:** Sifter can now act like a recruiter reviewing profiles and remember review judgments locally, instead of only showing a static score.
-
-## 6. Explain Every Shortlist
-
-**Problem:** Recruiters, founders, and compliance teams cannot act on a black-box score.
-
-**Decision:** Every recommended candidate should come with a reason.
-
-**What we built:** Candidate output includes rank, score, and plain-English reasoning. Normal recruiter reports include strengths, weaknesses, missing evidence, next action, and interview questions.
-
-**What is different:** Sifter does not just say "Rank 1". It explains why the candidate made the shortlist and what still needs to be checked.
-
-## 7. Add Reviewer Agents To Challenge The Result
-
-**Problem:** One ranking view can miss things. Hiring teams usually look at the same candidate from different angles.
-
-**Decision:** Add small reviewer agents that cross-question the final output.
-
-**What we built:** Final results now include four perspectives:
-
-- **Hiring Manager:** can this person do the actual job?
-- **Interview Designer:** what should we ask to test the weakest assumption?
-- **Recruiter Ops:** are salary, location, notice, and availability practical?
-- **Bias & Compliance:** are we deciding based on job proof, not identity clues or proxies?
-
-**What is different:** The result is not one opinion pretending to be final truth. It is a shortlist plus 3-4 structured challenges before a human decision.
-
-## 8. Build Bias Guardrails Into The Workflow
-
-**Problem:** AI hiring tools can accidentally reward identity clues, school prestige, location shortcuts, or other proxy signals.
-
-**Decision:** Keep protected and proxy fields out of scoring, then show a bias audit in plain English.
-
-**What we built:** Sifter avoids scoring boosts from names, anonymized names, school prestige, education tier, language, or protected traits. It also limits logistics signals like location, notice period, response rate, and activity so they cannot overpower job evidence.
-
-**What is different:** Sifter does not say "trust the AI". It shows what was excluded, what was checked, and where a human should review possible skew.
-
-Important limitation: the Redrob dataset does not include protected demographic labels, so Sifter cannot prove protected-class parity on that data. What it can do today is remove unsafe scoring inputs, explain the score, and highlight proxy patterns.
-
-## 9. Stay Local First
-
-**Problem:** Candidate data is sensitive and AI calls can become expensive.
-
-**Decision:** Make the main ranking flow local-first and deterministic.
-
-**What we built:** The Redrob challenge ranking runs locally, CPU-only, and no-network. No hosted LLM call is required for the challenge ranking step.
-
-**What is different:** Sifter can be cheaper, more private, easier to rerun, and easier to audit.
-
-## 10. Make The Challenge Easy To Test Live
-
-**Problem:** Reviewers should be able to try the app without setting up the repo.
-
-**Decision:** Add a live Redrob Challenge button, but keep the user in control of the flow.
-
-**What we built:** The button stays on Step 1 and only inserts the Redrob role plus the 100,000-candidate challenge data. The user then clicks Continue to review Step 2, and only clicks Rank challenge when they want Step 3 processing to begin.
-
-**What is different:** Judges can inspect the setup before the app moves. The visible batch-ranking showcase, merge rounds, reviewer agents, bias guardrail, top candidate explanation, CSV export, and full candidate pages appear only after the user starts the ranking step.
-
-## 11. Plan For Full Candidate Search
-
-**Problem:** Recruiters eventually need to search a full pool by candidate, location, skill, experience, salary, availability, rank, and score.
-
-**Decision:** Do not load the raw 487 MB dataset into every browser. For the live demo, split the ranked index into 100-candidate pages. For production, move the same idea behind a backend-indexed search service.
-
-**What we built today:** The live app shows the full `100,000` candidate Redrob index as real pages: page 1 is ranks 1-100, page 2 is ranks 101-200, and so on. Recruiters can use Previous/Next or type a page number directly, then search within that visible page by candidate ID, rank, title, location, country, years of experience, skills, and evidence. Redrob challenge names are anonymized, so that flow uses candidate ID and profile signals instead of name search.
-
-**What is different:** The top-100 is no longer repeated as a second table. The main visible table is the full ranked candidate index, served in 100-candidate pages without exposing the raw challenge file.
-
-## Research That Shaped The Product
-
-| Research input | What we learned | Product decision |
-| --- | --- | --- |
-| Redrob job description | The role needs production AI, retrieval, ranking, evaluation, Python, and shipping ability. | Score on role evidence, not generic "AI" labels. |
-| Redrob candidate data | The data is `464.7 MB`, with `100,000` candidates and average `9.6` skills per candidate. | Build a local streaming CLI for the full run and page the live candidate index. |
-| Recruiter workflows | Recruiters need reasons they can defend and feedback should improve future ranking. | Show rank, score, semantic fit, vector similarity, recruiter-learning fit, production proof, evidence, missing proof, and next questions. |
-| Bias/compliance risk | Hiring tools can amplify unfair shortcuts. | Exclude protected/proxy scoring inputs, cap behavioral/logistics signals, and show an audit. |
-| Small-team access | Many users cannot pay for AI or enterprise ATS tools. | Keep the core flow local, cheap, and simple. |
-| Hiring team review | Different stakeholders ask different questions. | Add reviewer agents for hiring, interview, ops, and bias/compliance views. |
-| Research review | Judges need proof, not claims. | Add [research-backed decisions](docs/research-backed-decisions.md) and a generated Redrob evaluation report with keyword, semantic, vector, and hybrid ablations. |
-
-## Screenshots
-
-### Desktop App
-
-![Sifter desktop app](docs/screenshots/sifter-home.png)
-
-### Simple Workflow
-
-![Sifter workflow](docs/screenshots/sifter-workflow.png)
-
-### Redrob Challenge Output
-
-![Redrob submission preview](docs/screenshots/redrob-output.png)
-
-### Candidate Info Reason
+That matters because the challenge is not asking for a leaderboard only. It asks for a shortlist a recruiter can trust.
 
 ![Candidate info reason dialog](docs/screenshots/candidate-info.png)
 
-## What We Proved
-
-- Processed the full Redrob challenge dataset locally.
-- Ranked `100,000` candidate records.
-- Added a parallel batch-tournament ranking path with default `10` initial batches and pairwise merge rounds.
-- Added local semantic concept matching and vector similarity matching for the Redrob JD.
-- Added an optional Transformers.js reranker using `Xenova/all-MiniLM-L6-v2` for local model-backed reranking.
-- Added recruiter-learning scoring and local recruiter feedback buttons in candidate info dialogs.
-- Added hybrid score breakdowns for semantic fit, vector match, production proof, recruiter learning, behavior, penalties, and proxy guardrails.
-- Added generated evaluation reporting for keyword baseline vs semantic concept matcher vs vector similarity vs hybrid ranker.
-- Moved the top candidate explanation and bias guardrail above the full `100,000` candidate list.
-- Added per-candidate info buttons so each visible row can show the exact ranker reason and score breakdown.
-- Produced `redrob_submission.csv`.
-- Passed the official Redrob submission validator.
-- Finished the batch-tournament official top-100 run in `25.2s` on local hardware after the vector/learning scorer update.
-- Built the live 100,000-candidate page asset plus evaluation report in `326.1s`.
-- Merged `10` initial batches down to the final ranking in `4` merge rounds.
-- Exported the required `candidate_id`, `rank`, `score`, and `reason` fields.
-- Kept challenge ranking CPU-only and no-network.
-- Avoided using candidate names or school prestige as scoring boosts.
-- Added a visible bias guardrail and plain-English audit.
-- Added four reviewer agents on final output.
-- Added visible page-by-page access across the full `100,000` candidate Redrob index.
-- Kept the Redrob Challenge button on Step 1 so users choose when to continue and when to rank.
-- Trained and pushed a first Hugging Face learned reranker at `shikharshahi/sifter-redrob-reranker`.
-- Connected the backend to call the Hugging Face learned reranker for finalist-pool reranking.
-- Deployed the web app on Firebase Hosting.
-
-## What Is Done
-
-- Role requirement builder.
-- Regular CSV candidate screening flow.
-- Deterministic local scoring for normal recruiter CSVs.
-- Redrob candidate schema parsing.
-- Redrob challenge ranking logic.
-- Semantic concept scoring for the Senior AI Engineer JD.
-- Local vector similarity scoring for the Senior AI Engineer JD.
-- Optional transformer embedding reranker for smaller winner pools and local model environments.
-- Optional Hugging Face learned reranker for finalist pools using `SIFTER_RERANKER_MODEL` and `HF_TOKEN`.
-- Recruiter-learning component and local recruiter feedback capture.
-- Evaluation report generation with ranking ablations.
-- Parallel batch processing and merge-round ranking for large Redrob files.
-- Top-100 CSV export in the exact challenge format.
-- CLI command for large challenge files.
-- Compiled production CLI path for faster full-file ranking.
-- API endpoints for Redrob parsing and ranking.
-- Web UI support for smaller Redrob JSON/JSONL samples.
-- Redrob Challenge button in the hosted app.
-- Redrob Challenge preload that stays on Step 1 until the user clicks Continue.
-- Visible Redrob processing showcase only after the user clicks Rank challenge.
-- Page-by-page Redrob candidate index for all `100,000` candidates.
-- Per-candidate reason dialog for the visible ranked index.
-- Top candidate "why they won" explanation above the full candidate list.
-- Cross-question reviewer agents on final results.
-- Bias audit and AI-review sanitization guardrail.
-- Firebase Hosting deployment.
-- README screenshots and layman-first documentation.
-- Hugging Face training package for a learned reward/reranker model.
-- Colab-ready scripts for Redrob preference data preparation and model fine-tuning.
-- First trained Hugging Face model: `shikharshahi/sifter-redrob-reranker`.
-- Backend hook for learned reranking with safe fallback when `HF_TOKEN` is missing or Hugging Face is unavailable.
-- Hugging Face Spaces Gradio app template for deploying the trained reranker.
-
-## How To Run The App
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the app:
-
-```bash
-npm run dev
-```
-
-Open:
-
-```text
-http://127.0.0.1:3000
-```
-
-API health check:
-
-```text
-http://127.0.0.1:4000/health
-```
-
-## Train The Learned Reranker
-
-The learned model setup lives in [ml/README.md](ml/README.md). In simple words, this is the part that turns Sifter from "rules plus evidence scoring" into "a system that can learn from recruiter judgment over time."
-
-### Which Model We Chose
-
-For the first trained model, we used:
-
-```text
-distilbert-base-uncased
-```
+## Bias Guardrail
 
-and pushed it to:
+The bias system is built around a simple rule: do not let identity-like signals decide who gets ranked.
 
-```text
-shikharshahi/sifter-redrob-reranker
-```
+Sifter does not give scoring boosts for:
 
-Why this model:
+- name or anonymized name,
+- gender-like or identity-like signals,
+- school prestige,
+- education tier as a prestige shortcut,
+- language or protected traits,
+- location/availability signals overpowering job evidence.
 
-- It is small enough to train on Google Colab without constantly crashing.
-- It is fast enough for a hackathon demo.
-- It can read a job description plus a candidate profile together and learn a fit score.
-- It is a practical first learned reranker before moving to a stronger but slower model.
+The guardrail does two things. First, it removes or limits unsafe scoring inputs. Second, it explains the audit in the UI so the recruiter sees what was checked.
 
-The stronger future option is:
+Important honesty: the Redrob dataset does not provide protected demographic labels, so Sifter cannot claim full protected-class parity on that dataset. What it can prove is that unsafe proxy fields are not used as positive ranking shortcuts, and that the score is explained through job-relevant evidence.
 
-```text
-microsoft/deberta-v3-small
-```
+## Reviewer Agents
 
-We tried to keep that path available, but for the first working Hugging Face model, DistilBERT was the safer choice because Colab was unstable with heavier training runs.
+Sifter adds four small review agents after ranking because one score should not be treated as final truth.
 
-### How We Trained It
+| Agent | What it asks |
+| --- | --- |
+| Hiring Manager | Can this person actually do the job described? |
+| Interview Designer | What should we test to confirm the weakest assumption? |
+| Recruiter Ops | Are location, availability, salary, and process fit practical? |
+| Bias & Compliance | Is the decision based on job proof instead of proxy signals? |
 
-The model is trained with **supervised reward-model regression fine-tuning**.
+This makes the output feel closer to a real hiring panel: one rank, multiple challenges, human final decision.
 
-Non-technical translation: we showed the model many examples of "this candidate looks strong for this job" and "this candidate looks weaker for this job" until it learned to predict a fit score.
+## Research That Shaped The Decisions
 
-Technical translation: we fine-tuned a cross-encoder sequence-classification model with `num_labels=1` and regression loss. The input is one text pair joined together:
+| Research input | What it changed in Sifter |
+| --- | --- |
+| Redrob problem statement asks for understanding, not keyword matching | Ranking uses role concepts, profile evidence, and learned reranking rather than exact-word filtering only |
+| Redrob data size is large enough to break naive demos | Browser receives prepared pages; heavy ranking uses streaming and batch merging |
+| Recruiters need defensible shortlists | Candidate output includes reasons, score components, evidence, and concerns |
+| AI hiring tools carry bias risk | Protected/proxy attributes are excluded or capped, and bias checks are visible |
+| Judges need proof the system works | The repo includes a Redrob evaluation report, generated submission CSV, and official validator pass |
+| Small teams need access | The main ranking path is local-first, cheap, and does not require a paid AI API |
 
-```text
-Job description + candidate profile
-```
+Full notes: [Research-Backed Product Decisions](docs/research-backed-decisions.md)  
+Generated metrics: [Redrob Evaluation Report](docs/redrob-evaluation-report.json)
 
-The target label is a numeric fit score:
+## Proof Points
 
-```text
-0.0 = poor fit
-1.0 = strong fit
-```
+| Claim | Evidence |
+| --- | --- |
+| Handles the full challenge scale | Redrob run covers `100,000` candidates |
+| Produces official output | Generated `redrob_submission.csv` with `candidate_id`, `rank`, `score`, and `reason` |
+| Passes challenge format | Official validator pass is documented in repo artifacts |
+| Uses a trained model | Fine-tuned Hugging Face reranker published at `shikharshahi/sifter-redrob-reranker` |
+| Keeps large demo usable | Full ranked index is served as 100-candidate pages instead of raw 464.7 MB browser load |
+| Explains decisions | Candidate info modal shows reason, evidence, concern, and score components |
+| Shows process to judges | UI exposes batch processing, merge rounds, learned reranker status, bias guardrail, reviewer agents, and final output |
+| Is deployed | Firebase Hosting live at `sifter1011.web.app` |
 
-Layman version:
+## Visuals
 
-1. Take the job description.
-2. Take one candidate profile.
-3. Put them together as one training example.
-4. Give that example a fit label from `0` to `1`.
-5. Train the model to predict that fit label.
+### Main Product
 
-The training data comes from three places:
+![Sifter desktop app](docs/screenshots/sifter-home.png)
 
-- The Redrob `candidates.jsonl` file.
-- Sifter's existing ranked Redrob pages, used as weak starter labels.
-- Optional recruiter labels from `ml/recruiter_labels_template.csv`.
+### Workflow
 
-Weak starter labels are not treated as perfect truth. They are a bootstrap so the model has something to learn from before real recruiter feedback is added.
+![Sifter workflow](docs/screenshots/sifter-workflow.png)
 
-Why this technique:
+### Redrob Output
 
-- A cross-encoder can compare the job and candidate together instead of scoring them separately.
-- Regression gives a smooth fit score, which is easier to blend with Sifter's explainable evidence score.
-- It works with weak labels now and stronger recruiter labels later.
-- It is simpler and more reliable for a hackathon than full reinforcement learning, while still creating a real learned ranking layer.
+![Redrob submission preview](docs/screenshots/redrob-output.png)
 
-The Colab quick run uses:
+### Candidate Reason
 
-```text
-2,000 candidates
-1 train/validation split
-1 epoch
-batch size 8
-fp32 precision
-```
+![Candidate info reason dialog](docs/screenshots/candidate-info.png)
 
-That produces a first working model and uploads it to Hugging Face. The script also writes validation metrics, so future versions can compare whether recruiter feedback actually improves ranking.
+## Why This Is A Strong Challenge Submission
 
-### How It Is Used In Sifter
+Sifter directly maps to the problem statement:
 
-The learned model does **not** replace the full local ranker.
+- It reads the job description as a role brief.
+- It looks at the full candidate picture: skills, career evidence, experience, activity, availability, and production proof.
+- It ranks candidates semantically instead of only matching keywords.
+- It explains why each candidate is ranked.
+- It adds bias guardrails and reviewer agents so the shortlist is not blindly trusted.
+- It trains and publishes a Hugging Face reranker so the system can improve beyond fixed heuristics.
+- It handles the full Redrob-scale candidate pool while keeping the live demo usable.
 
-The flow is:
+The result is a working product, not a slide-only idea: live web app, trained model, scalable ranking pipeline, explainable candidate views, challenge output, and research-backed decisions.
 
-1. Sifter ranks the full candidate pool locally first.
-2. The backend sends only the top finalist pool to Hugging Face.
-3. Hugging Face returns a learned fit score.
-4. Sifter blends the scores:
+## Key Links
 
-```text
-70% Sifter evidence score
-30% learned reranker score
-```
-
-The default learned reranker limit is:
-
-```text
-top 25 finalists
-```
-
-Why only top 25:
-
-- It keeps the live demo fast.
-- It avoids sending the full 100,000-candidate file over the network.
-- It keeps the trained model as a second opinion, not an unchecked black box.
-
-If Hugging Face is unavailable, Sifter falls back to the deterministic ranking and shows that status in the UI.
-
-### Why This Is Honest AI
-
-This is not magic and not full RLHF yet. It is a practical learned reranker trained from bootstrapped ranking labels plus future recruiter labels.
-
-The improvement loop is:
-
-1. Recruiter reviews candidates.
-2. Recruiter marks candidates as Strong fit, Maybe, or Not fit.
-3. Those labels are added to the training CSV.
-4. The model is trained again.
-5. The model slowly becomes less hand-tuned and more recruiter-learned.
-
-Bias note: the learned model is not allowed to be the only judge. Sifter still keeps explainable scoring, excluded identity/proxy signals, a bias guardrail, and human review in the workflow.
-
-To connect the trained Hugging Face model to the backend, set these on the API server:
-
-```bash
-HF_TOKEN=your_hugging_face_inference_token
-SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker
-SIFTER_LEARNED_RERANK_ENABLED=true
-SIFTER_LEARNED_RERANK_WEIGHT=0.3
-SIFTER_LEARNED_RERANK_LIMIT=25
-```
-
-The browser never receives `HF_TOKEN`. The web app calls Sifter's API, and the API calls Hugging Face only for the finalist pool.
-
-## How To Run The Redrob Challenge Ranker
-
-Put the official challenge bundle in the local `Challenge/` folder.
-
-The hosted demo points to this Google Drive source for the raw candidate file:
-
-```text
-https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing
-```
-
-Direct download form:
-
-```text
-https://drive.google.com/uc?export=download&id=1wGx9_zm8hklndJbhdGscy15klHLK2bys
-```
-
-Recommended local download:
-
-```powershell
-python -m pip install gdown
-python -m gdown "https://drive.google.com/uc?id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -O candidates.jsonl
-```
-
-Colab download:
-
-```python
-!pip install -q gdown
-!gdown "https://drive.google.com/uc?id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -O candidates.jsonl
-```
-
-Run:
-
-```bash
-npm run challenge:rank -- --input "Challenge/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --output redrob_submission.csv --batches 10 --merge-size 2
-```
-
-PowerShell version:
-
-```powershell
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --batches 10 --merge-size 2
-```
-
-Regenerate the hosted demo asset:
-
-```powershell
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json --batches 10 --merge-size 2
-```
-
-To regenerate with the learned Hugging Face reranker, keep `HF_TOKEN` in your local environment and add `--learned-rerank`:
-
-```powershell
-$env:HF_TOKEN="your_hugging_face_inference_token"
-npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json --batches 10 --merge-size 2 --learned-rerank
-```
-
-## Validate The Submission
-
-Use the official validator from the challenge bundle:
-
-```powershell
-python validate_submission.py redrob_submission.csv
-```
-
-Expected result:
-
-```text
-Submission is valid.
-```
-
-## Normal CSV Format
-
-For the regular recruiter flow, Sifter expects:
-
-- `name`
-- `experience_years`
-- `location`
-- `skills`
-- `github_url`
-- `salary_expectation_lpa`
-- `summary`
-
-Optional:
-
-- `email`
-
-## API Endpoints
-
-Regular Sifter flow:
-
-- `POST /csv/parse`
-- `POST /pipeline-runs`
-
-Redrob challenge flow:
-
-- `POST /redrob/parse`
-- `POST /redrob/rank`
-
-## Developer Checks
-
-Run these before shipping code changes:
-
-```bash
-npm run typecheck
-npm run build
-```
-
-## Firebase Hosting
-
-This repository includes Firebase Hosting config for the web app:
-
-- Project id: `sifter1011`
-- Hosting folder: `apps/web/dist`
-- Default URL: `https://sifter1011.web.app`
-- Mirror URL: `https://sifter1011.firebaseapp.com`
-- API rewrites: `/health`, `/csv/**`, `/redrob/**`, and `/pipeline-runs` go to Cloud Run service `sifter-api` in `us-central1`.
-- Deployed app includes the Redrob Challenge button, reviewer agents, and visible bias guardrail.
-
-Deploy the API backend first:
-
-```bash
-gcloud config set project sifter1011
-gcloud run deploy sifter-api --source . --region us-central1 --allow-unauthenticated --set-env-vars WEB_ORIGIN=https://sifter1011.web.app,SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker,SIFTER_LEARNED_RERANK_ENABLED=true,SIFTER_LEARNED_RERANK_WEIGHT=0.3,SIFTER_LEARNED_RERANK_LIMIT=25,HF_TOKEN=your_hugging_face_token
-```
-
-Then deploy Firebase Hosting:
-
-```bash
-npm run build
-npx firebase-tools deploy --only hosting --project sifter1011
-```
-
-After both deploys, the hosted app calls the backend through the Firebase domain:
-
-```text
-https://sifter1011.web.app/health
-https://sifter1011.web.app/redrob/rank
-```
-
-Already verified:
-
-- `npm.cmd run typecheck`
-- `npm.cmd run build`
-- Firebase Hosting deploy to `sifter1011`
-- full Redrob challenge rank
-- official validator on `redrob_submission.csv`
-
-## Next Best Improvements
-
-- Add full candidate search with backend indexing.
-- Add tests for Redrob scoring and CSV tie-breaking.
-- Add a fairness audit dashboard.
-- Add clearer score breakdowns per candidate.
-- Add resume and PDF parsing.
-- Add NLP-based candidate deduplication.
-- Add ATS/HRIS webhooks.
-- Add automated candidate status updates.
-- Add recruiter feedback learning.
-
-Sifter should stay focused: shortlist candidates clearly, cheaply, privately, and honestly.
+| Resource | Link |
+| --- | --- |
+| Live app | [https://sifter1011.web.app](https://sifter1011.web.app/) |
+| Firebase mirror | [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/) |
+| Trained Hugging Face model | [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker) |
+| Raw Redrob candidates on Drive | [Google Drive file](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing) |
+| Research decisions | [docs/research-backed-decisions.md](docs/research-backed-decisions.md) |
+| Evaluation report | [docs/redrob-evaluation-report.json](docs/redrob-evaluation-report.json) |
+| Model/training notes | [ml/README.md](ml/README.md) |
