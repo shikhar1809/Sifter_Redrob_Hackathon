@@ -298,6 +298,31 @@ The browser never receives `HF_TOKEN`. The web app calls Sifter's API, and the A
 
 Put the official challenge bundle in the local `Challenge/` folder.
 
+The hosted demo points to this Google Drive source for the raw candidate file:
+
+```text
+https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing
+```
+
+Direct download form:
+
+```text
+https://drive.google.com/uc?export=download&id=1wGx9_zm8hklndJbhdGscy15klHLK2bys
+```
+
+PowerShell download:
+
+```powershell
+Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -OutFile "candidates.jsonl"
+```
+
+Colab download:
+
+```python
+!pip install -q gdown
+!gdown "https://drive.google.com/uc?id=1wGx9_zm8hklndJbhdGscy15klHLK2bys" -O candidates.jsonl
+```
+
 Run:
 
 ```bash

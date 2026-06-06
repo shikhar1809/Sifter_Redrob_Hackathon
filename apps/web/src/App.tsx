@@ -83,6 +83,9 @@ type ReviewAgentOpinion = {
 const isFirebaseHosted =
   typeof window !== "undefined" && (window.location.hostname.endsWith(".web.app") || window.location.hostname.endsWith(".firebaseapp.com"));
 const apiBase = import.meta.env.VITE_API_BASE_URL ?? (isFirebaseHosted ? "" : "http://127.0.0.1:4000");
+const redrobDriveFileId = "1wGx9_zm8hklndJbhdGscy15klHLK2bys";
+const redrobDriveUrl = `https://drive.google.com/file/d/${redrobDriveFileId}/view?usp=sharing`;
+const redrobDriveDownloadUrl = `https://drive.google.com/uc?export=download&id=${redrobDriveFileId}`;
 const softCandidateLimit = 500;
 const hardCandidateLimit = 2000;
 const aiReviewLimit = 5;
@@ -448,7 +451,7 @@ export default function App() {
     setRedrobRankingPlan(null);
     setResult(null);
     setRunId(null);
-    setUploadedFileName("Full Redrob challenge output");
+    setUploadedFileName("Google Drive Redrob candidates.jsonl");
     setOutputFormat("report_csv");
     try {
       const response = await fetch("/redrob-challenge-result.json", { cache: "no-cache" });
@@ -967,6 +970,21 @@ export default function App() {
                 <span>{uploadedFileName ? `Uploaded: ${uploadedFileName}` : "No file uploaded yet"}</span>
                 <span>{loadedCandidateCount ? `${loadedCandidateCount} candidates ready` : "0 candidates ready"}</span>
               </div>
+              {dataMode === "redrob" ? (
+                <div className="drive-source-card">
+                  <div>
+                    <span>Redrob source file</span>
+                    <strong>Google Drive candidates.jsonl</strong>
+                  </div>
+                  <a href={redrobDriveUrl} target="_blank" rel="noreferrer">
+                    Open Drive file
+                  </a>
+                  <code>curl -L "{redrobDriveDownloadUrl}" -o candidates.jsonl</code>
+                  <p>
+                    The raw 100,000-candidate file stays in Drive/local tooling. The browser loads prepared result and search pages so the demo stays fast and does not paste private raw records into the page.
+                  </p>
+                </div>
+              ) : null}
               <textarea
                 className="field-control csv-box"
                 value={csv}
