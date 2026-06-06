@@ -20,9 +20,7 @@ The Firebase project id is `sifter1011`, so the default free Firebase domain is 
 
 Sifter now includes a trained Hugging Face reranker:
 
-```text
-shikharshahi/sifter-redrob-reranker
-```
+[shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
 
 Base model:
 
