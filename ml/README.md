@@ -174,6 +174,14 @@ This gives Sifter a real learned layer:
 - deployable Hugging Face Space
 - human feedback path for improving beyond the original heuristic ranker
 
+The public Hugging Face model card source is maintained in:
+
+```text
+ml/huggingface_model_card.md
+```
+
+It documents the first model's actual training data, split, label scale, metrics, one-epoch baseline limitation, and Sifter backend integration path. Upload it with `ml/update_hf_model_card.py` after Hugging Face auth is available.
+
 The honest phrasing is:
 
 > Sifter uses deterministic ranking for the full 100,000 candidate offline run, then trains a learned reward/reranker from recruiter preference data and bootstrapped rankings. As recruiter labels are added, the learned model replaces more of the hand-tuned scoring.

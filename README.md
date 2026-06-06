@@ -52,6 +52,19 @@ Current production blend:
 
 The model is intentionally used on finalists, not all 100,000 rows. That is a product decision: full-pool ranking must stay fast, explainable, and cheap; learned reranking is most valuable where the shortlist decision is closest.
 
+### Where It Runs In Sifter
+
+The model is already wired into the backend finalist-reranking path:
+
+| File | Role |
+| --- | --- |
+| `apps/api/src/learned-rerank.ts` | calls the Hugging Face model, parses the score, blends it, and falls back safely |
+| `apps/api/src/config.ts` | controls model id, token, finalist limit, and blend weight |
+| `apps/api/src/server.ts` | exposes learned reranking in the Redrob ranking API |
+| `apps/web/src/App.tsx` | shows learned-reranker status in the UI |
+
+That means the model is not just a link on Hugging Face. It is part of the Sifter ranking pipeline, while the deterministic explanation and bias guardrail stay visible.
+
 ### How It Was Trained
 
 The training data was prepared from Redrob candidate profiles and job-fit signals. Each example contains:
@@ -60,9 +73,13 @@ The training data was prepared from Redrob candidate profiles and job-fit signal
 - the candidate profile,
 - a fit label derived from ranked evidence and optional recruiter-style feedback.
 
+The first public run used `2,000` Redrob-derived examples: `1,840` for training and `160` for validation. It trained for `1` epoch and reached `0.6824` Spearman rank correlation against Sifter's weak validation labels.
+
 The model learns to predict the fit label from the job-candidate pair. In layman terms, it repeatedly sees examples of "this candidate looks stronger for this job than that one" until it learns a reusable sense of fit.
 
 This is not full RLHF yet. It is a reward-model style supervised reranker, which is the right first step before reinforcement learning because the system needs a stable scoring model before it can safely optimize from recruiter feedback.
+
+The validation metric is honest but limited: it measures agreement with Sifter-generated weak labels, not an independent recruiter-labeled holdout yet. That is why the product still keeps reasons, reviewer agents, and bias guardrails in front of the user.
 
 ## Architecture
 
