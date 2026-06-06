@@ -14,6 +14,7 @@ import {
   type RedrobCandidate,
   type RedrobRankingRow,
 } from "@seederpro/core";
+import { rerankRedrobRowsWithLearnedModel } from "./learned-rerank.js";
 import { rerankRedrobRowsWithTransformer } from "./transformer-rerank.js";
 
 type CliArgs = {
@@ -24,6 +25,7 @@ type CliArgs = {
   batches: number;
   mergeSize: number;
   transformerRerank: boolean;
+  learnedRerank: boolean;
 };
 
 const args = parseArgs(process.argv.slice(2));
@@ -35,7 +37,9 @@ const ranking = await rankRedrobCandidatesInBatches(candidates, {
   mergeSize: args.mergeSize,
 });
 const rankingRuntimeSeconds = Number(((Date.now() - started) / 1000).toFixed(1));
-const rows = args.transformerRerank ? await transformerRerankOrFallback(candidates, ranking.rows) : ranking.rows;
+const transformerRows = args.transformerRerank ? await transformerRerankOrFallback(candidates, ranking.rows) : ranking.rows;
+const learned = args.learnedRerank ? await rerankRedrobRowsWithLearnedModel(candidates, transformerRows, { enabled: true }) : null;
+const rows = learned?.rows ?? transformerRows;
 const outputPath = resolveOutputPath(args.output);
 await writeFile(outputPath, `${exportRedrobSubmissionCsv(rows)}\n`, "utf8");
 if (args.assetOutput) {
@@ -74,6 +78,15 @@ if (args.assetOutput) {
     generatedAt: new Date().toISOString().slice(0, 10),
     note: "This public asset contains the validator-ready top-100 output produced after ranking the full Redrob dataset. It does not bundle the private raw candidate file into the browser.",
     transformerRerank: args.transformerRerank,
+    learnedRerank: learned?.metadata ?? {
+      enabled: false,
+      configured: false,
+      model: "none",
+      status: "disabled",
+      reviewedCandidates: 0,
+      weight: 0,
+      message: "Learned rerank was not requested for this asset build.",
+    },
     searchIndexRows: searchIndex.length,
     searchPagePrefix,
     searchPageCount,
@@ -91,6 +104,7 @@ console.log(
     `Ranked ${candidates.length} candidates in ${rankingRuntimeSeconds.toFixed(1)}s.`,
     `Batch plan: ${ranking.plan.initialBatches} initial batches, merge size ${ranking.plan.mergeSize}, ${ranking.plan.rounds.length} merge rounds.`,
     args.assetOutput ? `Total asset build time with searchable index: ${((Date.now() - started) / 1000).toFixed(1)}s.` : "",
+    learned ? `Learned rerank: ${learned.metadata.status}, ${learned.metadata.reviewedCandidates} candidates, model ${learned.metadata.model}.` : "",
     `Wrote ${rows.length} rows to ${outputPath}.`,
     args.assetOutput ? `Wrote live asset and search index to ${resolveOutputPath(args.assetOutput)}.` : "",
     rows[0] ? `Top candidate: ${rows[0].candidate_id} (${rows[0].score.toFixed(4)}).` : "No rows were produced.",
@@ -122,7 +136,8 @@ function parseArgs(argv: string[]): CliArgs {
     throw new Error("--merge-size must be an integer from 2 to 16.");
   }
   const transformerRerank = argv.includes("--transformer-rerank") || process.env.SIFTER_TRANSFORMER_RERANK === "1";
-  return { input, output, assetOutput, limit, batches, mergeSize, transformerRerank };
+  const learnedRerank = argv.includes("--learned-rerank") || process.env.SIFTER_LEARNED_RERANK_ENABLED === "true";
+  return { input, output, assetOutput, limit, batches, mergeSize, transformerRerank, learnedRerank };
 }
 
 async function transformerRerankOrFallback(candidates: RedrobCandidate[], rows: RedrobRankingRow[]): Promise<RedrobRankingRow[]> {

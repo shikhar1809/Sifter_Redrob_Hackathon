@@ -16,6 +16,7 @@ import { registerAuth } from "./auth.js";
 import { config } from "./config.js";
 import { checkDatabase, savePipelineRun } from "./db.js";
 import { attachAiReviews, geminiReviewCandidateLimit, reviewCandidatesWithGemini } from "./gemini.js";
+import { rerankRedrobRowsWithLearnedModel } from "./learned-rerank.js";
 import { rerankRedrobRowsWithTransformer } from "./transformer-rerank.js";
 
 const app = Fastify({
@@ -45,6 +46,13 @@ app.get("/health", async () => ({
     enabled: config.geminiReviewEnabled,
     configured: Boolean(config.geminiApiKey),
     model: config.geminiModel,
+  },
+  learnedReranker: {
+    provider: "huggingface",
+    enabled: config.learnedRerankEnabled,
+    configured: Boolean(config.huggingFaceToken),
+    model: config.sifterRerankerModel,
+    weight: config.learnedRerankWeight,
   },
 }));
 
@@ -82,6 +90,8 @@ app.post("/redrob/rank", async (request, reply) => {
       candidates: z.array(z.unknown()).optional(),
       limit: z.number().int().positive().max(100).default(100),
       transformerRerank: z.boolean().default(false),
+      learnedRerank: z.boolean().default(false),
+      learnedRerankWeight: z.number().min(0).max(1).optional(),
     })
     .refine((value) => value.text || value.candidates?.length, "Provide candidate text or candidate objects")
     .safeParse(request.body);
@@ -90,12 +100,18 @@ app.post("/redrob/rank", async (request, reply) => {
   try {
     const candidates = body.data.candidates?.length ? parseRedrobCandidates(JSON.stringify(body.data.candidates)) : parseRedrobCandidates(body.data.text ?? "");
     const baseRows = rankRedrobCandidates({ candidates, limit: body.data.limit });
-    const rows = body.data.transformerRerank ? await rerankRedrobRowsWithTransformer(candidates, baseRows) : baseRows;
+    const transformerRows = body.data.transformerRerank ? await rerankRedrobRowsWithTransformer(candidates, baseRows) : baseRows;
+    const learned = await rerankRedrobRowsWithLearnedModel(candidates, transformerRows, {
+      enabled: body.data.learnedRerank,
+      weight: body.data.learnedRerankWeight,
+    });
+    const rows = learned.rows;
     return {
       rows,
       csv: exportRedrobSubmissionCsv(rows),
       count: candidates.length,
       transformerRerank: body.data.transformerRerank,
+      learnedRerank: learned.metadata,
       biasAudit: createRedrobBiasAudit(candidates, rows),
       evaluationReport: createRedrobEvaluationReport(candidates, rows),
     };

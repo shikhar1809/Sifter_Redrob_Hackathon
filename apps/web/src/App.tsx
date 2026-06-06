@@ -33,6 +33,15 @@ type RedrobRankResponse = {
   csv: string;
   count: number;
   biasAudit: BiasAudit;
+  learnedRerank?: {
+    enabled: boolean;
+    configured: boolean;
+    model: string;
+    status: "disabled" | "not_configured" | "completed" | "fallback";
+    reviewedCandidates: number;
+    weight: number;
+    message: string;
+  };
 };
 type RedrobRankingPlan = {
   initialBatches: number;
@@ -69,7 +78,9 @@ type ReviewAgentOpinion = {
   focus: string;
 };
 
-const apiBase = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:4000";
+const isFirebaseHosted =
+  typeof window !== "undefined" && (window.location.hostname.endsWith(".web.app") || window.location.hostname.endsWith(".firebaseapp.com"));
+const apiBase = import.meta.env.VITE_API_BASE_URL ?? (isFirebaseHosted ? "" : "http://127.0.0.1:4000");
 const softCandidateLimit = 500;
 const hardCandidateLimit = 2000;
 const aiReviewLimit = 5;
@@ -381,7 +392,7 @@ export default function App() {
       const response = await fetch(`${apiBase}/redrob/rank`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: csv, limit: 100 }),
+        body: JSON.stringify({ text: csv, limit: 100, learnedRerank: true }),
       });
       const payload: RedrobRankResponse | { error: unknown } = await response.json();
       if (!response.ok) {

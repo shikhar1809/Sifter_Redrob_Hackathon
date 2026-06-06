@@ -1,0 +1,10 @@
+.git
+node_modules
+**/node_modules
+apps/web/dist
+apps/web/public/redrob-candidate-pages
+Challenge
+docs
+ml
+redrob_submission.csv
+*.log

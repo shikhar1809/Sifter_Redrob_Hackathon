@@ -28,6 +28,34 @@
     ],
     "rewrites": [
       {
+        "source": "/health",
+        "run": {
+          "serviceId": "sifter-api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/csv/**",
+        "run": {
+          "serviceId": "sifter-api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/redrob/**",
+        "run": {
+          "serviceId": "sifter-api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/pipeline-runs",
+        "run": {
+          "serviceId": "sifter-api",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

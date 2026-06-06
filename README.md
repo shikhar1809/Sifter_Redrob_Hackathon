@@ -56,7 +56,7 @@ Sifter was built as a chain of product decisions. Each feature exists because of
 
 **Decision:** Use multiple evidence signals instead of a single keyword match.
 
-**What we built:** The Redrob ranker now uses a hybrid score: semantic concept matching, normalized JD/profile vector similarity, structured skill evidence, production proof, ranking/evaluation depth, recruiter-learning fit, Redrob behavioral signals, penalties, and proxy guardrails. The API/CLI also has an optional Transformers.js reranker using `Xenova/all-MiniLM-L6-v2` for environments where the local model is available.
+**What we built:** The Redrob ranker now uses a hybrid score: semantic concept matching, normalized JD/profile vector similarity, structured skill evidence, production proof, ranking/evaluation depth, recruiter-learning fit, Redrob behavioral signals, penalties, and proxy guardrails. The API/CLI also has an optional Transformers.js reranker using `Xenova/all-MiniLM-L6-v2` for environments where the local model is available, plus a Hugging Face learned reranker hook for the trained `shikharshahi/sifter-redrob-reranker` model.
 
 **What is different:** The rank is not only "does the resume contain this word?" It embeds the job and candidate profile into a comparable vector space, then asks whether the candidate shows evidence for the role concepts Redrob actually requested: retrieval, ranking, evaluation, production ML, shipping ownership, and LLM depth.
 
@@ -203,6 +203,7 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - Semantic concept scoring for the Senior AI Engineer JD.
 - Local vector similarity scoring for the Senior AI Engineer JD.
 - Optional transformer embedding reranker for smaller winner pools and local model environments.
+- Optional Hugging Face learned reranker for finalist pools using `SIFTER_RERANKER_MODEL` and `HF_TOKEN`.
 - Recruiter-learning component and local recruiter feedback capture.
 - Evaluation report generation with ranking ablations.
 - Parallel batch processing and merge-round ranking for large Redrob files.
@@ -281,6 +282,17 @@ It includes:
 
 Use this when you want to move from the deterministic ranker to a trained model that learns from recruiter preferences.
 
+To connect the trained Hugging Face model to the backend, set these on the API server:
+
+```bash
+HF_TOKEN=your_hugging_face_inference_token
+SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker
+SIFTER_LEARNED_RERANK_ENABLED=true
+SIFTER_LEARNED_RERANK_WEIGHT=0.3
+```
+
+The browser never receives `HF_TOKEN`. The web app calls Sifter's API, and the API calls Hugging Face only for the finalist pool.
+
 ## How To Run The Redrob Challenge Ranker
 
 Put the official challenge bundle in the local `Challenge/` folder.
@@ -301,6 +313,13 @@ Regenerate the hosted demo asset:
 
 ```powershell
 npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json --batches 10 --merge-size 2
+```
+
+To regenerate with the learned Hugging Face reranker, keep `HF_TOKEN` in your local environment and add `--learned-rerank`:
+
+```powershell
+$env:HF_TOKEN="your_hugging_face_inference_token"
+npm.cmd run challenge:rank -- --input "Challenge\[PUB] India_runs_data_and_ai_challenge\India_runs_data_and_ai_challenge\candidates.jsonl" --output redrob_submission.csv --asset-output apps\web\public\redrob-challenge-result.json --batches 10 --merge-size 2 --learned-rerank
 ```
 
 ## Validate The Submission
@@ -362,12 +381,28 @@ This repository includes Firebase Hosting config for the web app:
 - Hosting folder: `apps/web/dist`
 - Default URL: `https://sifter1011.web.app`
 - Mirror URL: `https://sifter1011.firebaseapp.com`
+- API rewrites: `/health`, `/csv/**`, `/redrob/**`, and `/pipeline-runs` go to Cloud Run service `sifter-api` in `us-central1`.
 - Deployed app includes the Redrob Challenge button, reviewer agents, and visible bias guardrail.
 
-Deploy command:
+Deploy the API backend first:
 
 ```bash
+gcloud config set project sifter1011
+gcloud run deploy sifter-api --source . --region us-central1 --allow-unauthenticated --set-env-vars WEB_ORIGIN=https://sifter1011.web.app,SIFTER_RERANKER_MODEL=shikharshahi/sifter-redrob-reranker,SIFTER_LEARNED_RERANK_ENABLED=true,SIFTER_LEARNED_RERANK_WEIGHT=0.3,HF_TOKEN=your_hugging_face_token
+```
+
+Then deploy Firebase Hosting:
+
+```bash
+npm run build
 npx firebase-tools deploy --only hosting --project sifter1011
+```
+
+After both deploys, the hosted app calls the backend through the Firebase domain:
+
+```text
+https://sifter1011.web.app/health
+https://sifter1011.web.app/redrob/rank
 ```
 
 Already verified:
