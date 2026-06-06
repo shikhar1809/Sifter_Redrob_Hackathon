@@ -26,9 +26,11 @@ Important: weak labels are not ground truth. They are a bootstrap. The serious v
 Use a GPU runtime in Google Colab.
 
 ```bash
-!git clone https://github.com/shikhar1809/Sifter_Redrob_Hackathon.git
-%cd Sifter_Redrob_Hackathon
-!pip install -U "transformers>=4.44.0" "datasets>=2.20.0" "accelerate>=0.33.0" "evaluate>=0.4.2" "huggingface_hub>=0.24.0" "scikit-learn>=1.5.0" "scipy>=1.11.0" "trl>=0.11.0" "peft>=0.12.0" "gradio>=4.44.0"
+%cd /content
+![ -d Sifter_Redrob_Hackathon ] || git clone https://github.com/shikhar1809/Sifter_Redrob_Hackathon.git
+%cd /content/Sifter_Redrob_Hackathon
+!git pull
+!pip install -q "transformers>=4.41" "datasets>=2.19" "accelerate>=0.30" "sentencepiece" "protobuf" "scikit-learn>=1.5,<1.9" "scipy" "huggingface_hub"
 ```
 
 Mount Drive or upload the Redrob challenge file:
@@ -41,12 +43,14 @@ drive.mount("/content/drive")
 Prepare training data:
 
 ```bash
+!find /content/drive/MyDrive -name "candidates.jsonl" | head -20
+
 !python ml/prepare_redrob_preference_data.py \
   --candidates "/content/drive/MyDrive/redrob/candidates.jsonl" \
   --candidate-pages-dir apps/web/public/redrob-candidate-pages \
   --labels-csv ml/recruiter_labels_template.csv \
   --out-dir data/redrob-reranker \
-  --max-records 50000 \
+  --max-records 2000 \
   --seed 42
 ```
 
@@ -60,14 +64,17 @@ notebook_login()
 ```bash
 !python ml/train_reward_reranker_colab.py \
   --data-dir data/redrob-reranker \
-  --base-model microsoft/deberta-v3-small \
+  --base-model distilbert-base-uncased \
   --output-dir outputs/sifter-redrob-reranker \
-  --hub-model-id YOUR_HF_USERNAME/sifter-redrob-reranker \
-  --epochs 2 \
+  --hub-model-id shikharshahi/sifter-redrob-reranker \
+  --epochs 1 \
   --batch-size 8 \
   --learning-rate 2e-5 \
+  --precision fp32 \
   --push-to-hub
 ```
+
+This is the fast Colab setting. It trains on `2,000` candidates with a smaller model so the first Hugging Face model can finish and push. After that works, increase `--max-records` and move back to `microsoft/deberta-v3-small` for a stronger but slower run.
 
 Optional DPO preference fine-tuning for an LLM-style rank explanation model:
 
