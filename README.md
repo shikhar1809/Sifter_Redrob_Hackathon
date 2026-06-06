@@ -16,6 +16,41 @@ Mirror URL: [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.
 
 The Firebase project id is `sifter1011`, so the default free Firebase domain is `sifter1011.web.app`.
 
+## Trained AI Model
+
+Sifter now includes a trained Hugging Face reranker:
+
+```text
+shikharshahi/sifter-redrob-reranker
+```
+
+Base model:
+
+```text
+distilbert-base-uncased
+```
+
+What it does in simple terms: it reads the job description and a candidate profile together, then predicts how strong the fit is. The backend uses it as a learned second opinion on the finalist pool, while the local Sifter ranker still does the full-scale explainable ranking first.
+
+Why this matters for the Redrob challenge:
+
+- It moves Sifter beyond fixed hand-tuned weights.
+- It gives the product a real trainable ranking layer.
+- It can improve as recruiters add labels like Strong fit, Maybe, and Not fit.
+- It keeps the demo fast by reranking only the top finalist pool instead of sending all `100,000` candidates to Hugging Face.
+
+Current blend:
+
+```text
+70% Sifter evidence score + 30% learned reranker score
+```
+
+Default model-backed rerank scope:
+
+```text
+top 25 finalists
+```
+
 ## The Flow
 
 Sifter was built as a chain of product decisions. Each feature exists because of a real recruiting problem.
@@ -229,22 +264,6 @@ Important limitation: the Redrob dataset does not include protected demographic 
 - First trained Hugging Face model: `shikharshahi/sifter-redrob-reranker`.
 - Backend hook for learned reranking with safe fallback when `HF_TOKEN` is missing or Hugging Face is unavailable.
 - Hugging Face Spaces Gradio app template for deploying the trained reranker.
-
-## What Is Not Done Yet
-
-- The trained model is a first learned reranker, not a fully validated production hiring model.
-- No hosted embedding service in production yet. The repo has an optional local Transformers.js reranker, but production search should still add an indexed embedding backend.
-- No team-wide learning database yet. Recruiter feedback is captured locally today; syncing it across users and retraining weights from hiring outcomes is still future work.
-- No large human-labeled recruiter holdout set yet. The first training run uses bootstrapped labels plus optional recruiter labels, so stronger validation is still needed.
-- No complex PDF/DOC resume parsing yet.
-- No NLP-based candidate deduplication yet.
-- No production backend search service yet. The live Redrob demo uses static 100-candidate pages plus page-level search.
-- No automated candidate status messaging yet.
-- No production ATS/HRIS webhooks yet.
-- No true protected-class parity report because the source data does not include protected attributes.
-- No full fairness dashboard yet.
-- No production-grade auth hardening yet.
-- No automated test suite for every scoring edge case yet.
 
 ## How To Run The App
 
