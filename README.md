@@ -6,6 +6,43 @@ Live demo: [sifter1011.web.app](https://sifter1011.web.app/)
 Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/)  
 Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
 
+## Latest Update: Human-Reviewed Model Loop
+
+Sifter is no longer only a fixed scoring system. We studied the Redrob data, selected 180 hard candidate cases, manually reviewed them like a recruiter, and retrained the Hugging Face reranker on those human labels.
+
+Latest reviewed-model run:
+
+| Item | Result |
+| --- | --- |
+| Human-reviewed candidates | `180` |
+| Label mix | `46 strong_fit`, `58 maybe`, `76 not_fit` |
+| Train / validation split | `166 / 14` |
+| Base model | `distilbert-base-uncased` |
+| Training method | supervised reward-model reranker fine-tuning |
+| Validation Spearman | `0.7526` |
+| Validation RMSE / MAE | `0.2104 / 0.1884` |
+
+Layman meaning: the model has started learning from recruiter-style judgment, not just from hand-written rules. `0.7526` Spearman means the model's ranking order now agrees strongly with the reviewed labels.
+
+## Model Improvement Lifecycle
+
+Sifter is built to keep improving:
+
+```mermaid
+flowchart LR
+  A["Study candidate data"] --> B["Find hidden patterns and traps"]
+  B --> C["Rank full 100,000-candidate pool"]
+  C --> D["Select hard review cases"]
+  D --> E["Human labels: strong_fit / maybe / not_fit"]
+  E --> F["Fine-tune Hugging Face reranker"]
+  F --> G["Blend learned score into finalist ranking"]
+  G --> H["Show reasons, bias guardrails, and reviewer-agent questions"]
+  H --> I["Collect more recruiter feedback"]
+  I --> E
+```
+
+This is not full RLHF yet. It is the practical first stage: **human feedback -> reward/reranker fine-tuning -> better ranking -> more feedback**. The deterministic ranker still handles scale and explainability; the learned model adds a second opinion that can improve over time.
+
 ## What We Learned From The Data
 
 Redrob's founder was right to stress the data. The challenge is not only "rank candidates." It is "understand what the candidate data is trying to trick you into doing."
