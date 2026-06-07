@@ -10,8 +10,11 @@ coverage
 *.tsbuildinfo
 uploads
 tmp
+outputs/
 data/*.csv
 data/external-hiring/
+data/redrob-reranker-reviewed/
+data/redrob-reranker-reviewed.zip
 *-preview.png
 pipeline_demo.html
 Challenge/

@@ -10,7 +10,7 @@ tags:
   - reward-model
   - recruitment
   - explainable-ai
-  - weak-supervision
+  - human-feedback
 metrics:
   - spearmanr
   - rmse
@@ -22,18 +22,18 @@ model-index:
           type: text-classification
           name: Job-candidate fit regression
         dataset:
-          name: Redrob Challenge weak-supervision validation split
-          type: custom-redrob-sifter-preference-data
+          name: Redrob Challenge human-reviewed validation split
+          type: custom-redrob-sifter-human-feedback-data
           split: validation
         metrics:
           - type: spearmanr
-            value: 0.6824
+            value: 0.7526
             name: Spearman rank correlation
           - type: rmse
-            value: 0.0525
+            value: 0.2104
             name: RMSE
           - type: mae
-            value: 0.0428
+            value: 0.1884
             name: MAE
 widget:
   - text: |
@@ -77,20 +77,21 @@ top 25 finalist candidates
 
 ## Training Data
 
-This first public model was trained on Redrob-derived Sifter preference data, not on a generic public ranking benchmark.
+This revised public model was trained on Redrob-derived Sifter preference data with human-reviewed recruiter-style labels, not on a generic public ranking benchmark.
 
 Training run:
 
 | Item | Value |
 | --- | --- |
-| Source | Redrob candidate profiles + Sifter ranked Redrob pages |
-| Total examples | 2,000 job-candidate examples |
-| Train split | 1,840 examples |
-| Validation split | 160 examples |
+| Source | Redrob candidate profiles + human-reviewed Sifter candidate review set |
+| Total examples | 180 job-candidate examples |
+| Train split | 166 examples |
+| Validation split | 14 examples |
 | Job description | Redrob Senior AI Engineer style role brief |
 | Label type | Continuous fit score from `0.0` to `1.0` |
-| Label source | Weak labels from Sifter's ranked output, with recruiter-label override supported |
-| Human independent holdout | Not yet available |
+| Label source | Human-reviewed labels from the 180-candidate review set |
+| Human label mix | 46 `strong_fit`, 58 `maybe`, 76 `not_fit` |
+| Human independent holdout | Small reviewed validation split; no separate multi-recruiter panel yet |
 
 Each training example is shaped like this:
 
@@ -102,7 +103,7 @@ The candidate profile text includes title, summary/headline, years of experience
 
 ## Label Scale
 
-The first run uses weak-supervision labels so the model can learn a starter notion of fit before real recruiter feedback is collected.
+The revised run uses human-reviewed labels so the model learns from actual recruiter-style judgment instead of only bootstrapped scores.
 
 | Label area | Meaning |
 | --- | --- |
@@ -122,20 +123,20 @@ Recruiter labels are supported by the training script and override weak labels w
 | `not_fit` | `0.08` |
 | `reject` | `0.00` |
 
-Important: weak labels are not the same as independent recruiter ground truth. They are a bootstrap step. The next stronger version should add recruiter-reviewed labels and report performance on a separate human-labeled holdout.
+Important: these labels are stronger than weak supervision, but they are still a compact review set. The next stronger version should add more reviewers and a separate held-out recruiter panel.
 
 ## Metrics
 
-Validation results from the first public run:
+Validation results from the human-reviewed revised run:
 
 | Metric | Value |
 | --- | ---: |
-| Validation loss | `0.0028` |
-| RMSE | `0.0525` |
-| MAE | `0.0428` |
-| Spearman rank correlation | `0.6824` |
+| Validation loss | `0.0443` |
+| RMSE | `0.2104` |
+| MAE | `0.1884` |
+| Spearman rank correlation | `0.7526` |
 
-What Spearman means in plain language: when the weak labels say candidate A should usually rank above candidate B, the model's scores mostly move in the same direction. This is useful for reranking, but it is still measured against Sifter-generated weak labels, not an independent recruiter panel.
+What Spearman means in plain language: when the human-reviewed labels say candidate A should usually rank above candidate B, the model's scores mostly move in the same direction. `0.7526` is a strong sign that the learned reranker is now aligned with the reviewed candidate judgments.
 
 ## Training Procedure
 
@@ -155,26 +156,24 @@ Training setup:
 
 | Hyperparameter | Value |
 | --- | --- |
-| Epochs | `1.0` |
-| Training steps | `230` |
+| Epochs | `3.0` |
+| Training steps | Colab GPU run on 166 reviewed training rows |
 | Batch size | `8` |
 | Learning rate | `2e-5` |
-| Max sequence length | `512` |
+| Max sequence length | `256` |
 | Optimizer | AdamW |
 | Precision | FP32 |
 
 The model head is a single regression output (`num_labels=1`) trained with mean squared error loss.
 
-## Why Only One Epoch
+## Why This Is Still Human-In-The-Loop
 
-The one-epoch run is intentional for the first public version:
+This model is not treated as an automatic hiring decision system. The reviewed-label run improves the learned ranking signal, but Sifter still keeps human-facing checks:
 
-- it keeps the Colab training run repeatable,
-- it avoids overfitting heavily to weak labels,
-- it proves that the Sifter pipeline can train, publish, and call a real model,
-- it creates a baseline that can be improved with more recruiter labels.
-
-More epochs may improve the validation correlation, but the bigger quality jump should come from better labels, not just longer training on the same weak labels.
+- every rank still shows evidence and concern text,
+- the bias guardrail stays visible,
+- reviewer-agent questions challenge the result,
+- recruiters can add more labels for future retraining.
 
 ## How It Is Integrated Into Sifter
 
@@ -192,9 +191,9 @@ The model is not allowed to become an unchecked black box. The deterministic Sif
 ## Limitations
 
 - The model is trained for the Redrob/Sifter Senior AI Engineer ranking setup, not general hiring across every role.
-- The first public run uses 2,000 examples and one epoch, so it should be treated as a baseline, not a final production model.
-- The validation metric is measured against Sifter weak labels, not an independent recruiter-labeled holdout.
-- The model can learn patterns present in the weak labels, so Sifter keeps deterministic explanations and bias guardrails in the final product.
+- The revised run uses 180 human-reviewed examples, so it is stronger than weak supervision but still small.
+- The validation metric is measured on a 14-row reviewed validation split, not a large independent recruiter panel.
+- The model can learn patterns present in the review labels, so Sifter keeps deterministic explanations and bias guardrails in the final product.
 - The Redrob dataset does not include protected demographic labels, so this model card does not claim protected-class fairness parity.
 
 ## Responsible Use

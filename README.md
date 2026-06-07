@@ -139,19 +139,26 @@ That means the model is not just a link on Hugging Face. It is part of the Sifte
 
 ### How It Was Trained
 
-The training data was prepared from Redrob candidate profiles and job-fit signals. Each example contains:
+The training data was prepared from Redrob candidate profiles and human-reviewed job-fit decisions. Each example contains:
 
 - the job description,
 - the candidate profile,
-- a fit label derived from ranked evidence and optional recruiter-style feedback.
+- a fit label reviewed by the recruiter/user.
 
-The first public run used `2,000` Redrob-derived examples: `1,840` for training and `160` for validation. It trained for `1` epoch and reached `0.6824` Spearman rank correlation against Sifter's weak validation labels.
+The revised model uses `180` human-reviewed Redrob candidates: `166` for training and `14` for validation. The review mix is `46` strong fits, `58` maybes, and `76` not-fits. It trained for `3` epochs and reached `0.7526` Spearman rank correlation on the reviewed validation split.
+
+| Metric | Value |
+| --- | ---: |
+| Validation loss | `0.0443` |
+| RMSE | `0.2104` |
+| MAE | `0.1884` |
+| Spearman rank correlation | `0.7526` |
 
 The model learns to predict the fit label from the job-candidate pair. In layman terms, it repeatedly sees examples of "this candidate looks stronger for this job than that one" until it learns a reusable sense of fit.
 
 This is not full RLHF yet. It is a reward-model style supervised reranker, which is the right first step before reinforcement learning because the system needs a stable scoring model before it can safely optimize from recruiter feedback.
 
-The validation metric is honest but limited: it measures agreement with Sifter-generated weak labels, not an independent recruiter-labeled holdout yet. That is why the product still keeps reasons, reviewer agents, and bias guardrails in front of the user.
+The validation metric is stronger than the first weak-label run because it is measured against human-reviewed labels. It is still a small validation split, so the product keeps reasons, reviewer agents, and bias guardrails in front of the user instead of treating the model as an unchecked hiring decision.
 
 ## Architecture
 
@@ -301,6 +308,7 @@ The result is a working product, not a slide-only idea: live web app, trained mo
 | Live app | [https://sifter1011.web.app](https://sifter1011.web.app/) |
 | Firebase mirror | [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/) |
 | Trained Hugging Face model | [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker) |
+| Reviewed-model Colab notebook | [ml/sifter_reviewed_reranker_train_colab.ipynb](ml/sifter_reviewed_reranker_train_colab.ipynb) |
 | Raw Redrob candidates on Drive | [Google Drive file](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing) |
 | Dataset structural analysis | [docs/dataset-analysis/redrob_dataset_analysis.md](docs/dataset-analysis/redrob_dataset_analysis.md) |
 | Global hiring comparison | [docs/dataset-analysis/global_hiring_comparison.md](docs/dataset-analysis/global_hiring_comparison.md) |

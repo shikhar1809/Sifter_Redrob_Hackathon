@@ -46,6 +46,7 @@ def main() -> None:
     parser.add_argument("--max-records", type=int, default=50000)
     parser.add_argument("--valid-share", type=float, default=0.08)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--only-labeled", action="store_true", help="Keep only candidates present in --labels-csv.")
     args = parser.parse_args()
 
     random.seed(args.seed)
@@ -64,6 +65,8 @@ def main() -> None:
       ranked = weak_rankings.get(candidate_id, {})
       weak_score = weak_score_from_rank(ranked.get("rank"), ranked.get("score"))
       label_score = recruiter_labels.get(candidate_id, {}).get("score")
+      if args.only_labeled and label_score is None:
+          continue
       label_source = "recruiter" if label_score is not None else "weak_ranker"
       score = label_score if label_score is not None else weak_score
       records.append({

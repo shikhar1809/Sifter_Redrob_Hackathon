@@ -19,7 +19,7 @@ The first model is a **learned reward/reranker**, not another hand-written score
 
 Then it learns to predict candidate fit as a scalar score.
 
-Important: weak labels are not ground truth. They are a bootstrap. The serious version is to add recruiter labels in `recruiter_labels_template.csv`, retrain, and compare validation metrics before claiming quality.
+Important: weak labels are only a bootstrap. The revised model now uses a human-reviewed Redrob review set so quality claims are based on recruiter-style labels, not only Sifter's own ranking.
 
 ## Model Choice
 
@@ -75,7 +75,7 @@ from google.colab import drive
 drive.mount("/content/drive")
 ```
 
-Prepare training data:
+Prepare weak/bootstrap training data:
 
 ```bash
 !find /content/drive/MyDrive -name "candidates.jsonl" | head -20
@@ -109,7 +109,27 @@ notebook_login()
   --push-to-hub
 ```
 
-This is the fast Colab setting. It trains on `2,000` candidates with a smaller model so the first Hugging Face model can finish and push. After that works, increase `--max-records` and move back to `microsoft/deberta-v3-small` for a stronger but slower run.
+This is the fast bootstrap setting. The stronger reviewed-label path uses:
+
+```text
+ml/sifter_reviewed_reranker_train_colab.ipynb
+```
+
+That notebook trains on the reviewed dataset:
+
+| Item | Value |
+| --- | --- |
+| Reviewed candidates | `180` |
+| Train split | `166` |
+| Validation split | `14` |
+| Label mix | `46 strong_fit`, `58 maybe`, `76 not_fit` |
+| Epochs | `3` |
+| Base model | `distilbert-base-uncased` |
+| Spearman | `0.7526` |
+| RMSE | `0.2104` |
+| MAE | `0.1884` |
+
+This is the current preferred model story: Sifter studies the data, selects hard review cases, gets human labels, and fine-tunes a reward/reranker model from that feedback.
 
 The notebook version now makes the final training cell prepare the data first, verify `reranker_train.jsonl` and `reranker_valid.jsonl`, and only then start training. That keeps Colab from failing because a previous data-prep cell was skipped.
 
@@ -180,7 +200,7 @@ The public Hugging Face model card source is maintained in:
 ml/huggingface_model_card.md
 ```
 
-It documents the first model's actual training data, split, label scale, metrics, one-epoch baseline limitation, and Sifter backend integration path. Upload it with `ml/update_hf_model_card.py` after Hugging Face auth is available.
+It documents the revised model's human-reviewed training data, split, label scale, metrics, limitation, and Sifter backend integration path. Upload it with `ml/update_hf_model_card.py` after Hugging Face auth is available.
 
 The honest phrasing is:
 

@@ -71,6 +71,7 @@ def main() -> None:
         num_labels=1,
         problem_type="regression",
         torch_dtype=torch.float32,
+        ignore_mismatched_sizes=True,
     )
     model.float()
 
