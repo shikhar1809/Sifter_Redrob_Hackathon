@@ -19,6 +19,7 @@ export const config = {
   geminiReviewEnabled: process.env.GEMINI_REVIEW_ENABLED !== "false",
   huggingFaceToken: process.env.HF_TOKEN,
   sifterRerankerModel: process.env.SIFTER_RERANKER_MODEL ?? "shikharshahi/sifter-redrob-reranker",
+  sifterRerankerSpaceUrl: process.env.SIFTER_RERANKER_SPACE_URL ?? "",
   learnedRerankEnabled: process.env.SIFTER_LEARNED_RERANK_ENABLED === "true",
   learnedRerankWeight: Number(process.env.SIFTER_LEARNED_RERANK_WEIGHT ?? 0.3),
   learnedRerankLimit: Number(process.env.SIFTER_LEARNED_RERANK_LIMIT ?? 25),

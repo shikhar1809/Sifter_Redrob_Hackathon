@@ -25,7 +25,7 @@ export async function rerankRedrobRowsWithLearnedModel(
   const enabled = options.enabled ?? config.learnedRerankEnabled;
   const weight = clamp01(options.weight ?? config.learnedRerankWeight);
   const model = config.sifterRerankerModel;
-  const configured = Boolean(config.huggingFaceToken);
+  const configured = Boolean(config.huggingFaceToken || config.sifterRerankerSpaceUrl);
   const baseMetadata: LearnedRerankMetadata = {
     enabled,
     configured,
@@ -43,7 +43,7 @@ export async function rerankRedrobRowsWithLearnedModel(
       metadata: {
         ...baseMetadata,
         status: "not_configured",
-        message: "Set HF_TOKEN on the API server to enable the Hugging Face learned reranker.",
+        message: "Set SIFTER_RERANKER_SPACE_URL or HF_TOKEN on the API server to enable the Hugging Face learned reranker.",
       },
     };
   }
@@ -55,11 +55,11 @@ export async function rerankRedrobRowsWithLearnedModel(
     const rowsToScore = rows.slice(0, finalistLimit);
     const learnedScores = await mapWithConcurrency(rowsToScore, 4, async (row) => {
       const candidate = candidateById.get(row.candidate_id);
-      return { row, learnedScore: candidate ? await scoreCandidateWithHuggingFace(candidate, model) : 0 };
+      return { row, learnedScore: candidate ? await scoreCandidateWithLearnedService(candidate, model) : 0 };
     });
     const scoreByCandidateId = new Map(learnedScores.map((item) => [item.row.candidate_id, item.learnedScore]));
 
-    const reranked = rows
+    const rerankedFinalists = rowsToScore
       .map((row) => {
         const learnedScore = scoreByCandidateId.get(row.candidate_id);
         if (learnedScore === undefined) return row;
@@ -77,6 +77,7 @@ export async function rerankRedrobRowsWithLearnedModel(
       })
       .sort((left, right) => right.score - left.score || left.candidate_id.localeCompare(right.candidate_id))
       .map((row, index) => ({ ...row, rank: index + 1 }));
+    const reranked = [...rerankedFinalists, ...rows.slice(finalistLimit)].map((row, index) => ({ ...row, rank: index + 1 }));
 
     return {
       rows: reranked,
@@ -84,7 +85,7 @@ export async function rerankRedrobRowsWithLearnedModel(
         ...baseMetadata,
         status: "completed",
         reviewedCandidates: learnedScores.length,
-        message: `Learned reranker scored ${learnedScores.length} finalist candidate${learnedScores.length === 1 ? "" : "s"} with ${model}.`,
+        message: `Learned reranker scored ${learnedScores.length} finalist candidate${learnedScores.length === 1 ? "" : "s"} with ${config.sifterRerankerSpaceUrl ? "Hugging Face Space" : model}.`,
       },
     };
   } catch (error) {
@@ -99,7 +100,54 @@ export async function rerankRedrobRowsWithLearnedModel(
   }
 }
 
-async function scoreCandidateWithHuggingFace(candidate: RedrobCandidate, model: string): Promise<number> {
+async function scoreCandidateWithLearnedService(candidate: RedrobCandidate, model: string): Promise<number> {
+  const candidateText = redrobLearnedModelText(candidate);
+  const errors: string[] = [];
+  if (config.sifterRerankerSpaceUrl) {
+    try {
+      return await scoreCandidateWithHuggingFaceSpace(seniorAiEngineerPrompt, candidateText);
+    } catch (error) {
+      errors.push(`Space: ${error instanceof Error ? error.message : "unknown error"}`);
+    }
+  }
+  if (config.huggingFaceToken) {
+    try {
+      return await scoreCandidateWithHuggingFaceServerless(model, candidateText);
+    } catch (error) {
+      errors.push(`Serverless: ${error instanceof Error ? error.message : "unknown error"}`);
+    }
+  }
+  throw new Error(errors.length ? errors.join("; ") : "No learned reranker service is configured.");
+}
+
+async function scoreCandidateWithHuggingFaceSpace(jobDescription: string, candidateText: string): Promise<number> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60_000);
+  try {
+    const spaceUrl = config.sifterRerankerSpaceUrl.replace(/\/+$/, "");
+    const response = await fetch(`${spaceUrl}/api/predict`, {
+      method: "POST",
+      headers: {
+        ...(config.huggingFaceToken ? { Authorization: `Bearer ${config.huggingFaceToken}` } : {}),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: [jobDescription, candidateText],
+      }),
+      signal: controller.signal,
+    });
+
+    const payload = (await response.json()) as unknown;
+    if (!response.ok) {
+      throw new Error(huggingFaceErrorMessage(payload, response.status));
+    }
+    return extractSpaceScore(payload);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function scoreCandidateWithHuggingFaceServerless(model: string, candidateText: string): Promise<number> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30_000);
   try {
@@ -110,7 +158,7 @@ async function scoreCandidateWithHuggingFace(candidate: RedrobCandidate, model: 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        inputs: `Job description:\n${seniorAiEngineerPrompt}\n\nCandidate profile:\n${redrobLearnedModelText(candidate)}`,
+        inputs: `Job description:\n${seniorAiEngineerPrompt}\n\nCandidate profile:\n${candidateText}`,
         parameters: { function_to_apply: "none", top_k: 1 },
         options: { wait_for_model: true },
       }),
@@ -125,6 +173,15 @@ async function scoreCandidateWithHuggingFace(candidate: RedrobCandidate, model: 
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function extractSpaceScore(payload: unknown): number {
+  if (payload && typeof payload === "object" && "data" in payload && Array.isArray(payload.data)) {
+    const first = payload.data[0];
+    if (typeof first === "number") return clamp01(first);
+    if (typeof first === "string") return clamp01(Number(first));
+  }
+  throw new Error("Hugging Face Space response did not include a usable score.");
 }
 
 function redrobLearnedModelText(candidate: RedrobCandidate): string {

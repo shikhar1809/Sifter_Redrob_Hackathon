@@ -1,20 +1,27 @@
 import os
+from typing import Any
 
-import gradio as gr
 import torch
+from fastapi import FastAPI
+from pydantic import BaseModel
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
-MODEL_ID = os.environ.get("SIFTER_RERANKER_MODEL", "YOUR_HF_USERNAME/sifter-redrob-reranker")
+MODEL_ID = os.environ.get("SIFTER_RERANKER_MODEL", "shikharshahi/sifter-redrob-reranker")
 
+app = FastAPI(title="Sifter Redrob Reranker")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
 model.eval()
 
 
-def score_candidate(job_description: str, candidate_profile: str):
+class PredictRequest(BaseModel):
+    data: list[str]
+
+
+def score_candidate(job_description: str, candidate_profile: str) -> tuple[float, str]:
     text = f"Job description:\n{job_description}\n\nCandidate profile:\n{candidate_profile}"
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=256)
     with torch.no_grad():
         score = model(**inputs).logits.reshape(-1)[0].item()
     score = max(0.0, min(1.0, float(score)))
@@ -27,17 +34,23 @@ def score_candidate(job_description: str, candidate_profile: str):
     return round(score, 4), verdict
 
 
-demo = gr.Interface(
-    fn=score_candidate,
-    inputs=[
-        gr.Textbox(label="Job description", lines=8, value="Senior AI Engineer for production retrieval, embeddings, vector search, LLM reranking, ranking evaluation, Python, model serving, and ownership."),
-        gr.Textbox(label="Candidate profile", lines=12, value="Senior ML engineer with Python, embeddings, retrieval systems, FAISS, ranking evaluation, production model serving, and monitoring experience."),
-    ],
-    outputs=[gr.Number(label="Learned fit score"), gr.Textbox(label="Verdict")],
-    title="Sifter Learned Candidate Reranker",
-    description="Fine-tuned reward/reranker model for ranking candidates against a job description.",
-)
+@app.get("/")
+def root() -> dict[str, Any]:
+    return {
+        "ok": True,
+        "model": MODEL_ID,
+        "usage": "POST /api/predict with {'data': [job_description, candidate_profile]}",
+    }
 
 
-if __name__ == "__main__":
-    demo.launch()
+@app.get("/health")
+def health() -> dict[str, Any]:
+    return {"ok": True, "model": MODEL_ID}
+
+
+@app.post("/api/predict")
+def predict(request: PredictRequest) -> dict[str, Any]:
+    if len(request.data) < 2:
+        return {"error": "Provide data as [job_description, candidate_profile]."}
+    score, verdict = score_candidate(request.data[0], request.data[1])
+    return {"data": [score, verdict], "model": MODEL_ID}

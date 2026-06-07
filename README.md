@@ -4,7 +4,8 @@ Sifter is an AI hiring ranker built for the Redrob challenge: it reads a job des
 
 Live demo: [sifter1011.web.app](https://sifter1011.web.app/)  
 Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/)  
-Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)
+Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)  
+Model-serving Space: [shikharshahi/sifter-redrob-reranker-space](https://huggingface.co/spaces/shikharshahi/sifter-redrob-reranker-space)
 
 ## Latest Update: Human-Reviewed Model Loop
 
@@ -171,8 +172,11 @@ The model is already wired into the backend finalist-reranking path:
 | `apps/api/src/config.ts` | controls model id, token, finalist limit, and blend weight |
 | `apps/api/src/server.ts` | exposes learned reranking in the Redrob ranking API |
 | `apps/web/src/App.tsx` | shows learned-reranker status in the UI |
+| `ml/hf_space` | serves the trained model through a Hugging Face Docker/FastAPI Space when serverless inference does not support the custom model |
 
 That means the model is not just a link on Hugging Face. It is part of the Sifter ranking pipeline, while the deterministic explanation and bias guardrail stay visible.
+
+The live Redrob demo asset was regenerated after the reviewed-model training run. It now processes all `100,000` candidates, applies the learned reranker to `25` finalists through the Hugging Face Space, and records the learned-reranker status directly in `apps/web/public/redrob-challenge-result.json`.
 
 ### How It Was Trained
 
@@ -345,6 +349,7 @@ The result is a working product, not a slide-only idea: live web app, trained mo
 | Live app | [https://sifter1011.web.app](https://sifter1011.web.app/) |
 | Firebase mirror | [https://sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com/) |
 | Trained Hugging Face model | [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker) |
+| Hugging Face model-serving Space | [shikharshahi/sifter-redrob-reranker-space](https://huggingface.co/spaces/shikharshahi/sifter-redrob-reranker-space) |
 | Reviewed-model Colab notebook | [ml/sifter_reviewed_reranker_train_colab.ipynb](ml/sifter_reviewed_reranker_train_colab.ipynb) |
 | Raw Redrob candidates on Drive | [Google Drive file](https://drive.google.com/file/d/1wGx9_zm8hklndJbhdGscy15klHLK2bys/view?usp=sharing) |
 | Dataset structural analysis | [docs/dataset-analysis/redrob_dataset_analysis.md](docs/dataset-analysis/redrob_dataset_analysis.md) |

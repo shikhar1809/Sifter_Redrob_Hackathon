@@ -50,8 +50,9 @@ app.get("/health", async () => ({
   learnedReranker: {
     provider: "huggingface",
     enabled: config.learnedRerankEnabled,
-    configured: Boolean(config.huggingFaceToken),
+    configured: Boolean(config.huggingFaceToken || config.sifterRerankerSpaceUrl),
     model: config.sifterRerankerModel,
+    spaceUrl: config.sifterRerankerSpaceUrl || null,
     weight: config.learnedRerankWeight,
     finalistLimit: config.learnedRerankLimit,
   },
