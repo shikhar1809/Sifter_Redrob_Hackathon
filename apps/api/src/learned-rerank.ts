@@ -53,7 +53,7 @@ export async function rerankRedrobRowsWithLearnedModel(
     const candidateById = new Map(candidates.map((candidate) => [candidate.candidate_id, candidate]));
     const finalistLimit = Math.max(1, Math.min(options.limit ?? config.learnedRerankLimit, rows.length));
     const rowsToScore = rows.slice(0, finalistLimit);
-    const learnedScores = await mapWithConcurrency(rowsToScore, 4, async (row) => {
+    const learnedScores = await mapWithConcurrency(rowsToScore, 2, async (row) => {
       const candidate = candidateById.get(row.candidate_id);
       return { row, learnedScore: candidate ? await scoreCandidateWithLearnedService(candidate, model) : 0 };
     });
@@ -77,7 +77,8 @@ export async function rerankRedrobRowsWithLearnedModel(
       })
       .sort((left, right) => right.score - left.score || left.candidate_id.localeCompare(right.candidate_id))
       .map((row, index) => ({ ...row, rank: index + 1 }));
-    const reranked = [...rerankedFinalists, ...rows.slice(finalistLimit)].map((row, index) => ({ ...row, rank: index + 1 }));
+    const calibratedRest = calibrateUnreviewedRowsBelowFinalists(rows.slice(finalistLimit), rerankedFinalists);
+    const reranked = [...rerankedFinalists, ...calibratedRest].map((row, index) => ({ ...row, rank: index + 1 }));
 
     return {
       rows: reranked,
@@ -121,30 +122,39 @@ async function scoreCandidateWithLearnedService(candidate: RedrobCandidate, mode
 }
 
 async function scoreCandidateWithHuggingFaceSpace(jobDescription: string, candidateText: string): Promise<number> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60_000);
-  try {
-    const spaceUrl = config.sifterRerankerSpaceUrl.replace(/\/+$/, "");
-    const response = await fetch(`${spaceUrl}/api/predict`, {
-      method: "POST",
-      headers: {
-        ...(config.huggingFaceToken ? { Authorization: `Bearer ${config.huggingFaceToken}` } : {}),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: [jobDescription, candidateText],
-      }),
-      signal: controller.signal,
-    });
+  const spaceUrl = config.sifterRerankerSpaceUrl.replace(/\/+$/, "");
+  let lastError: unknown = null;
 
-    const payload = (await response.json()) as unknown;
-    if (!response.ok) {
-      throw new Error(huggingFaceErrorMessage(payload, response.status));
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+    try {
+      const response = await fetch(`${spaceUrl}/api/predict`, {
+        method: "POST",
+        headers: {
+          ...(config.huggingFaceToken ? { Authorization: `Bearer ${config.huggingFaceToken}` } : {}),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: [jobDescription, candidateText],
+        }),
+        signal: controller.signal,
+      });
+      const text = await response.text();
+      const payload = parseJsonResponse(text);
+      if (!response.ok) {
+        throw new Error(huggingFaceErrorMessage(payload, response.status));
+      }
+      return extractSpaceScore(payload);
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) await delay(attempt * 1200);
+    } finally {
+      clearTimeout(timeout);
     }
-    return extractSpaceScore(payload);
-  } finally {
-    clearTimeout(timeout);
   }
+
+  throw lastError instanceof Error ? lastError : new Error("Hugging Face Space request failed.");
 }
 
 async function scoreCandidateWithHuggingFaceServerless(model: string, candidateText: string): Promise<number> {
@@ -222,9 +232,27 @@ function huggingFaceErrorMessage(payload: unknown, status: number): string {
   return `Hugging Face returned HTTP ${status}`;
 }
 
+function parseJsonResponse(text: string): unknown {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    throw new Error(`Hugging Face returned non-JSON response: ${text.slice(0, 80)}`);
+  }
+}
+
 function clamp01(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.max(0, Math.min(1, value));
+}
+
+function calibrateUnreviewedRowsBelowFinalists(rows: RedrobRankingRow[], finalists: RedrobRankingRow[]): RedrobRankingRow[] {
+  if (!rows.length || !finalists.length) return rows;
+  let ceiling = Math.max(0, finalists[finalists.length - 1].score - 0.0001);
+  return rows.map((row) => {
+    const score = Math.min(row.score, ceiling);
+    ceiling = Math.max(0, score - 0.0001);
+    return { ...row, score: Number(score.toFixed(4)) };
+  });
 }
 
 async function mapWithConcurrency<T, R>(items: T[], concurrency: number, mapper: (item: T) => Promise<R>): Promise<R[]> {
@@ -239,4 +267,8 @@ async function mapWithConcurrency<T, R>(items: T[], concurrency: number, mapper:
   });
   await Promise.all(workers);
   return results;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

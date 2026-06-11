@@ -209,7 +209,7 @@ The model is already wired into the backend finalist-reranking path:
 
 That means the model is not just a link on Hugging Face. It is part of the Sifter ranking pipeline, while the deterministic explanation and bias guardrail stay visible.
 
-The live Redrob demo asset was regenerated after the reviewed-model training run. It now processes all `100,000` candidates, applies the learned reranker to `25` finalists through the Hugging Face Space, and records the learned-reranker status directly in `apps/web/public/redrob-challenge-result.json`.
+The live Redrob demo asset was regenerated after the reviewed-model training run. It now processes all `100,000` candidates, applies the learned reranker to the full top-`100` finalist set through the Hugging Face Space, and records the learned-reranker status directly in `apps/web/public/redrob-challenge-result.json`.
 
 ### How It Was Trained
 
