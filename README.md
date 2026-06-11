@@ -7,6 +7,21 @@ Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com
 Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)  
 Model-serving Space: [shikharshahi/sifter-redrob-reranker-space](https://huggingface.co/spaces/shikharshahi/sifter-redrob-reranker-space)
 
+## Final Submission Confidence
+
+Start here if you are judging quickly: [Sifter Judge Packet](docs/JUDGE_PACKET.md)
+
+Sifter is built to answer the prompt directly:
+
+| Judge question | Answer |
+| --- | --- |
+| Did it rank the full dataset? | Yes: all `100,000` Redrob candidates were processed. |
+| Is it more than keyword matching? | Yes: hybrid semantic evidence ranking plus a fine-tuned Hugging Face reranker. |
+| Is there proof it beats keyword-only? | Yes: `1.36x` stronger Top-25 strong-fit recall on the human-reviewed set. |
+| Can a recruiter trust the shortlist? | Yes: every candidate has reasons, evidence, concerns, score breakdown, and reviewer-agent questions. |
+| Is bias risk handled visibly? | Yes: unsafe/proxy signals are removed or capped, and the UI shows a bias guardrail instead of hiding fairness limits. |
+| Is it deployed and reproducible? | Yes: Firebase app, Hugging Face Space, final CSV, validation script, and data-analysis reports are all included. |
+
 ## Judge Evidence At A Glance
 
 Sifter now has three proof layers: it processes the full challenge pool, validates against human-reviewed labels, and serves a trained reranker in the product.
