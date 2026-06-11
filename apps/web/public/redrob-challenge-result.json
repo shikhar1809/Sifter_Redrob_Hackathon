@@ -344,7 +344,7 @@
       {
         "decision": "Let ranking improve from recruiter review behavior.",
         "dataPoint": "Great recruiters reward production proof, role-specific depth, and evaluation discipline more than raw activity or keyword density.",
-        "implementation": "The score now includes a recruiterLearning component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
+        "implementation": "The score now includes a review-informed evidence component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
       }
     ]
   },
@@ -353,7 +353,7 @@
       "candidate_id": "CAND_0071974",
       "rank": 1,
       "score": 0.7994,
-      "reasoning": "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 71% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 75% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16. Learned Hugging Face reranker: 58.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior AI Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 71% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 75% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.76, notice 45d, last active 2026-04-16. Learned Hugging Face reranker: 58.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 70.5,
         "vectorSimilarity": 90.3,
@@ -386,7 +386,7 @@
       "candidate_id": "CAND_0077337",
       "rank": 2,
       "score": 0.7961,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26. Learned Hugging Face reranker: 58.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Staff Machine Learning Engineer with 7.0 yrs in Kochi, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.95, notice 60d, last active 2026-05-26. Learned Hugging Face reranker: 58.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60,
         "vectorSimilarity": 90.5,
@@ -419,7 +419,7 @@
       "candidate_id": "CAND_0011162",
       "rank": 3,
       "score": 0.7922,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10. Learned Hugging Face reranker: 69.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 67% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.75, notice 90d, last active 2026-05-10. Learned Hugging Face reranker: 69.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 56.4,
         "vectorSimilarity": 89.7,
@@ -452,7 +452,7 @@
       "candidate_id": "CAND_0055905",
       "rank": 4,
       "score": 0.7912,
-      "reasoning": "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 75% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 57.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior Machine Learning Engineer with 8.1 yrs in London; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 75% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.87, notice 30d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 57.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 65.8,
         "vectorSimilarity": 90.4,
@@ -485,7 +485,7 @@
       "candidate_id": "CAND_0081846",
       "rank": 5,
       "score": 0.79,
-      "reasoning": "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03. Learned Hugging Face reranker: 56.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Lead AI Engineer with 6.7 yrs in Jaipur, Rajasthan; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; review-informed evidence 76% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.73, notice 30d, last active 2026-05-03. Learned Hugging Face reranker: 56.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.8,
         "vectorSimilarity": 91.9,
@@ -518,7 +518,7 @@
       "candidate_id": "CAND_0030031",
       "rank": 6,
       "score": 0.7895,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 5.7 yrs in Trivandrum, Kerala; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.94, notice 30d, last active 2026-05-22. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.8,
         "vectorSimilarity": 89,
@@ -551,7 +551,7 @@
       "candidate_id": "CAND_0039838",
       "rank": 7,
       "score": 0.7874,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 4.9 yrs in Kochi, Kerala; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 67% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.80, notice 90d, last active 2026-04-21. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.5,
         "vectorSimilarity": 89.8,
@@ -584,7 +584,7 @@
       "candidate_id": "CAND_0008425",
       "rank": 8,
       "score": 0.7866,
-      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 73% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25. Learned Hugging Face reranker: 60.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Kolkata, West Bengal; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 73% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.66, notice 90d, last active 2026-04-25. Learned Hugging Face reranker: 60.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.9,
         "vectorSimilarity": 91,
@@ -617,7 +617,7 @@
       "candidate_id": "CAND_0032515",
       "rank": 9,
       "score": 0.7817,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Seattle; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 68% based on production proof, ranking depth, and role evidence; matches ranking, evaluation, milvus, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.54, notice 45d, last active 2026-05-14. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 58.3,
         "vectorSimilarity": 91.1,
@@ -650,7 +650,7 @@
       "candidate_id": "CAND_0068811",
       "rank": 10,
       "score": 0.7812,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 8.0 yrs in Pune, Maharashtra; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-05-21. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 53.6,
         "vectorSimilarity": 89.9,
@@ -683,7 +683,7 @@
       "candidate_id": "CAND_0006418",
       "rank": 11,
       "score": 0.7808,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.7 yrs in Gurgaon, Haryana; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.92, notice 60d, last active 2026-03-31. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 52.6,
         "vectorSimilarity": 90.4,
@@ -716,7 +716,7 @@
       "candidate_id": "CAND_0077285",
       "rank": 12,
       "score": 0.7788,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 5.5 yrs in Ahmedabad, Gujarat; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.56, notice 60d, last active 2026-05-03. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.9,
         "vectorSimilarity": 89.3,
@@ -749,7 +749,7 @@
       "candidate_id": "CAND_0041669",
       "rank": 13,
       "score": 0.7775,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06. Learned Hugging Face reranker: 69.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 8.0 yrs in Noida, Uttar Pradesh; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.77, notice 60d, last active 2026-04-06. Learned Hugging Face reranker: 69.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60.6,
         "vectorSimilarity": 89.5,
@@ -782,7 +782,7 @@
       "candidate_id": "CAND_0064326",
       "rank": 14,
       "score": 0.7775,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21. Learned Hugging Face reranker: 69.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Search Engineer with 7.6 yrs in Gurgaon, Haryana; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; review-informed evidence 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.94, notice 45d, last active 2026-05-21. Learned Hugging Face reranker: 69.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 52.1,
         "vectorSimilarity": 91.5,
@@ -815,7 +815,7 @@
       "candidate_id": "CAND_0046064",
       "rank": 15,
       "score": 0.7756,
-      "reasoning": "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 70% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26. Learned Hugging Face reranker: 58.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior NLP Engineer with 8.9 yrs in Coimbatore, Tamil Nadu; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 70% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.78, notice 30d, last active 2026-04-26. Learned Hugging Face reranker: 58.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.9,
         "vectorSimilarity": 91.3,
@@ -848,7 +848,7 @@
       "candidate_id": "CAND_0044883",
       "rank": 16,
       "score": 0.775,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 6.3 yrs in Berlin; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.84, notice 90d, last active 2026-05-07. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 54.1,
         "vectorSimilarity": 90.7,
@@ -881,7 +881,7 @@
       "candidate_id": "CAND_0011687",
       "rank": 17,
       "score": 0.773,
-      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10. Learned Hugging Face reranker: 59.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior NLP Engineer with 7.8 yrs in Indore, Madhya Pradesh; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.89, notice 15d, last active 2026-05-10. Learned Hugging Face reranker: 59.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.8,
         "vectorSimilarity": 91,
@@ -914,7 +914,7 @@
       "candidate_id": "CAND_0002025",
       "rank": 18,
       "score": 0.7729,
-      "reasoning": "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 69% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26. Learned Hugging Face reranker: 58.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior AI Engineer with 5.9 yrs in Trivandrum, Kerala; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 69% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.80, notice 30d, last active 2026-05-26. Learned Hugging Face reranker: 58.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60.2,
         "vectorSimilarity": 89.7,
@@ -947,7 +947,7 @@
       "candidate_id": "CAND_0041610",
       "rank": 19,
       "score": 0.7715,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14. Learned Hugging Face reranker: 71.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.7 yrs in Indore, Madhya Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-05-14. Learned Hugging Face reranker: 71.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48.1,
         "vectorSimilarity": 90.7,
@@ -980,7 +980,7 @@
       "candidate_id": "CAND_0027691",
       "rank": 20,
       "score": 0.771,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 63% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.68, notice 15d, last active 2026-03-31. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.4,
         "vectorSimilarity": 91,
@@ -1013,7 +1013,7 @@
       "candidate_id": "CAND_0080766",
       "rank": 21,
       "score": 0.7663,
-      "reasoning": "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 72% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09. Learned Hugging Face reranker: 54.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Staff Machine Learning Engineer with 8.8 yrs in Coimbatore, Tamil Nadu; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 72% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.66, notice 0d, last active 2026-04-09. Learned Hugging Face reranker: 54.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 61,
         "vectorSimilarity": 89.4,
@@ -1046,7 +1046,7 @@
       "candidate_id": "CAND_0018499",
       "rank": 22,
       "score": 0.7657,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; semantic fit 62% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 69% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13. Learned Hugging Face reranker: 56.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 7.2 yrs in Noida, Uttar Pradesh; semantic fit 62% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 69% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.61, notice 15d, last active 2026-05-13. Learned Hugging Face reranker: 56.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 62,
         "vectorSimilarity": 91.2,
@@ -1079,7 +1079,7 @@
       "candidate_id": "CAND_0039754",
       "rank": 23,
       "score": 0.7642,
-      "reasoning": "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 73% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14. Learned Hugging Face reranker: 55.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Strong fit Senior Applied Scientist with 16.2 yrs in Indore, Madhya Pradesh; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 73% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.81, notice 30d, last active 2026-05-14. Learned Hugging Face reranker: 55.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60.2,
         "vectorSimilarity": 90.9,
@@ -1112,7 +1112,7 @@
       "candidate_id": "CAND_0045250",
       "rank": 24,
       "score": 0.7631,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29. Learned Hugging Face reranker: 68.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 61% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.74, notice 15d, last active 2026-04-29. Learned Hugging Face reranker: 68.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.4,
         "vectorSimilarity": 88.9,
@@ -1145,7 +1145,7 @@
       "candidate_id": "CAND_0014440",
       "rank": 25,
       "score": 0.7616,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10. Learned Hugging Face reranker: 69.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.4 yrs in Chennai, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.64, notice 60d, last active 2026-05-10. Learned Hugging Face reranker: 69.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 49.9,
         "vectorSimilarity": 90.3,
@@ -1178,7 +1178,7 @@
       "candidate_id": "CAND_0098846",
       "rank": 26,
       "score": 0.7608,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 7.6 yrs in Indore, Madhya Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 62% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.62, notice 45d, last active 2026-04-23. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.7,
         "vectorSimilarity": 90.6,
@@ -1211,7 +1211,7 @@
       "candidate_id": "CAND_0005649",
       "rank": 27,
       "score": 0.7607,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14. Learned Hugging Face reranker: 65.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.4 yrs in Delhi, Delhi; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.57, notice 90d, last active 2026-04-14. Learned Hugging Face reranker: 65.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 54.1,
         "vectorSimilarity": 90.7,
@@ -1244,7 +1244,7 @@
       "candidate_id": "CAND_0083879",
       "rank": 28,
       "score": 0.7597,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17. Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 7.1 yrs in Noida, Uttar Pradesh; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, milvus from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.47, notice 30d, last active 2026-04-17. Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.1,
         "vectorSimilarity": 89.6,
@@ -1277,7 +1277,7 @@
       "candidate_id": "CAND_0050876",
       "rank": 29,
       "score": 0.7559,
-      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26. Learned Hugging Face reranker: 68.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Applied ML Engineer with 6.0 yrs in Kolkata, West Bengal; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 90d, last active 2026-05-26. Learned Hugging Face reranker: 68.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.6,
         "vectorSimilarity": 88,
@@ -1310,7 +1310,7 @@
       "candidate_id": "CAND_0033861",
       "rank": 30,
       "score": 0.7537,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; semantic fit 68% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 72% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently. Learned Hugging Face reranker: 55.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 8.0 yrs in Vizag, Andhra Pradesh; semantic fit 68% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 72% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and deployed systems. Redrob signals: response rate 0.16, notice 30d, last active 2026-02-16. Concern: profile has not been active recently. Learned Hugging Face reranker: 55.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 67.7,
         "vectorSimilarity": 90.6,
@@ -1345,7 +1345,7 @@
       "candidate_id": "CAND_0086022",
       "rank": 31,
       "score": 0.7529,
-      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15. Learned Hugging Face reranker: 57.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Applied Scientist with 5.3 yrs in Kolkata, West Bengal; semantic fit 61% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.55, notice 0d, last active 2026-04-15. Learned Hugging Face reranker: 57.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60.6,
         "vectorSimilarity": 90.8,
@@ -1378,7 +1378,7 @@
       "candidate_id": "CAND_0044222",
       "rank": 32,
       "score": 0.7525,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15. Learned Hugging Face reranker: 69.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 7.7 yrs in Vizag, Andhra Pradesh; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 60d, last active 2026-05-15. Learned Hugging Face reranker: 69.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.7,
         "vectorSimilarity": 89.5,
@@ -1411,7 +1411,7 @@
       "candidate_id": "CAND_0028793",
       "rank": 33,
       "score": 0.7518,
-      "reasoning": "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Search Engineer with 7.2 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.57, notice 120d, last active 2026-04-13. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.7,
         "vectorSimilarity": 89.9,
@@ -1446,7 +1446,7 @@
       "candidate_id": "CAND_0017960",
       "rank": 34,
       "score": 0.7516,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 7.7 yrs in Bangalore, Karnataka; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.72, notice 60d, last active 2026-04-27. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 53.8,
         "vectorSimilarity": 89.4,
@@ -1479,7 +1479,7 @@
       "candidate_id": "CAND_0018549",
       "rank": 35,
       "score": 0.7507,
-      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28. Learned Hugging Face reranker: 69.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Recommendation Systems Engineer with 6.8 yrs in Coimbatore, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.73, notice 60d, last active 2026-04-28. Learned Hugging Face reranker: 69.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 56.5,
         "vectorSimilarity": 88.9,
@@ -1512,7 +1512,7 @@
       "candidate_id": "CAND_0079387",
       "rank": 36,
       "score": 0.7502,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 6.9 yrs in Trivandrum, Kerala; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.81, notice 30d, last active 2026-04-25. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 46.6,
         "vectorSimilarity": 89.9,
@@ -1545,7 +1545,7 @@
       "candidate_id": "CAND_0046525",
       "rank": 37,
       "score": 0.7501,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 67% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23. Learned Hugging Face reranker: 58.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 6.1 yrs in Pune, Maharashtra; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 67% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.88, notice 60d, last active 2026-05-23. Learned Hugging Face reranker: 58.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.6,
         "vectorSimilarity": 90.9,
@@ -1578,7 +1578,7 @@
       "candidate_id": "CAND_0024620",
       "rank": 38,
       "score": 0.7496,
-      "reasoning": "Good but not clean-cut fit AI Engineer with 5.9 yrs in New York; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit AI Engineer with 5.9 yrs in New York; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 45d, last active 2026-04-12. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 53.5,
         "vectorSimilarity": 90,
@@ -1611,7 +1611,7 @@
       "candidate_id": "CAND_0070202",
       "rank": 39,
       "score": 0.7483,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 5.1 yrs in Jaipur, Rajasthan; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.60, notice 90d, last active 2026-05-20. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.1,
         "vectorSimilarity": 90.1,
@@ -1644,7 +1644,7 @@
       "candidate_id": "CAND_0010685",
       "rank": 40,
       "score": 0.748,
-      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit NLP Engineer with 6.7 yrs in Kolkata, West Bengal; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 63% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, faiss, elasticsearch from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.83, notice 30d, last active 2026-03-16. Learned Hugging Face reranker: 68.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48.1,
         "vectorSimilarity": 90.5,
@@ -1677,7 +1677,7 @@
       "candidate_id": "CAND_0049538",
       "rank": 41,
       "score": 0.7473,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.8 yrs in Jaipur, Rajasthan; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.72, notice 30d, last active 2026-05-27. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 47.9,
         "vectorSimilarity": 89.6,
@@ -1710,7 +1710,7 @@
       "candidate_id": "CAND_0042029",
       "rank": 42,
       "score": 0.7461,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13. Learned Hugging Face reranker: 65.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 6.5 yrs in Delhi, Delhi; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 63% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 45d, last active 2026-04-13. Learned Hugging Face reranker: 65.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.5,
         "vectorSimilarity": 90.2,
@@ -1743,7 +1743,7 @@
       "candidate_id": "CAND_0078002",
       "rank": 43,
       "score": 0.7446,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21. Learned Hugging Face reranker: 67.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 6.3 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.86, notice 60d, last active 2026-04-21. Learned Hugging Face reranker: 67.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.6,
         "vectorSimilarity": 88.4,
@@ -1776,7 +1776,7 @@
       "candidate_id": "CAND_0075574",
       "rank": 44,
       "score": 0.7444,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17. Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 5.7 yrs in Bangalore, Karnataka; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 60% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.58, notice 60d, last active 2026-05-17. Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 53.5,
         "vectorSimilarity": 90.7,
@@ -1809,7 +1809,7 @@
       "candidate_id": "CAND_0013613",
       "rank": 45,
       "score": 0.7441,
-      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 4.7 yrs in Singapore; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Machine Learning Engineer with 4.7 yrs in Singapore; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.73, notice 60d, last active 2026-03-23. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.7,
         "vectorSimilarity": 88.6,
@@ -1842,7 +1842,7 @@
       "candidate_id": "CAND_0081686",
       "rank": 46,
       "score": 0.7432,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 68.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 6.0 yrs in Austin; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.91, notice 60d, last active 2026-04-25. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 68.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.8,
         "vectorSimilarity": 90.5,
@@ -1875,7 +1875,7 @@
       "candidate_id": "CAND_0000031",
       "rank": 47,
       "score": 0.7429,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24. Learned Hugging Face reranker: 69.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.0 yrs in Hyderabad, Telangana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 60d, last active 2026-05-24. Learned Hugging Face reranker: 69.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57,
         "vectorSimilarity": 88.6,
@@ -1908,7 +1908,7 @@
       "candidate_id": "CAND_0005260",
       "rank": 48,
       "score": 0.7422,
-      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 67% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10. Learned Hugging Face reranker: 56.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior NLP Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 67% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes deployed systems and A/B testing. Redrob signals: response rate 0.86, notice 60d, last active 2026-05-10. Learned Hugging Face reranker: 56.1% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 67.2,
         "vectorSimilarity": 90.7,
@@ -1941,7 +1941,7 @@
       "candidate_id": "CAND_0066999",
       "rank": 49,
       "score": 0.7399,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05. Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.9 yrs in Delhi, Delhi; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.63, notice 15d, last active 2026-04-05. Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 42.6,
         "vectorSimilarity": 89.7,
@@ -1974,7 +1974,7 @@
       "candidate_id": "CAND_0055992",
       "rank": 50,
       "score": 0.7391,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 16.9 yrs in Sydney; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.72, notice 60d, last active 2026-03-28. Learned Hugging Face reranker: 69.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.5,
         "vectorSimilarity": 90.4,
@@ -2007,7 +2007,7 @@
       "candidate_id": "CAND_0039383",
       "rank": 51,
       "score": 0.7387,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19. Learned Hugging Face reranker: 66.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.1 yrs in Gurgaon, Haryana; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.61, notice 90d, last active 2026-03-19. Learned Hugging Face reranker: 66.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.1,
         "vectorSimilarity": 89.6,
@@ -2040,7 +2040,7 @@
       "candidate_id": "CAND_0011432",
       "rank": 52,
       "score": 0.7383,
-      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16. Learned Hugging Face reranker: 65.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Data Scientist with 7.6 yrs in Chennai, Tamil Nadu; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.67, notice 60d, last active 2026-03-16. Learned Hugging Face reranker: 65.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.8,
         "vectorSimilarity": 89.1,
@@ -2073,7 +2073,7 @@
       "candidate_id": "CAND_0042100",
       "rank": 53,
       "score": 0.7382,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.3 yrs in Singapore; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches ranking, elasticsearch, fine-tuning from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.87, notice 90d, last active 2026-03-23. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 52.1,
         "vectorSimilarity": 90,
@@ -2106,7 +2106,7 @@
       "candidate_id": "CAND_0053695",
       "rank": 54,
       "score": 0.7381,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 5.8 yrs in Bhubaneswar, Odisha; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 15d, last active 2026-04-02. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.9,
         "vectorSimilarity": 90.7,
@@ -2139,7 +2139,7 @@
       "candidate_id": "CAND_0022812",
       "rank": 55,
       "score": 0.7375,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.5 yrs in Coimbatore, Tamil Nadu; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 64% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.79, notice 60d, last active 2026-03-19. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.2,
         "vectorSimilarity": 90.2,
@@ -2172,7 +2172,7 @@
       "candidate_id": "CAND_0081053",
       "rank": 56,
       "score": 0.7375,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31. Learned Hugging Face reranker: 68.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 5.4 yrs in Chandigarh, Chandigarh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, faiss, qdrant from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.83, notice 90d, last active 2026-03-31. Learned Hugging Face reranker: 68.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48.9,
         "vectorSimilarity": 88.6,
@@ -2205,7 +2205,7 @@
       "candidate_id": "CAND_0072660",
       "rank": 57,
       "score": 0.7368,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 68.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.1 yrs in Berlin; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.53, notice 30d, last active 2026-05-24. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 68.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 47.8,
         "vectorSimilarity": 90.5,
@@ -2238,7 +2238,7 @@
       "candidate_id": "CAND_0051292",
       "rank": 58,
       "score": 0.735,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12. Learned Hugging Face reranker: 68.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.2 yrs in Trivandrum, Kerala; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.52, notice 30d, last active 2026-04-12. Learned Hugging Face reranker: 68.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.2,
         "vectorSimilarity": 90.4,
@@ -2271,7 +2271,7 @@
       "candidate_id": "CAND_0099401",
       "rank": 59,
       "score": 0.7345,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 62% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27. Learned Hugging Face reranker: 68.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 7.7 yrs in Ahmedabad, Gujarat; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 62% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.42, notice 90d, last active 2026-05-27. Learned Hugging Face reranker: 68.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 47.4,
         "vectorSimilarity": 89.8,
@@ -2304,7 +2304,7 @@
       "candidate_id": "CAND_0041568",
       "rank": 60,
       "score": 0.7342,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Sydney; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 56% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.52, notice 90d, last active 2026-04-06. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.4,
         "vectorSimilarity": 90.5,
@@ -2337,7 +2337,7 @@
       "candidate_id": "CAND_0043228",
       "rank": 61,
       "score": 0.7332,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22. Learned Hugging Face reranker: 67.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 6.8 yrs in Chennai, Tamil Nadu; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.41, notice 30d, last active 2026-05-22. Learned Hugging Face reranker: 67.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 49.5,
         "vectorSimilarity": 90.8,
@@ -2370,7 +2370,7 @@
       "candidate_id": "CAND_0061265",
       "rank": 62,
       "score": 0.7324,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days). Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.6 yrs in Delhi, Delhi; semantic fit 53% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and ownership. Redrob signals: response rate 0.94, notice 120d, last active 2026-03-25. Concern: long notice period (120 days). Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 53,
         "vectorSimilarity": 91.2,
@@ -2405,7 +2405,7 @@
       "candidate_id": "CAND_0088025",
       "rank": 63,
       "score": 0.7312,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; semantic fit 64% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14. Learned Hugging Face reranker: 56.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 8.6 yrs in Jaipur, Rajasthan; semantic fit 64% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.83, notice 90d, last active 2026-05-14. Learned Hugging Face reranker: 56.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.3,
         "vectorSimilarity": 91,
@@ -2438,7 +2438,7 @@
       "candidate_id": "CAND_0005538",
       "rank": 64,
       "score": 0.731,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17. Learned Hugging Face reranker: 54.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 5.9 yrs in Kolkata, West Bengal; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.81, notice 90d, last active 2026-05-17. Learned Hugging Face reranker: 54.3% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 45.6,
         "vectorSimilarity": 88.9,
@@ -2471,7 +2471,7 @@
       "candidate_id": "CAND_0052328",
       "rank": 65,
       "score": 0.7308,
-      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Recommendation Systems Engineer with 6.5 yrs in Pune, Maharashtra; semantic fit 43% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.79, notice 30d, last active 2026-03-31. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 42.9,
         "vectorSimilarity": 89.8,
@@ -2504,7 +2504,7 @@
       "candidate_id": "CAND_0015528",
       "rank": 66,
       "score": 0.7305,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 87% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16. Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 87% against the Senior AI Engineer job embedding; review-informed evidence 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.53, notice 30d, last active 2026-04-16. Learned Hugging Face reranker: 69.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.2,
         "vectorSimilarity": 86.9,
@@ -2537,7 +2537,7 @@
       "candidate_id": "CAND_0083307",
       "rank": 67,
       "score": 0.73,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; recruiter-learning fit 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Vizag, Andhra Pradesh; semantic fit 54% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 92% against the Senior AI Engineer job embedding; review-informed evidence 58% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership. Redrob signals: response rate 0.70, notice 120d, last active 2026-03-21. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 54.1,
         "vectorSimilarity": 91.8,
@@ -2572,7 +2572,7 @@
       "candidate_id": "CAND_0065195",
       "rank": 68,
       "score": 0.7299,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24. Learned Hugging Face reranker: 69.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.1 yrs in Kolkata, West Bengal; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.80, notice 45d, last active 2026-05-24. Learned Hugging Face reranker: 69.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.6,
         "vectorSimilarity": 90.2,
@@ -2605,7 +2605,7 @@
       "candidate_id": "CAND_0061655",
       "rank": 69,
       "score": 0.7298,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 4.6 yrs in Jaipur, Rajasthan; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 54% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, qdrant from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.88, notice 15d, last active 2026-05-21. Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 45.4,
         "vectorSimilarity": 89.2,
@@ -2638,7 +2638,7 @@
       "candidate_id": "CAND_0007412",
       "rank": 70,
       "score": 0.7297,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days). Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 7.4 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 61% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, milvus from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.76, notice 120d, last active 2026-04-19. Concern: long notice period (120 days). Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48.1,
         "vectorSimilarity": 89.6,
@@ -2673,7 +2673,7 @@
       "candidate_id": "CAND_0065878",
       "rank": 71,
       "score": 0.7294,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.8 yrs in Trivandrum, Kerala; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.48, notice 15d, last active 2026-03-23. Learned Hugging Face reranker: 66.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.7,
         "vectorSimilarity": 90.2,
@@ -2706,7 +2706,7 @@
       "candidate_id": "CAND_0030953",
       "rank": 72,
       "score": 0.7286,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11. Learned Hugging Face reranker: 67.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.8 yrs in Chennai, Tamil Nadu; semantic fit 58% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.63, notice 45d, last active 2026-04-11. Learned Hugging Face reranker: 67.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 58.3,
         "vectorSimilarity": 89.3,
@@ -2739,7 +2739,7 @@
       "candidate_id": "CAND_0047721",
       "rank": 73,
       "score": 0.7285,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05. Learned Hugging Face reranker: 66.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 7.0 yrs in Coimbatore, Tamil Nadu; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.49, notice 90d, last active 2026-04-05. Learned Hugging Face reranker: 66.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.4,
         "vectorSimilarity": 89.3,
@@ -2772,7 +2772,7 @@
       "candidate_id": "CAND_0010257",
       "rank": 74,
       "score": 0.7284,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days). Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.5 yrs in Noida, Uttar Pradesh; semantic fit 49% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 64% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.72, notice 120d, last active 2026-05-13. Concern: long notice period (120 days). Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 49.5,
         "vectorSimilarity": 88.6,
@@ -2807,7 +2807,7 @@
       "candidate_id": "CAND_0076251",
       "rank": 75,
       "score": 0.7283,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.6 yrs in Bhubaneswar, Odisha; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.51, notice 60d, last active 2026-04-15. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 7.6 yrs in Bhubaneswar, Odisha; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 52% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.51, notice 60d, last active 2026-04-15. Learned Hugging Face reranker: 70.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.1,
         "vectorSimilarity": 90.5,
@@ -2840,7 +2840,7 @@
       "candidate_id": "CAND_0096142",
       "rank": 76,
       "score": 0.727,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days). Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.0 yrs in Hyderabad, Telangana; semantic fit 55% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.84, notice 120d, last active 2026-05-21. Concern: long notice period (120 days). Learned Hugging Face reranker: 66.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.1,
         "vectorSimilarity": 88,
@@ -2875,7 +2875,7 @@
       "candidate_id": "CAND_0095528",
       "rank": 77,
       "score": 0.7264,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03. Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.3 yrs in Indore, Madhya Pradesh; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 60% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.55, notice 45d, last active 2026-05-03. Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 49.5,
         "vectorSimilarity": 89.6,
@@ -2908,7 +2908,7 @@
       "candidate_id": "CAND_0009024",
       "rank": 78,
       "score": 0.7258,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; recruiter-learning fit 51% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.46, notice 30d, last active 2026-04-09. Learned Hugging Face reranker: 68.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 5.2 yrs in Chennai, Tamil Nadu; semantic fit 56% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; review-informed evidence 51% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.46, notice 30d, last active 2026-04-09. Learned Hugging Face reranker: 68.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 55.8,
         "vectorSimilarity": 86.5,
@@ -2941,7 +2941,7 @@
       "candidate_id": "CAND_0052682",
       "rank": 79,
       "score": 0.7252,
-      "reasoning": "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit NLP Engineer with 6.6 yrs in Vizag, Andhra Pradesh; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.88, notice 30d, last active 2026-03-28. Learned Hugging Face reranker: 66.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.1,
         "vectorSimilarity": 88.1,
@@ -2974,7 +2974,7 @@
       "candidate_id": "CAND_0091909",
       "rank": 80,
       "score": 0.7246,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18. Learned Hugging Face reranker: 67.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 6.9 yrs in Bangalore, Karnataka; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 53% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.65, notice 45d, last active 2026-03-18. Learned Hugging Face reranker: 67.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.7,
         "vectorSimilarity": 88.1,
@@ -3007,7 +3007,7 @@
       "candidate_id": "CAND_0078042",
       "rank": 81,
       "score": 0.7244,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.7 yrs in Dubai; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, opensearch from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 30d, last active 2026-04-24. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 4.7 yrs in Dubai; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, opensearch from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.91, notice 30d, last active 2026-04-24. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 67.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48,
         "vectorSimilarity": 89.9,
@@ -3040,7 +3040,7 @@
       "candidate_id": "CAND_0037944",
       "rank": 82,
       "score": 0.7239,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22. Learned Hugging Face reranker: 65.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 4.9 yrs in Jaipur, Rajasthan; semantic fit 57% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 59% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.42, notice 30d, last active 2026-03-22. Learned Hugging Face reranker: 65.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 57.1,
         "vectorSimilarity": 90.2,
@@ -3073,7 +3073,7 @@
       "candidate_id": "CAND_0093547",
       "rank": 83,
       "score": 0.7238,
-      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10. Learned Hugging Face reranker: 59.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior Machine Learning Engineer with 2.9 yrs in Coimbatore, Tamil Nadu; semantic fit 66% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.75, notice 60d, last active 2026-04-10. Learned Hugging Face reranker: 59.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 66.3,
         "vectorSimilarity": 90.9,
@@ -3106,7 +3106,7 @@
       "candidate_id": "CAND_0070398",
       "rank": 84,
       "score": 0.7231,
-      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days). Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Machine Learning Engineer with 7.2 yrs in Kochi, Kerala; semantic fit 52% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.60, notice 120d, last active 2026-04-14. Concern: long notice period (120 days). Learned Hugging Face reranker: 67.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 52.1,
         "vectorSimilarity": 90.1,
@@ -3141,7 +3141,7 @@
       "candidate_id": "CAND_0020877",
       "rank": 85,
       "score": 0.7218,
-      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.1 yrs in Gurgaon, Haryana; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, faiss from the Senior AI Engineer JD; production deployment proof is thin. Redrob signals: response rate 0.66, notice 60d, last active 2026-04-03. Learned Hugging Face reranker: 68.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Applied ML Engineer with 5.1 yrs in Gurgaon, Haryana; semantic fit 47% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, faiss from the Senior AI Engineer JD; production deployment proof is thin. Redrob signals: response rate 0.66, notice 60d, last active 2026-04-03. Learned Hugging Face reranker: 68.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 47,
         "vectorSimilarity": 89.6,
@@ -3174,7 +3174,7 @@
       "candidate_id": "CAND_0012957",
       "rank": 86,
       "score": 0.7215,
-      "reasoning": "Included as a lower-confidence fit Search Engineer with 4.9 yrs in Chennai, Tamil Nadu; semantic fit 59% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 120d, last active 2026-05-02. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Search Engineer with 4.9 yrs in Chennai, Tamil Nadu; semantic fit 59% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 56% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, ranking from the Senior AI Engineer JD; production proof includes ownership and A/B testing. Redrob signals: response rate 0.67, notice 120d, last active 2026-05-02. Concern: long notice period (120 days). Learned Hugging Face reranker: 68.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 58.9,
         "vectorSimilarity": 89.5,
@@ -3209,7 +3209,7 @@
       "candidate_id": "CAND_0053591",
       "rank": 87,
       "score": 0.7214,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; semantic fit 44% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 57% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 65.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 5.3 yrs in Toronto; semantic fit 44% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 57% based on production proof, ranking depth, and role evidence; matches embeddings, ranking, evaluation, faiss from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.81, notice 60d, last active 2026-05-17. Concern: location or availability needs recruiter confirmation. Learned Hugging Face reranker: 65.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 43.7,
         "vectorSimilarity": 90.1,
@@ -3242,7 +3242,7 @@
       "candidate_id": "CAND_0041611",
       "rank": 88,
       "score": 0.7211,
-      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate. Learned Hugging Face reranker: 57.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Staff Machine Learning Engineer with 6.4 yrs in Austin; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 68% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes ownership and team or project leadership. Redrob signals: response rate 0.07, notice 30d, last active 2025-12-03. Concern: low recruiter response rate. Learned Hugging Face reranker: 57.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 65.4,
         "vectorSimilarity": 91.4,
@@ -3278,7 +3278,7 @@
       "candidate_id": "CAND_0007411",
       "rank": 89,
       "score": 0.7193,
-      "reasoning": "Included as a lower-confidence fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; semantic fit 63% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate. Learned Hugging Face reranker: 59.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Machine Learning Engineer with 8.0 yrs in Kochi, Kerala; semantic fit 63% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation, ndcg from the Senior AI Engineer JD; production proof includes deployed systems and ownership. Redrob signals: response rate 0.12, notice 15d, last active 2025-12-02. Concern: low recruiter response rate. Learned Hugging Face reranker: 59.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 63.5,
         "vectorSimilarity": 90.9,
@@ -3314,7 +3314,7 @@
       "candidate_id": "CAND_0081852",
       "rank": 90,
       "score": 0.7192,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.9 yrs in Delhi, Delhi; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, milvus from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.44, notice 45d, last active 2026-05-23. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 5.9 yrs in Delhi, Delhi; semantic fit 50% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 52% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, evaluation, milvus from the Senior AI Engineer JD; production proof includes production systems and operational monitoring. Redrob signals: response rate 0.44, notice 45d, last active 2026-05-23. Learned Hugging Face reranker: 67.2% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 50.2,
         "vectorSimilarity": 89.3,
@@ -3347,7 +3347,7 @@
       "candidate_id": "CAND_0044855",
       "rank": 91,
       "score": 0.7182,
-      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24. Learned Hugging Face reranker: 65.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Data Scientist with 6.6 yrs in Coimbatore, Tamil Nadu; semantic fit 51% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 54% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes A/B testing. Redrob signals: response rate 0.57, notice 60d, last active 2026-04-24. Learned Hugging Face reranker: 65.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 51.3,
         "vectorSimilarity": 90.3,
@@ -3380,7 +3380,7 @@
       "candidate_id": "CAND_0058688",
       "rank": 92,
       "score": 0.7182,
-      "reasoning": "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; semantic fit 42% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; recruiter-learning fit 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28. Learned Hugging Face reranker: 66.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit AI Engineer with 6.7 yrs in Berlin; semantic fit 42% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 89% against the Senior AI Engineer job embedding; review-informed evidence 55% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, milvus from the Senior AI Engineer JD; production proof includes production systems and A/B testing. Redrob signals: response rate 0.74, notice 15d, last active 2026-03-28. Learned Hugging Face reranker: 66.4% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 41.5,
         "vectorSimilarity": 88.6,
@@ -3413,7 +3413,7 @@
       "candidate_id": "CAND_0006567",
       "rank": 93,
       "score": 0.7128,
-      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03. Learned Hugging Face reranker: 55.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Good but not clean-cut fit Senior AI Engineer with 7.9 yrs in Noida, Uttar Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 60% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes shipping history and ownership. Redrob signals: response rate 0.79, notice 60d, last active 2026-05-03. Learned Hugging Face reranker: 55.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 37.5,
         "vectorSimilarity": 89.7,
@@ -3446,7 +3446,7 @@
       "candidate_id": "CAND_0094759",
       "rank": 94,
       "score": 0.7116,
-      "reasoning": "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate. Learned Hugging Face reranker: 58.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Lead AI Engineer with 8.6 yrs in Mumbai, Maharashtra; semantic fit 65% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 65% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes team or project leadership and A/B testing. Redrob signals: response rate 0.11, notice 30d, last active 2026-01-08. Concern: low recruiter response rate. Learned Hugging Face reranker: 58.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 64.7,
         "vectorSimilarity": 91,
@@ -3482,7 +3482,7 @@
       "candidate_id": "CAND_0092278",
       "rank": 95,
       "score": 0.7039,
-      "reasoning": "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; recruiter-learning fit 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate. Learned Hugging Face reranker: 55.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior NLP Engineer with 6.8 yrs in Pune, Maharashtra; semantic fit 60% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 91% against the Senior AI Engineer job embedding; review-informed evidence 66% based on production proof, ranking depth, and role evidence; matches embeddings, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.07, notice 90d, last active 2025-11-07. Concern: low recruiter response rate. Learned Hugging Face reranker: 55.8% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 60.2,
         "vectorSimilarity": 90.9,
@@ -3518,7 +3518,7 @@
       "candidate_id": "CAND_0030468",
       "rank": 96,
       "score": 0.6979,
-      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03. Learned Hugging Face reranker: 53.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 5.4 yrs in Indore, Madhya Pradesh; semantic fit 38% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 61% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, milvus, opensearch from the Senior AI Engineer JD; production proof includes shipping history and team or project leadership. Redrob signals: response rate 0.78, notice 45d, last active 2026-05-03. Learned Hugging Face reranker: 53.5% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 37.7,
         "vectorSimilarity": 90,
@@ -3551,7 +3551,7 @@
       "candidate_id": "CAND_0037980",
       "rank": 97,
       "score": 0.6934,
-      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; semantic fit 41% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28. Learned Hugging Face reranker: 55.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Senior Applied Scientist with 9.0 yrs in Kolkata, West Bengal; semantic fit 41% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 90% against the Senior AI Engineer job embedding; review-informed evidence 56% based on production proof, ranking depth, and role evidence; matches retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and shipping history. Redrob signals: response rate 0.63, notice 0d, last active 2026-03-28. Learned Hugging Face reranker: 55.0% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 41.3,
         "vectorSimilarity": 89.7,
@@ -3584,7 +3584,7 @@
       "candidate_id": "CAND_0008978",
       "rank": 98,
       "score": 0.6667,
-      "reasoning": "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; recruiter-learning fit 54% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13. Learned Hugging Face reranker: 47.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit Junior ML Engineer with 6.7 yrs in Pune, Maharashtra; semantic fit 46% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 86% against the Senior AI Engineer job embedding; review-informed evidence 54% based on production proof, ranking depth, and role evidence; matches python, embeddings, ranking, faiss from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.29, notice 90d, last active 2026-04-13. Learned Hugging Face reranker: 47.9% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 46.3,
         "vectorSimilarity": 86,
@@ -3617,7 +3617,7 @@
       "candidate_id": "CAND_0092255",
       "rank": 99,
       "score": 0.6626,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07. Learned Hugging Face reranker: 46.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit ML Engineer with 5.2 yrs in Noida, Uttar Pradesh; semantic fit 48% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 56% based on production proof, ranking depth, and role evidence; matches python, retrieval, ranking, evaluation from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.38, notice 60d, last active 2026-05-07. Learned Hugging Face reranker: 46.6% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 48.5,
         "vectorSimilarity": 88.4,
@@ -3650,7 +3650,7 @@
       "candidate_id": "CAND_0076482",
       "rank": 100,
       "score": 0.6593,
-      "reasoning": "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; recruiter-learning fit 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06. Learned Hugging Face reranker: 45.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
+      "reasoning": "Included as a lower-confidence fit ML Engineer with 6.6 yrs in Austin; semantic fit 45% across retrieval, ranking, evaluation, and production AI concepts; vector similarity 88% against the Senior AI Engineer job embedding; review-informed evidence 53% based on production proof, ranking depth, and role evidence; matches python, embeddings, retrieval, opensearch from the Senior AI Engineer JD; production proof includes production systems and platform work. Redrob signals: response rate 0.86, notice 60d, last active 2026-03-06. Learned Hugging Face reranker: 45.7% fit from shikharshahi/sifter-redrob-reranker; blended at 30% weight.",
       "score_breakdown": {
         "semanticFit": 45.4,
         "vectorSimilarity": 87.7,
@@ -3689,7 +3689,7 @@
       "maybe": 58,
       "not_fit": 76
     },
-    "limitation": "This is human-reviewed project validation, not a hidden Redrob ground-truth leaderboard.",
+    "limitation": "This is project-created human-reviewed validation, not a hidden Redrob ground-truth leaderboard or independent multi-recruiter panel.",
     "headline": {
       "best_model": "sifter_hybrid_ranker",
       "best_model_selection": "highest balanced score: 45% Spearman, 35% NDCG@25, 20% Top-50 strong-fit recall",

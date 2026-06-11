@@ -33,6 +33,28 @@ Sifter is a full-pool, explainable AI hiring ranker that processes all `100,000`
 | Sifter lift over keyword-only | `1.36x` |
 | Fine-tuned model validation Spearman | `0.7526` |
 
+## Metric Reconciliation
+
+The two Spearman values are not conflicting claims:
+
+| Metric | Scope | Value |
+| --- | --- | ---: |
+| Fine-tuned model Spearman | Hugging Face reranker alone, measured on its reviewed validation split | `0.7526` |
+| Sifter system Spearman | Full hybrid ranker, measured on the 180-candidate reviewed validation set | `0.7989` |
+
+The first number answers: "Did the trained model learn a useful job-candidate fit signal?" The second answers: "Does the complete Sifter ranking system agree with reviewed labels?"
+
+## Reviewed-Set Ablation
+
+| Signal | Balanced Score | Spearman | NDCG@25 | Top-25 Strong-Fit Recall |
+| --- | ---: | ---: | ---: | ---: |
+| Keyword baseline | `0.5939` | `0.5218` | `0.7155` | `30.4%` |
+| Behavioral shortcut | `0.6380` | `0.4723` | `0.8553` | `41.3%` |
+| Production evidence | `0.7002` | `0.6327` | `0.8268` | `41.3%` |
+| Sifter hybrid ranker | `0.8002` | `0.7989` | `0.8740` | `41.3%` |
+
+This makes the baseline comparison inspectable: Sifter does not only claim to beat keyword filters; it records the reviewed-set comparison and ships the script that generates it.
+
 ## What Makes It Different
 
 Most hiring demos stop at “score + table.” Sifter has four extra layers:
@@ -40,7 +62,7 @@ Most hiring demos stop at “score + table.” Sifter has four extra layers:
 1. **Data-first design:** the Redrob dataset was profiled before ranking logic was finalized.
 2. **Scale-first execution:** the 100,000-candidate file is ranked through batch tournament processing instead of pretending a browser should load everything raw.
 3. **Trust-first output:** every candidate has an exact reason, evidence, concerns, and score components.
-4. **Learning loop:** recruiter-reviewed labels train a Hugging Face reranker, and recruiter feedback in the UI is structured as strong fit / maybe / not fit.
+4. **Review-informed loop:** recruiter-reviewed labels train a Hugging Face reranker, and recruiter feedback in the UI is structured as strong fit / maybe / not fit for future training.
 
 ## Bias And Fairness Position
 
@@ -88,5 +110,4 @@ python docs/dataset-analysis/validate_sifter_review_set.py
 
 ## Remaining Honest Limitation
 
-The only thing that would make the evidence stronger is an independent Redrob/recruiter-labeled hidden holdout set. Since the challenge does not provide one, Sifter includes its own transparent human-reviewed validation set and clearly labels it as project validation, not an official leaderboard.
-
+The only thing that would make the evidence stronger is an independent Redrob/recruiter-labeled hidden holdout set with multiple annotators. Since the challenge does not provide one, Sifter includes its own transparent human-reviewed validation set and clearly labels it as project validation, not an official leaderboard.

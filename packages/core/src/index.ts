@@ -662,7 +662,7 @@ export function createRedrobEvaluationReport(candidates: RedrobCandidate[], rows
       {
         decision: "Let ranking improve from recruiter review behavior.",
         dataPoint: "Great recruiters reward production proof, role-specific depth, and evaluation discipline more than raw activity or keyword density.",
-        implementation: "The score now includes a recruiterLearning component, and the UI captures per-candidate recruiter feedback locally for future preference weighting.",
+        implementation: "The score now includes a review-informed evidence component, and the UI captures per-candidate recruiter feedback locally for future preference weighting.",
       },
     ],
   };
@@ -1172,7 +1172,7 @@ function buildRedrobReasoning(scored: RedrobScoreDetails, rank: number): string 
     `${profile.current_title || "Candidate"} with ${profile.years_of_experience.toFixed(1)} yrs in ${profile.location || profile.country || "listed location"}`,
     `semantic fit ${(components.semanticFit * 100).toFixed(0)}% across retrieval, ranking, evaluation, and production AI concepts`,
     `vector similarity ${(components.vectorSimilarity * 100).toFixed(0)}% against the Senior AI Engineer job embedding`,
-    `recruiter-learning fit ${(components.recruiterLearning * 100).toFixed(0)}% based on production proof, ranking depth, and role evidence`,
+    `review-informed evidence ${(components.recruiterLearning * 100).toFixed(0)}% based on production proof, ranking depth, and role evidence`,
     evidence.coreHits.length
       ? `matches ${evidence.coreHits.slice(0, 4).join(", ")} from the Senior AI Engineer JD`
       : evidence.strongestSkill

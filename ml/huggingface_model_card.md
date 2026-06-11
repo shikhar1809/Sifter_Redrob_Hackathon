@@ -69,10 +69,10 @@ Current blend in the Sifter backend:
 30% learned reranker score
 ```
 
-Default rerank scope:
+Current Redrob demo rerank scope:
 
 ```text
-top 25 finalist candidates
+top 100 finalist candidates
 ```
 
 ## Training Data

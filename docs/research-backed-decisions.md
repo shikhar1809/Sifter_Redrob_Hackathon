@@ -92,11 +92,11 @@ https://arxiv.org/abs/1603.09320
 
 **Production plan:** Move global candidate search to an indexed backend using BM25 plus embeddings and an ANN index such as HNSW/FAISS-style retrieval.
 
-## Decision 4b: Learn From Recruiter Feedback
+## Decision 4b: Use Review-Informed Evidence And Prepare A Feedback Loop
 
 **Product evidence:** Recruiters do not only want a one-time rank. They want to mark "strong fit", "maybe", or "not fit" and have the system get sharper from those review decisions.
 
-**Implementation today:** Sifter includes a recruiter-learning score in the hybrid ranker and local feedback buttons in the candidate info dialog. Those judgments are stored locally so the product can adapt the recruiter review experience without sending candidate feedback to a hosted service.
+**Implementation today:** Sifter includes a review-informed evidence score in the hybrid ranker. It rewards the profile patterns that appeared repeatedly in reviewed strong fits: production proof, ranking/evaluation depth, role evidence, vector fit, and realistic logistics. The UI also includes local feedback buttons in the candidate info dialog. Those judgments are stored locally for future training and review workflows; they do not currently retrain the model instantly inside the browser.
 
 **Production plan:** Sync feedback to a team workspace, learn per-role weight adjustments from interview/hire/reject outcomes, and keep an audit log showing how feedback changed future scoring.
 
@@ -167,7 +167,7 @@ The generated report includes top-100 overlap, average score, average semantic f
 
 **Implementation:** `docs/dataset-analysis/validate_sifter_review_set.py` compares Sifter against keyword-only, behavior-only, and production-evidence baselines. It reports Spearman, NDCG@25, Top-K strong-fit recall, and a balanced validation score.
 
-**Current result:** On the reviewed set, Sifter reaches `0.7989` Spearman, `0.8740` NDCG@25, and `1.36x` stronger Top-25 strong-fit recall than keyword-only matching.
+**Current result:** On the reviewed set, Sifter reaches `0.7989` Spearman, `0.8740` NDCG@25, and `1.36x` stronger Top-25 strong-fit recall than keyword-only matching. The standalone Hugging Face reranker has a separate `0.7526` Spearman on its own reviewed validation split; that number measures the model alone, not the full hybrid system.
 
 **Limit:** This is a human-reviewed project validation set, not a hidden official Redrob leaderboard. It is still stronger evidence than claiming the shortlist is good without measurement.
 
@@ -182,7 +182,7 @@ Sifter **does** claim:
 
 - Full `100,000` candidate processing.
 - CPU-only, network-off ranking for the challenge.
-- Hybrid semantic, vector, recruiter-learning, and structured scoring.
+- Hybrid semantic, vector, review-informed, and structured scoring.
 - A fine-tuned Hugging Face reward/reranker model trained on reviewed Redrob examples.
 - A live Hugging Face Docker/FastAPI Space used by the backend finalist-reranking path.
 - Human-reviewed validation against keyword-only and behavior-only baselines.

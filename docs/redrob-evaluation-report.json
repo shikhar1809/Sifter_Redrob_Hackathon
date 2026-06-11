@@ -114,7 +114,7 @@
     {
       "decision": "Let ranking improve from recruiter review behavior.",
       "dataPoint": "Great recruiters reward production proof, role-specific depth, and evaluation discipline more than raw activity or keyword density.",
-      "implementation": "The score now includes a recruiterLearning component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
+      "implementation": "The score now includes a review-informed evidence component, and the UI captures per-candidate recruiter feedback locally for future preference weighting."
     }
   ]
 }

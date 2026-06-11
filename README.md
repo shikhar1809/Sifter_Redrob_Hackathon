@@ -58,6 +58,21 @@ Latest reviewed-model run:
 
 Layman meaning: the model has started learning from recruiter-style judgment, not just from hand-written rules. `0.7526` Spearman means the model's ranking order now agrees strongly with the reviewed labels.
 
+## Metric Reconciliation
+
+Two Spearman numbers appear in this repo because they measure two different things:
+
+| Metric | What It Measures | Value |
+| --- | --- | ---: |
+| Fine-tuned model Spearman | The Hugging Face reranker alone on its reviewed validation split | `0.7526` |
+| Sifter system Spearman | The full Sifter hybrid ranker on the 180-candidate reviewed validation set | `0.7989` |
+
+Plain English: `0.7526` is the learned model's standalone validation score. `0.7989` is the full product ranking signal, which combines deterministic evidence, vector-style fit, production proof, capped behavior, and the learned reranker. They should not be expected to match.
+
+## Validation Limits
+
+The validation set is transparent, but not perfect. The `180` reviewed labels are project-created recruiter-style labels, not an official hidden Redrob leaderboard and not an independent multi-recruiter panel. That is why Sifter keeps explanations, bias guardrails, and reviewer-agent questions visible instead of treating the model as an automatic hiring decision.
+
 ## Model Improvement Lifecycle
 
 Sifter is built to keep improving:
@@ -168,7 +183,7 @@ That is why this project is not just a scoring table. It is a full ranking workf
 | Large files break normal browser demos | Keep heavy data processing outside the browser and serve prepared ranked pages | 100,000 Redrob candidates are processed into public result pages, 100 candidates per page |
 | AI hiring can be biased | Remove unsafe inputs and show bias checks clearly | No scoring boost from name, school prestige, language, protected traits, or identity-like fields; logistics signals are capped |
 | One AI opinion is risky | Challenge the shortlist from multiple viewpoints | Four reviewer agents: Hiring Manager, Interview Designer, Recruiter Ops, and Bias & Compliance |
-| Static heuristics are not enough | Add a trainable reranker that can improve with feedback | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
+| Static heuristics are not enough | Add a trainable reranker that can improve with reviewed examples | Fine-tuned Hugging Face reward/reranker model blended into finalist ranking |
 | Many users cannot afford enterprise ATS tooling | Make the app local-first and accessible | Works as a lightweight web app with local/demo data paths and no paid AI dependency for the main ranking flow |
 
 ## The Trained AI Model
@@ -233,6 +248,19 @@ The model learns to predict the fit label from the job-candidate pair. In layman
 This is not full RLHF yet. It is a reward-model style supervised reranker, which is the right first step before reinforcement learning because the system needs a stable scoring model before it can safely optimize from recruiter feedback.
 
 The validation metric is stronger than the first weak-label run because it is measured against human-reviewed labels. It is still a small validation split, so the product keeps reasons, reviewer agents, and bias guardrails in front of the user instead of treating the model as an unchecked hiring decision.
+
+### Reviewed-Set Ablation
+
+Sifter also compares its ranking signal against simpler baselines on the reviewed set:
+
+| Signal | Balanced Score | Spearman | NDCG@25 | Top-25 Strong-Fit Recall |
+| --- | ---: | ---: | ---: | ---: |
+| Keyword baseline | `0.5939` | `0.5218` | `0.7155` | `30.4%` |
+| Behavioral shortcut | `0.6380` | `0.4723` | `0.8553` | `41.3%` |
+| Production evidence | `0.7002` | `0.6327` | `0.8268` | `41.3%` |
+| Sifter hybrid ranker | `0.8002` | `0.7989` | `0.8740` | `41.3%` |
+
+This is not an official hidden test set. It is a reproducible project validation layer that shows the final hybrid signal ranks reviewed candidates more consistently than keyword-only or shortcut baselines.
 
 ## Architecture
 

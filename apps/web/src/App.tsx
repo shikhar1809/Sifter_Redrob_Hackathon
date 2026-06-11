@@ -1815,7 +1815,7 @@ function RedrobSearchPanel({
             ? `Showing ${visibleCount.toLocaleString()} matches inside ranks ${start.toLocaleString()}-${end.toLocaleString()}`
             : `Showing ranks ${start.toLocaleString()}-${end.toLocaleString()} of ${expected.toLocaleString()} candidates`
           : status}
-        {feedbackCount ? ` - recruiter learning has ${feedbackCount} saved judgment${feedbackCount === 1 ? "" : "s"}` : ""}
+        {feedbackCount ? ` - review feedback has ${feedbackCount} saved judgment${feedbackCount === 1 ? "" : "s"}` : ""}
       </div>
       {loadedRows ? (
         <>
@@ -1938,9 +1938,9 @@ function CandidateReasonDialog({
         <ScoreBreakdownGrid breakdown={row.score_breakdown} />
         <div className="feedback-loop-box">
           <div>
-            <span>Recruiter learning loop</span>
+            <span>Review feedback loop</span>
             <p>
-              Mark how you would treat this profile. Sifter stores the judgment locally so future ranking can learn which signals recruiters trust in practice.
+              Mark how you would treat this profile. Sifter stores the judgment locally so future training can learn which signals recruiters trust in practice.
             </p>
           </div>
           <div className="feedback-actions">
@@ -2075,7 +2075,7 @@ function ScoreBreakdownGrid({ breakdown }: { breakdown: RedrobRankingRow["score_
     ["Experience fit", breakdown.experienceFit],
     ["Behavior", breakdown.behavioralSignals],
     ["Availability", breakdown.availability],
-    ["Recruiter learning", breakdown.recruiterLearning],
+    ["Review-informed", breakdown.recruiterLearning],
     ["Proxy guardrail", breakdown.proxyGuardrail],
   ] as const;
 

@@ -1,6 +1,6 @@
 # Sifter Human-Reviewed Validation
 
-This report measures Sifter on the human-reviewed Redrob review set. It is not a hidden official leaderboard, but it is a reproducible check that the ranker is doing more than keyword matching.
+This report measures Sifter on the human-reviewed Redrob review set. It is not a hidden official leaderboard or independent multi-recruiter panel, but it is a reproducible check that the ranker is doing more than keyword matching.
 
 - Reviewed examples: `180`
 - Label mix: `46` strong fit, `58` maybe, `76` not fit
@@ -9,6 +9,19 @@ This report measures Sifter on the human-reviewed Redrob review set. It is not a
 - Keyword Top-25 strong-fit recall: `30.4%`
 - Sifter lift over keyword baseline: `1.36x`
 - Sifter balanced validation score: `0.8002`
+
+## Methodology Notes
+
+The reviewed labels are project-created recruiter-style labels over selected Redrob candidates. They are useful for checking whether the ranker agrees with an explicit review rubric, but they are not a substitute for an independent Redrob judge panel.
+
+The comparison uses the same reviewed candidates for all signals:
+
+- `keyword_baseline`: exact/near JD term overlap.
+- `behavioral_shortcut`: reachability and logistics style signals.
+- `production_evidence`: production, ownership, and career evidence.
+- `sifter_hybrid_ranker`: the combined Sifter signal.
+
+The standalone Hugging Face reranker reports `0.7526` Spearman on its own reviewed validation split. The `0.7989` value below measures the full Sifter hybrid ranker against the 180-candidate reviewed set, so the two values are intentionally different.
 
 ![Sifter validation ladder](sifter_validation_ladder.svg)
 

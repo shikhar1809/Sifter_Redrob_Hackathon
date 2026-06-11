@@ -13,7 +13,7 @@
       "maybe": 0.5,
       "strong_fit": 1.0
     },
-    "limitation": "This is human-reviewed project validation, not a hidden Redrob ground-truth leaderboard."
+    "limitation": "This is project-created human-reviewed validation, not a hidden Redrob ground-truth leaderboard or independent multi-recruiter panel."
   },
   "models": [
     {
