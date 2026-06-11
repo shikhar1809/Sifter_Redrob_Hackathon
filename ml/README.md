@@ -56,6 +56,8 @@ The score comes from recruiter labels when available. When recruiter labels are 
 
 This is reward-style fine-tuning for ranking. It is not full RLHF yet. The goal is to create a learned second opinion that can improve as more recruiter labels arrive.
 
+For the metrics reported in the main README, the reviewed-label run is clean: all `166` training examples and all `14` validation examples come from the `180` project-reviewed Redrob labels. Weak bootstrapped Sifter labels were used only in the earlier bootstrap path, not in the reported `0.7526` reviewed-model metric.
+
 ## Colab Quick Start
 
 Use a GPU runtime in Google Colab.
@@ -130,6 +132,14 @@ That notebook trains on the reviewed dataset:
 | MAE | `0.1884` |
 
 This is the current preferred model story: Sifter studies the data, selects hard review cases, gets human labels, and fine-tunes a reward/reranker model from that feedback.
+
+Training-data composition for that reported run:
+
+| Split | Human-reviewed labels | Weak bootstrapped labels |
+| --- | ---: | ---: |
+| Train | `166` | `0` |
+| Validation | `14` | `0` |
+| Total | `180` | `0` |
 
 The notebook version now makes the final training cell prepare the data first, verify `reranker_train.jsonl` and `reranker_valid.jsonl`, and only then start training. That keeps Colab from failing because a previous data-prep cell was skipped.
 

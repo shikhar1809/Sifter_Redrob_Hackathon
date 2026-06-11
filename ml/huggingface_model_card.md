@@ -90,6 +90,7 @@ Training run:
 | Job description | Redrob Senior AI Engineer style role brief |
 | Label type | Continuous fit score from `0.0` to `1.0` |
 | Label source | Human-reviewed labels from the 180-candidate review set |
+| Weak bootstrapped labels in reported run | 0 examples |
 | Human label mix | 46 `strong_fit`, 58 `maybe`, 76 `not_fit` |
 | Human independent holdout | Small reviewed validation split; no separate multi-recruiter panel yet |
 
@@ -125,6 +126,8 @@ Recruiter labels are supported by the training script and override weak labels w
 
 Important: these labels are stronger than weak supervision, but they are still a compact review set. The next stronger version should add more reviewers and a separate held-out recruiter panel.
 
+The reported `0.7526` metric is not measured on Sifter-generated weak labels. It uses the reviewed-label run: `166` human-reviewed training examples, `14` human-reviewed validation examples, and `0` weak bootstrapped examples.
+
 ## Metrics
 
 Validation results from the human-reviewed revised run:
@@ -137,6 +140,8 @@ Validation results from the human-reviewed revised run:
 | Spearman rank correlation | `0.7526` |
 
 What Spearman means in plain language: when the human-reviewed labels say candidate A should usually rank above candidate B, the model's scores mostly move in the same direction. `0.7526` is a strong sign that the learned reranker is now aligned with the reviewed candidate judgments.
+
+This is a model-level diagnostic on a small validation split. The stronger product-level validation number is the full Sifter system Spearman: `0.7989` across the `180`-candidate reviewed set.
 
 ## Training Procedure
 

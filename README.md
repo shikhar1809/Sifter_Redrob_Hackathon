@@ -40,6 +40,18 @@ Sifter now has three proof layers: it processes the full challenge pool, validat
 
 Layman meaning: a judge can inspect more than a nice demo. The repo shows the data study, the baseline comparison, the human-reviewed labels, the trained model, the live model-serving path, and the final ranked output.
 
+## Primary Validation Result
+
+The strongest validation number is the full Sifter system score, not the tiny model-only split:
+
+| Primary Judge Metric | Result |
+| --- | ---: |
+| Sifter system Spearman on the 180-candidate reviewed set | `0.7989` |
+| Sifter system NDCG@25 on the reviewed set | `0.8740` |
+| Sifter lift over keyword-only Top-25 strong-fit recall | `1.36x` |
+
+Layman meaning: the complete product ranking, with deterministic evidence plus the learned reranker, agrees strongly with the reviewed labels across all `180` reviewed candidates. That is the headline validation result.
+
 ## Latest Update: Human-Reviewed Model Loop
 
 Sifter is no longer only a fixed scoring system. We studied the Redrob data, selected 180 hard candidate cases, manually reviewed them like a recruiter, and retrained the Hugging Face reranker on those human labels.
@@ -53,10 +65,10 @@ Latest reviewed-model run:
 | Train / validation split | `166 / 14` |
 | Base model | `distilbert-base-uncased` |
 | Training method | supervised reward-model reranker fine-tuning |
-| Validation Spearman | `0.7526` |
+| Model-only validation Spearman | `0.7526` |
 | Validation RMSE / MAE | `0.2104 / 0.1884` |
 
-Layman meaning: the model has started learning from recruiter-style judgment, not just from hand-written rules. `0.7526` Spearman means the model's ranking order now agrees strongly with the reviewed labels.
+Layman meaning: this smaller `0.7526` number is a model diagnostic on a 14-candidate validation split. It proves the reranker learned a useful signal, but the larger `0.7989` system metric above is the stronger judge-facing evidence.
 
 ## Metric Reconciliation
 
@@ -64,10 +76,10 @@ Two Spearman numbers appear in this repo because they measure two different thin
 
 | Metric | What It Measures | Value |
 | --- | --- | ---: |
-| Fine-tuned model Spearman | The Hugging Face reranker alone on its reviewed validation split | `0.7526` |
 | Sifter system Spearman | The full Sifter hybrid ranker on the 180-candidate reviewed validation set | `0.7989` |
+| Fine-tuned model Spearman | The Hugging Face reranker alone on its 14-candidate reviewed validation split | `0.7526` |
 
-Plain English: `0.7526` is the learned model's standalone validation score. `0.7989` is the full product ranking signal, which combines deterministic evidence, vector-style fit, production proof, capped behavior, and the learned reranker. They should not be expected to match.
+Plain English: `0.7989` is the full product ranking signal, which combines deterministic evidence, vector-style fit, production proof, capped behavior, and the learned reranker. `0.7526` is the learned model's standalone validation score on a much smaller split. They should not be expected to match, and the system metric is the stronger headline.
 
 ## Validation Limits
 

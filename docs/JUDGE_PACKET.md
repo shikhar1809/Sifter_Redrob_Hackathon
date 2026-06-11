@@ -33,16 +33,18 @@ Sifter is a full-pool, explainable AI hiring ranker that processes all `100,000`
 | Sifter lift over keyword-only | `1.36x` |
 | Fine-tuned model validation Spearman | `0.7526` |
 
+The primary validation number is the Sifter system Spearman: `0.7989` across all `180` reviewed candidates. The `0.7526` model metric is a secondary diagnostic for the standalone Hugging Face reranker on its smaller reviewed validation split.
+
 ## Metric Reconciliation
 
 The two Spearman values are not conflicting claims:
 
 | Metric | Scope | Value |
 | --- | --- | ---: |
-| Fine-tuned model Spearman | Hugging Face reranker alone, measured on its reviewed validation split | `0.7526` |
 | Sifter system Spearman | Full hybrid ranker, measured on the 180-candidate reviewed validation set | `0.7989` |
+| Fine-tuned model Spearman | Hugging Face reranker alone, measured on its 14-candidate reviewed validation split | `0.7526` |
 
-The first number answers: "Did the trained model learn a useful job-candidate fit signal?" The second answers: "Does the complete Sifter ranking system agree with reviewed labels?"
+The system number answers: "Does the complete Sifter ranking system agree with reviewed labels?" The model number answers: "Did the trained reranker learn a useful finalist-fit signal?"
 
 ## Reviewed-Set Ablation
 
