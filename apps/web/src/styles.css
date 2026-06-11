@@ -1369,6 +1369,107 @@ textarea {
   line-height: 1.35;
 }
 
+.validation-proof-panel {
+  padding: 14px;
+}
+
+.validation-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.32fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.validation-hero > div,
+.validation-score-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.validation-hero span,
+.validation-score-card span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.validation-hero strong {
+  display: block;
+  font-size: clamp(22px, 4vw, 42px);
+  font-weight: 950;
+  line-height: 1.02;
+}
+
+.validation-score-card strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 42px;
+}
+
+.validation-hero p,
+.validation-score-card p {
+  margin: 8px 0 0;
+  color: #30302c;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.validation-bars {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.validation-bars > div {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) 54px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 9px;
+}
+
+.validation-bars > div.is-winner {
+  background: #eaf2ff;
+}
+
+.validation-bars span {
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.validation-bars strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  text-align: right;
+}
+
+.validation-track {
+  height: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #eeeeea;
+  overflow: hidden;
+}
+
+.validation-track > div {
+  height: 100%;
+  border-right: 1px solid var(--line);
+  background: #1263ff;
+}
+
+.validation-bars > div:not(.is-winner) .validation-track > div {
+  background: #2a9d8f;
+}
+
 .batch-plan-box {
   margin-top: 10px;
   border: 1px solid var(--line);
@@ -2448,8 +2549,17 @@ td {
   .mechanics-grid,
   .mechanic-flow,
   .mechanic-agent-grid,
-  .top-candidate-hero {
+  .top-candidate-hero,
+  .validation-hero {
     grid-template-columns: 1fr;
+  }
+
+  .validation-bars > div {
+    grid-template-columns: 1fr 52px;
+  }
+
+  .validation-bars span {
+    grid-column: 1 / -1;
   }
 
   .feedback-loop-box {

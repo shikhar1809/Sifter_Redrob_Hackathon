@@ -161,12 +161,20 @@ https://home4.nyc.gov/site/dca/about/automated-employment-decision-tools.page
 
 The generated report includes top-100 overlap, average score, average semantic fit, production proof, and behavioral signal contribution.
 
+## Decision 9: Validate Against Human Review, Not Only Internal Scores
+
+**Project evidence:** We created a `180`-candidate reviewed Redrob set with `46` strong fits, `58` maybes, and `76` not-fits. This gives the project a transparent validation layer instead of relying only on a polished top-100 table.
+
+**Implementation:** `docs/dataset-analysis/validate_sifter_review_set.py` compares Sifter against keyword-only, behavior-only, and production-evidence baselines. It reports Spearman, NDCG@25, Top-K strong-fit recall, and a balanced validation score.
+
+**Current result:** On the reviewed set, Sifter reaches `0.7989` Spearman, `0.8740` NDCG@25, and `1.36x` stronger Top-25 strong-fit recall than keyword-only matching.
+
+**Limit:** This is a human-reviewed project validation set, not a hidden official Redrob leaderboard. It is still stronger evidence than claiming the shortlist is good without measurement.
+
 ## What Is Still Not Claimed
 
 Sifter does **not** claim:
 
-- A trained proprietary ML model.
-- A live cloud embedding service in the challenge path.
 - Protected-class parity on Redrob, because protected-class labels are not present.
 - A production ATS-grade global search backend yet.
 
@@ -175,7 +183,9 @@ Sifter **does** claim:
 - Full `100,000` candidate processing.
 - CPU-only, network-off ranking for the challenge.
 - Hybrid semantic, vector, recruiter-learning, and structured scoring.
-- Optional local transformer reranking for winner pools when the model is available.
+- A fine-tuned Hugging Face reward/reranker model trained on reviewed Redrob examples.
+- A live Hugging Face Docker/FastAPI Space used by the backend finalist-reranking path.
+- Human-reviewed validation against keyword-only and behavior-only baselines.
 - Explainable top-100 output.
 - Bias-aware guardrails with visible limitations.
 - Research-backed product decisions documented in this repo.

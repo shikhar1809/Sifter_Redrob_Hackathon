@@ -7,6 +7,24 @@ Firebase mirror: [sifter1011.firebaseapp.com](https://sifter1011.firebaseapp.com
 Trained model: [shikharshahi/sifter-redrob-reranker](https://huggingface.co/shikharshahi/sifter-redrob-reranker)  
 Model-serving Space: [shikharshahi/sifter-redrob-reranker-space](https://huggingface.co/spaces/shikharshahi/sifter-redrob-reranker-space)
 
+## Judge Evidence At A Glance
+
+Sifter now has three proof layers: it processes the full challenge pool, validates against human-reviewed labels, and serves a trained reranker in the product.
+
+| Proof | Result |
+| --- | --- |
+| Full Redrob pool processed | `100,000` candidates ranked into a validator-ready top 100 |
+| Human-reviewed validation set | `180` reviewed candidates: `46` strong fit, `58` maybe, `76` not fit |
+| Sifter vs keyword-only | `1.36x` stronger Top-25 strong-fit recall |
+| Sifter reviewed-set rank agreement | `0.7989` Spearman against human labels |
+| Sifter reviewed-set list quality | `0.8740` NDCG@25 |
+| Fine-tuned reranker | `distilbert-base-uncased` reward-style reranker trained on reviewed Redrob examples |
+| Live model integration | Hugging Face Docker/FastAPI Space reranks finalist candidates in the Sifter pipeline |
+
+![Sifter validation ladder](docs/validation/sifter_validation_ladder.svg)
+
+Layman meaning: a judge can inspect more than a nice demo. The repo shows the data study, the baseline comparison, the human-reviewed labels, the trained model, the live model-serving path, and the final ranked output.
+
 ## Latest Update: Human-Reviewed Model Loop
 
 Sifter is no longer only a fixed scoring system. We studied the Redrob data, selected 180 hard candidate cases, manually reviewed them like a recruiter, and retrained the Hugging Face reranker on those human labels.

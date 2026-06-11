@@ -1,0 +1,33 @@
+# Sifter Human-Reviewed Validation
+
+This report measures Sifter on the human-reviewed Redrob review set. It is not a hidden official leaderboard, but it is a reproducible check that the ranker is doing more than keyword matching.
+
+- Reviewed examples: `180`
+- Label mix: `46` strong fit, `58` maybe, `76` not fit
+- Best reviewed-set signal: `sifter_hybrid_ranker` by balanced score
+- Sifter Top-25 strong-fit recall: `41.3%`
+- Keyword Top-25 strong-fit recall: `30.4%`
+- Sifter lift over keyword baseline: `1.36x`
+- Sifter balanced validation score: `0.8002`
+
+![Sifter validation ladder](sifter_validation_ladder.svg)
+
+## Model Comparison
+
+| Model | Balanced score | Spearman | NDCG@25 | Top-25 strong-fit recall | Top-25 maybe+ precision |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `keyword_baseline` | `0.5939` | `0.5218` | `0.7155` | `30.4%` | `84.0%` |
+| `behavioral_shortcut` | `0.6380` | `0.4723` | `0.8553` | `41.3%` | `88.0%` |
+| `production_evidence` | `0.7002` | `0.6327` | `0.8268` | `41.3%` | `96.0%` |
+| `sifter_hybrid_ranker` | `0.8002` | `0.7989` | `0.8740` | `41.3%` | `96.0%` |
+
+## What This Proves
+
+- The project has a human-reviewed validation set, not only a nice-looking shortlist.
+- Keyword matching is directly compared against richer ranking signals.
+- Availability/behavior is measured separately so it cannot quietly replace job-fit evidence.
+- The strongest signal is the hybrid one: role understanding, production proof, retrieval/ranking depth, vector-style fit, and capped behavioral data.
+
+## What This Does Not Claim
+
+This does not claim protected-class fairness parity because the Redrob file does not include protected demographic labels. It also does not claim an official hidden Redrob score. It is a transparent, reproducible project validation layer.

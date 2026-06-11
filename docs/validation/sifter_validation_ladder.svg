@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="470" viewBox="0 0 1060 470" role="img" aria-label="Sifter validation ladder">
+  <style>
+    .bg { fill: #ffffff; }
+    .title { font: 800 30px Inter, Arial, sans-serif; fill: #050505; }
+    .subtitle { font: 600 15px Inter, Arial, sans-serif; fill: #62625d; }
+    .label { font: 800 16px Inter, Arial, sans-serif; fill: #050505; }
+    .value { font: 900 18px Inter, Arial, sans-serif; fill: #050505; }
+    .small { font: 600 13px Inter, Arial, sans-serif; fill: #62625d; }
+    .track { fill: #eeeeea; stroke: #050505; stroke-width: 1; }
+    .frame { fill: none; stroke: #050505; stroke-width: 2; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1060" height="470" rx="8"/>
+  <rect class="frame" x="16" y="16" width="1028" height="438" rx="8"/>
+  <text x="40" y="58" class="title">Human-reviewed validation: better than keyword filters</text>
+  <text x="40" y="84" class="subtitle">Measured on 180 reviewed Redrob candidates; bars show strong-fit recall in each model's top 25.</text>
+  
+  <text x="40" y="137" class="label">Keyword Baseline</text>
+  <rect x="250" y="112" width="600" height="34" rx="6" class="track"/>
+  <rect x="250" y="112" width="182" height="34" rx="6" fill="#f25f4c"/>
+  <text x="874" y="136" class="value">30.4% recall</text>
+  <text x="250" y="170" class="small">NDCG@25 0.716 | Spearman 0.522</text>
+
+  <text x="40" y="209" class="label">Behavioral Shortcut</text>
+  <rect x="250" y="184" width="600" height="34" rx="6" class="track"/>
+  <rect x="250" y="184" width="247" height="34" rx="6" fill="#ffb703"/>
+  <text x="874" y="208" class="value">41.3% recall</text>
+  <text x="250" y="242" class="small">NDCG@25 0.855 | Spearman 0.472</text>
+
+  <text x="40" y="281" class="label">Production Evidence</text>
+  <rect x="250" y="256" width="600" height="34" rx="6" class="track"/>
+  <rect x="250" y="256" width="247" height="34" rx="6" fill="#2a9d8f"/>
+  <text x="874" y="280" class="value">41.3% recall</text>
+  <text x="250" y="314" class="small">NDCG@25 0.827 | Spearman 0.633</text>
+
+  <text x="40" y="353" class="label">Sifter Hybrid Ranker</text>
+  <rect x="250" y="328" width="600" height="34" rx="6" class="track"/>
+  <rect x="250" y="328" width="247" height="34" rx="6" fill="#1263ff"/>
+  <text x="874" y="352" class="value">41.3% recall</text>
+  <text x="250" y="386" class="small">NDCG@25 0.874 | Spearman 0.799</text>
+
+</svg>

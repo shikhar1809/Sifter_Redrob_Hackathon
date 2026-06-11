@@ -3604,5 +3604,144 @@
         "long notice period (120 days)"
       ]
     }
-  ]
+  ],
+  "validationReport": {
+    "generatedAt": "2026-06-11",
+    "source": "docs/dataset-analysis/redrob_candidate_review_set.csv",
+    "examples": 180,
+    "labelCounts": {
+      "strong_fit": 46,
+      "maybe": 58,
+      "not_fit": 76
+    },
+    "limitation": "This is human-reviewed project validation, not a hidden Redrob ground-truth leaderboard.",
+    "headline": {
+      "best_model": "sifter_hybrid_ranker",
+      "best_model_selection": "highest balanced score: 45% Spearman, 35% NDCG@25, 20% Top-50 strong-fit recall",
+      "sifter_top25_strong_fit_recall": 0.413,
+      "keyword_top25_strong_fit_recall": 0.3043,
+      "sifter_vs_keyword_top25_recall_lift": 1.36,
+      "sifter_top25_ndcg": 0.874,
+      "sifter_spearman": 0.7989,
+      "sifter_balanced_validation_score": 0.8002
+    },
+    "models": [
+      {
+        "model": "keyword_baseline",
+        "spearman": 0.5218,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.6,
+          "strong_fit_recall": 0.1304,
+          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_recall": 0.0962,
+          "ndcg": 0.7891
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.56,
+          "strong_fit_recall": 0.3043,
+          "maybe_or_better_precision": 0.84,
+          "maybe_or_better_recall": 0.2019,
+          "ndcg": 0.7155
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.5,
+          "strong_fit_recall": 0.5435,
+          "maybe_or_better_precision": 0.88,
+          "maybe_or_better_recall": 0.4231,
+          "ndcg": 0.7092
+        },
+        "balanced_validation_score": 0.5939
+      },
+      {
+        "model": "behavioral_shortcut",
+        "spearman": 0.4723,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.9,
+          "strong_fit_recall": 0.1957,
+          "maybe_or_better_precision": 0.9,
+          "maybe_or_better_recall": 0.0865,
+          "ndcg": 0.9364
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.76,
+          "strong_fit_recall": 0.413,
+          "maybe_or_better_precision": 0.88,
+          "maybe_or_better_recall": 0.2115,
+          "ndcg": 0.8553
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.58,
+          "strong_fit_recall": 0.6304,
+          "maybe_or_better_precision": 0.84,
+          "maybe_or_better_recall": 0.4038,
+          "ndcg": 0.7762
+        },
+        "balanced_validation_score": 0.638
+      },
+      {
+        "model": "production_evidence",
+        "spearman": 0.6327,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.9,
+          "strong_fit_recall": 0.1957,
+          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_recall": 0.0962,
+          "ndcg": 0.8711
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.76,
+          "strong_fit_recall": 0.413,
+          "maybe_or_better_precision": 0.96,
+          "maybe_or_better_recall": 0.2308,
+          "ndcg": 0.8268
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.58,
+          "strong_fit_recall": 0.6304,
+          "maybe_or_better_precision": 0.98,
+          "maybe_or_better_recall": 0.4712,
+          "ndcg": 0.7855
+        },
+        "balanced_validation_score": 0.7002
+      },
+      {
+        "model": "sifter_hybrid_ranker",
+        "spearman": 0.7989,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.9,
+          "strong_fit_recall": 0.1957,
+          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_recall": 0.0962,
+          "ndcg": 0.9445
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.76,
+          "strong_fit_recall": 0.413,
+          "maybe_or_better_precision": 0.96,
+          "maybe_or_better_recall": 0.2308,
+          "ndcg": 0.874
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.62,
+          "strong_fit_recall": 0.6739,
+          "maybe_or_better_precision": 0.98,
+          "maybe_or_better_recall": 0.4712,
+          "ndcg": 0.8346
+        },
+        "balanced_validation_score": 0.8002
+      }
+    ]
+  }
 }

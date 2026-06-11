@@ -50,6 +50,36 @@ type RedrobRankingPlan = {
   mergeSize: number;
   rounds: Array<{ round: number; inputGroups: number; outputGroups: number; candidatesConsidered: number }>;
 };
+type RedrobValidationModelMetric = {
+  model: string;
+  spearman: number;
+  balanced_validation_score: number;
+  top_25: {
+    strong_fit_recall: number;
+    maybe_or_better_precision: number;
+    ndcg: number;
+  };
+  top_50: {
+    strong_fit_recall: number;
+  };
+};
+type RedrobValidationReport = {
+  generatedAt: string;
+  examples: number;
+  labelCounts: Record<string, number>;
+  limitation: string;
+  headline: {
+    best_model: string;
+    best_model_selection: string;
+    sifter_top25_strong_fit_recall: number;
+    keyword_top25_strong_fit_recall: number;
+    sifter_vs_keyword_top25_recall_lift: number;
+    sifter_top25_ndcg: number;
+    sifter_spearman: number;
+    sifter_balanced_validation_score: number;
+  };
+  models: RedrobValidationModelMetric[];
+};
 type RedrobChallengeAsset = {
   processedCandidates: number;
   runtimeSeconds: number;
@@ -61,6 +91,7 @@ type RedrobChallengeAsset = {
   searchPageCount?: number;
   searchPageSize?: number;
   learnedRerank?: LearnedRerankStatus;
+  validationReport?: RedrobValidationReport;
   biasAudit: BiasAudit;
   rows: RedrobRankingRow[];
 };
@@ -160,6 +191,7 @@ export default function App() {
   const [redrobCsv, setRedrobCsv] = useState("");
   const [redrobBiasAudit, setRedrobBiasAudit] = useState<BiasAudit | null>(null);
   const [redrobLearnedRerank, setRedrobLearnedRerank] = useState<LearnedRerankStatus | null>(null);
+  const [redrobValidationReport, setRedrobValidationReport] = useState<RedrobValidationReport | null>(null);
   const [redrobRankingPlan, setRedrobRankingPlan] = useState<RedrobRankingPlan | null>(null);
   const [redrobSearchRows, setRedrobSearchRows] = useState<RedrobCandidateSearchRow[]>([]);
   const [redrobSearchStatus, setRedrobSearchStatus] = useState("not loaded");
@@ -283,6 +315,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobValidationReport(null);
     setRedrobRankingPlan(null);
     resetRedrobSearch();
     setResult(null);
@@ -416,6 +449,7 @@ export default function App() {
       setRedrobCandidateCount(typed.count);
       setRedrobBiasAudit(typed.biasAudit);
       setRedrobLearnedRerank(typed.learnedRerank ?? null);
+      setRedrobValidationReport(null);
       setRedrobRankingPlan(null);
       resetRedrobSearch();
       setResult(null);
@@ -447,6 +481,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobLearnedRerank(null);
+    setRedrobValidationReport(null);
     setRedrobRankingPlan(null);
     setResult(null);
     setRunId(null);
@@ -460,6 +495,7 @@ export default function App() {
       setRedrobSearchPagePrefix(payload.searchPagePrefix ?? "redrob-candidate-pages/page-");
       setRedrobSearchPageCount(payload.searchPageCount ?? Math.ceil(payload.processedCandidates / 100));
       setRedrobSearchIndexRows(payload.searchIndexRows ?? payload.processedCandidates);
+      setRedrobValidationReport(payload.validationReport ?? null);
       setRedrobSearchRows([]);
       setRedrobSearchStatus("not loaded");
       setRedrobSearchPage(0);
@@ -493,6 +529,7 @@ export default function App() {
       setRedrobCsv(exportRowsAsRedrobCsv(payload.rows));
       setRedrobBiasAudit(payload.biasAudit);
       setRedrobLearnedRerank(payload.learnedRerank ?? null);
+      setRedrobValidationReport(payload.validationReport ?? null);
       setRedrobRankingPlan(payload.rankingPlan ?? null);
       setRunProgress(100);
       setProgressLabel(`Final shortlist ready from ${payload.processedCandidates.toLocaleString()} candidates`);
@@ -710,6 +747,7 @@ export default function App() {
     setRedrobCsv("");
     setRedrobBiasAudit(null);
     setRedrobLearnedRerank(null);
+    setRedrobValidationReport(null);
     setRedrobRankingPlan(null);
     resetRedrobSearch();
     setUploadedFileName(null);
@@ -728,6 +766,7 @@ export default function App() {
     setRedrobRows([]);
     setRedrobCsv("");
     setRedrobBiasAudit(null);
+    setRedrobValidationReport(null);
     setRedrobRankingPlan(null);
     resetRedrobSearch();
     setSimulationScores({});
@@ -1165,6 +1204,7 @@ export default function App() {
               rankingPlan={redrobRankingPlan}
             />
           ) : null}
+          {dataMode === "redrob" && redrobValidationReport ? <ValidationProofPanel report={redrobValidationReport} /> : null}
           {dataMode === "redrob" && redrobRows.length ? <TopRedrobCandidateExplanation row={redrobRows[0]} /> : null}
           {dataMode === "redrob" && redrobLearnedRerank ? <LearnedRerankPanel status={redrobLearnedRerank} /> : null}
           {dataMode === "redrob" && redrobBiasAudit ? <BiasAuditPanel audit={redrobBiasAudit} /> : null}
@@ -1573,6 +1613,54 @@ function LearnedRerankPanel({ status }: { status: LearnedRerankStatus }) {
       </div>
       <div className="summary-message">
         {status.message} Model: {status.model}. Sifter keeps deterministic ranking as fallback if the model is unavailable.
+      </div>
+    </section>
+  );
+}
+
+function ValidationProofPanel({ report }: { report: RedrobValidationReport }) {
+  const sifter = report.models.find((model) => model.model === "sifter_hybrid_ranker");
+  const keyword = report.models.find((model) => model.model === "keyword_baseline");
+  const behavior = report.models.find((model) => model.model === "behavioral_shortcut");
+  const rows = [keyword, behavior, sifter].filter((model): model is RedrobValidationModelMetric => Boolean(model));
+
+  return (
+    <section className="panel validation-proof-panel">
+      <PanelTitle title="Validation Proof" meta={`${report.examples} reviewed candidates`} />
+      <div className="validation-hero">
+        <div>
+          <span>Judge-facing proof</span>
+          <strong>{report.headline.sifter_vs_keyword_top25_recall_lift.toFixed(2)}x stronger than keyword-only</strong>
+          <p>
+            Measured on the human-reviewed Redrob set. Sifter is compared against keyword matching and behavioral shortcuts, then judged by a balanced score:
+            ranking correlation, top-list quality, and strong-fit recall.
+          </p>
+        </div>
+        <div className="validation-score-card">
+          <span>Spearman</span>
+          <strong>{report.headline.sifter_spearman.toFixed(3)}</strong>
+          <p>Ranking order agrees strongly with human-reviewed labels.</p>
+        </div>
+      </div>
+      <div className="summary-grid">
+        <Metric value={report.labelCounts.strong_fit ?? 0} label="strong fit labels" />
+        <Metric value={report.labelCounts.maybe ?? 0} label="maybe labels" />
+        <Metric value={report.labelCounts.not_fit ?? 0} label="not fit labels" />
+        <Metric value={Math.round(report.headline.sifter_top25_ndcg * 100)} label="ndcg@25 %" />
+      </div>
+      <div className="validation-bars">
+        {rows.map((model) => (
+          <div key={model.model} className={model.model === "sifter_hybrid_ranker" ? "is-winner" : ""}>
+            <span>{formatModelName(model.model)}</span>
+            <div className="validation-track" aria-label={`${formatModelName(model.model)} top-25 strong-fit recall`}>
+              <div style={{ width: `${Math.round(model.top_25.strong_fit_recall * 100)}%` }} />
+            </div>
+            <strong>{Math.round(model.top_25.strong_fit_recall * 100)}%</strong>
+          </div>
+        ))}
+      </div>
+      <div className="summary-message">
+        Best signal: {formatModelName(report.headline.best_model)} by balanced validation score. {report.limitation}
       </div>
     </section>
   );
@@ -2656,6 +2744,13 @@ function statusLabel(status: RedrobCandidateSearchRow["status"]): string {
   if (status === "shortlisted") return "Top 100";
   if (status === "review") return "Near shortlist";
   return "Not top 100";
+}
+
+function formatModelName(model: string): string {
+  return model
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 function candidateModeFromFile(fileName: string, text: string): CandidateDataMode {
