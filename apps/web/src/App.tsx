@@ -1603,9 +1603,29 @@ function Final({ rows }: { rows: GateCandidate[] }) {
 function LearnedRerankPanel({ status }: { status: LearnedRerankStatus }) {
   const statusLabel =
     status.status === "completed" ? "learned model used" : status.status === "not_configured" ? "token missing" : status.status === "fallback" ? "fallback used" : "disabled";
+  const proofLabel =
+    status.status === "completed"
+      ? "Reranker: live"
+      : status.status === "fallback"
+        ? "Reranker: fallback"
+        : status.status === "not_configured"
+          ? "Reranker: not configured"
+          : "Reranker: disabled";
+  const proofDetail =
+    status.status === "completed"
+      ? `The Hugging Face reranker responded and rescored ${status.reviewedCandidates} finalists before the final blend.`
+      : status.status === "fallback"
+        ? "The deterministic ranker stayed in control because the learned reranker was unavailable."
+        : status.status === "not_configured"
+          ? "No Hugging Face model endpoint is configured for this run."
+          : "This run used deterministic ranking only.";
   return (
     <section className="panel learned-rerank-panel">
       <PanelTitle title="Learned Reranker" meta={statusLabel} />
+      <div className={`reranker-proof-badge reranker-${status.status}`}>
+        <strong>{proofLabel}</strong>
+        <span>{proofDetail}</span>
+      </div>
       <div className="summary-grid">
         <Metric value={status.reviewedCandidates} label="model-scored finalists" />
         <Metric value={Math.round(status.weight * 100)} label="model weight %" />

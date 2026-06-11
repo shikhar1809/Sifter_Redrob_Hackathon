@@ -262,6 +262,8 @@ Sifter also compares its ranking signal against simpler baselines on the reviewe
 
 This is not an official hidden test set. It is a reproducible project validation layer that shows the final hybrid signal ranks reviewed candidates more consistently than keyword-only or shortcut baselines.
 
+Why do three rows share `41.3%` Top-25 recall? They surface the same obvious strong-fit candidates in the first 25. Sifter's gain is not raw coverage there; it is better ordering and trust quality, shown by the higher Spearman and NDCG@25.
+
 ## Architecture
 
 ```mermaid

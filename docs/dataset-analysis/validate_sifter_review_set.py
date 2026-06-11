@@ -273,6 +273,8 @@ def main() -> None:
     lines.extend(
         [
             "",
+            "The repeated `41.3%` Top-25 recall is expected: behavioral, production-evidence, and Sifter signals all catch the same obvious strong-fit candidates inside the first 25. Sifter's advantage is stronger rank ordering and list quality, reflected by higher Spearman and NDCG@25.",
+            "",
             "## What This Proves",
             "",
             "- The project has a human-reviewed validation set, not only a nice-looking shortlist.",

@@ -55,6 +55,8 @@ The first number answers: "Did the trained model learn a useful job-candidate fi
 
 This makes the baseline comparison inspectable: Sifter does not only claim to beat keyword filters; it records the reviewed-set comparison and ships the script that generates it.
 
+The repeated `41.3%` Top-25 recall is expected: those methods all catch the same obvious strong-fit candidates inside the first 25. Sifter's improvement is in rank ordering and list quality, which is why Spearman and NDCG@25 increase even when Top-25 recall ties.
+
 ## What Makes It Different
 
 Most hiring demos stop at “score + table.” Sifter has four extra layers:
