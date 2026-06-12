@@ -8,6 +8,15 @@
       "maybe": 58,
       "not_fit": 76
     },
+    "annotator_counts": {
+      "project_reviewer": 180
+    },
+    "label_source_counts": {
+      "project_human_review": 180
+    },
+    "review_round_counts": {
+      "reviewed_model_v1": 180
+    },
     "label_scale": {
       "not_fit": 0.0,
       "maybe": 0.5,

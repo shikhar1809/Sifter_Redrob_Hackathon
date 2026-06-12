@@ -195,6 +195,9 @@ def main() -> None:
         "sifter_hybrid_ranker": [hybrid_proxy(row) for row in rows],
     }
     label_counts = Counter(row["reviewer_label"] for row in rows)
+    annotator_counts = Counter((row.get("annotator") or "unknown").strip() or "unknown" for row in rows)
+    label_source_counts = Counter((row.get("label_source") or "unknown").strip() or "unknown" for row in rows)
+    review_round_counts = Counter((row.get("review_round") or "unknown").strip() or "unknown" for row in rows)
     models = [evaluate_model(name, labels, values) for name, values in scores.items()]
     best = max(models, key=lambda item: item["balanced_validation_score"])
     keyword = next(item for item in models if item["model"] == "keyword_baseline")
@@ -207,6 +210,9 @@ def main() -> None:
             "source": "docs/dataset-analysis/redrob_candidate_review_set.csv",
             "examples": len(rows),
             "label_counts": dict(label_counts),
+            "annotator_counts": dict(annotator_counts),
+            "label_source_counts": dict(label_source_counts),
+            "review_round_counts": dict(review_round_counts),
             "label_scale": {"not_fit": 0.0, "maybe": 0.5, "strong_fit": 1.0},
             "limitation": "This is project-created human-reviewed validation, not a hidden Redrob ground-truth leaderboard or independent multi-recruiter panel.",
         },
@@ -240,6 +246,8 @@ def main() -> None:
         "",
         f"- Reviewed examples: `{len(rows)}`",
         f"- Label mix: `{label_counts['strong_fit']}` strong fit, `{label_counts['maybe']}` maybe, `{label_counts['not_fit']}` not fit",
+        f"- Annotator provenance: `{', '.join(f'{name}: {count}' for name, count in sorted(annotator_counts.items()))}`",
+        f"- Label source: `{', '.join(f'{name}: {count}' for name, count in sorted(label_source_counts.items()))}`",
         f"- Best reviewed-set signal: `{best['model']}` by balanced score",
         f"- Sifter Top-25 strong-fit recall: `{sifter['top_25']['strong_fit_recall'] * 100:.1f}%`",
         f"- Keyword Top-25 strong-fit recall: `{keyword['top_25']['strong_fit_recall'] * 100:.1f}%`",
@@ -249,6 +257,8 @@ def main() -> None:
         "## Methodology Notes",
         "",
         "The reviewed labels are project-created recruiter-style labels over selected Redrob candidates. They are useful for checking whether the ranker agrees with an explicit review rubric, but they are not a substitute for an independent Redrob judge panel.",
+        "",
+        "The review CSV includes explicit label provenance columns: `annotator`, `label_source`, and `review_round`. For this run every row is marked `project_reviewer` / `project_human_review` / `reviewed_model_v1`, which makes the single-reviewer limitation auditable and leaves a clean path for adding a second reviewer later.",
         "",
         "The comparison uses the same reviewed candidates for all signals:",
         "",

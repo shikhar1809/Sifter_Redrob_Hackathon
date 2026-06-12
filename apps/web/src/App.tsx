@@ -67,6 +67,9 @@ type RedrobValidationReport = {
   generatedAt: string;
   examples: number;
   labelCounts: Record<string, number>;
+  annotatorCounts?: Record<string, number>;
+  labelSourceCounts?: Record<string, number>;
+  reviewRoundCounts?: Record<string, number>;
   limitation: string;
   headline: {
     best_model: string;
@@ -1643,6 +1646,8 @@ function ValidationProofPanel({ report }: { report: RedrobValidationReport }) {
   const keyword = report.models.find((model) => model.model === "keyword_baseline");
   const behavior = report.models.find((model) => model.model === "behavioral_shortcut");
   const rows = [keyword, behavior, sifter].filter((model): model is RedrobValidationModelMetric => Boolean(model));
+  const annotatorTotal = Object.values(report.annotatorCounts ?? {}).reduce((sum, count) => sum + count, 0);
+  const labelSource = Object.keys(report.labelSourceCounts ?? {})[0] ?? "project review";
 
   return (
     <section className="panel validation-proof-panel">
@@ -1667,6 +1672,14 @@ function ValidationProofPanel({ report }: { report: RedrobValidationReport }) {
         <Metric value={report.labelCounts.maybe ?? 0} label="maybe labels" />
         <Metric value={report.labelCounts.not_fit ?? 0} label="not fit labels" />
         <Metric value={Math.round(report.headline.sifter_top25_ndcg * 100)} label="ndcg@25 %" />
+        <Metric value={annotatorTotal || report.examples} label="labels with provenance" />
+      </div>
+      <div className="validation-provenance">
+        <strong>Label provenance</strong>
+        <span>
+          {annotatorTotal || report.examples} reviewed rows are tagged with annotator/source metadata
+          {labelSource ? ` (${labelSource})` : ""}. This keeps the single-reviewer limitation visible and prepares the dataset for a second reviewer.
+        </span>
       </div>
       <div className="validation-bars">
         {rows.map((model) => (

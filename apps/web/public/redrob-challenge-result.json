@@ -3689,6 +3689,15 @@
       "maybe": 58,
       "not_fit": 76
     },
+    "annotatorCounts": {
+      "project_reviewer": 180
+    },
+    "labelSourceCounts": {
+      "project_human_review": 180
+    },
+    "reviewRoundCounts": {
+      "reviewed_model_v1": 180
+    },
     "limitation": "This is project-created human-reviewed validation, not a hidden Redrob ground-truth leaderboard or independent multi-recruiter panel.",
     "headline": {
       "best_model": "sifter_hybrid_ranker",
@@ -3708,7 +3717,7 @@
           "k": 10,
           "strong_fit_precision": 0.6,
           "strong_fit_recall": 0.1304,
-          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_precision": 1,
           "maybe_or_better_recall": 0.0962,
           "ndcg": 0.7891
         },
@@ -3766,7 +3775,7 @@
           "k": 10,
           "strong_fit_precision": 0.9,
           "strong_fit_recall": 0.1957,
-          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_precision": 1,
           "maybe_or_better_recall": 0.0962,
           "ndcg": 0.8711
         },
@@ -3795,7 +3804,7 @@
           "k": 10,
           "strong_fit_precision": 0.9,
           "strong_fit_recall": 0.1957,
-          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_precision": 1,
           "maybe_or_better_recall": 0.0962,
           "ndcg": 0.9445
         },

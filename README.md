@@ -30,6 +30,7 @@ Sifter now has three proof layers: it processes the full challenge pool, validat
 | --- | --- |
 | Full Redrob pool processed | `100,000` candidates ranked into a validator-ready top 100 |
 | Human-reviewed validation set | `180` reviewed candidates: `46` strong fit, `58` maybe, `76` not fit |
+| Label provenance | `180` rows marked `project_reviewer` / `project_human_review` / `reviewed_model_v1` |
 | Sifter vs keyword-only | `1.36x` stronger Top-25 strong-fit recall |
 | Sifter reviewed-set rank agreement | `0.7989` Spearman against human labels |
 | Sifter reviewed-set list quality | `0.8740` NDCG@25 |
@@ -84,6 +85,8 @@ Plain English: `0.7989` is the full product ranking signal, which combines deter
 ## Validation Limits
 
 The validation set is transparent, but not perfect. The `180` reviewed labels are project-created recruiter-style labels, not an official hidden Redrob leaderboard and not an independent multi-recruiter panel. That is why Sifter keeps explanations, bias guardrails, and reviewer-agent questions visible instead of treating the model as an automatic hiring decision.
+
+The label file now carries explicit provenance columns: `annotator`, `label_source`, and `review_round`. Today every row is marked `project_reviewer` / `project_human_review` / `reviewed_model_v1`, which makes the single-reviewer limitation visible and gives a clean slot for adding a second annotator later.
 
 ## Model Improvement Lifecycle
 

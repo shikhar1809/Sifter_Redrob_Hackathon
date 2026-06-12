@@ -26,6 +26,7 @@ Sifter is a full-pool, explainable AI hiring ranker that processes all `100,000`
 | Final submission rows | `100` |
 | Human-reviewed validation examples | `180` |
 | Reviewed labels | `46 strong_fit`, `58 maybe`, `76 not_fit` |
+| Label provenance | `project_reviewer: 180`, `project_human_review: 180` |
 | Sifter reviewed-set Spearman | `0.7989` |
 | Sifter NDCG@25 | `0.8740` |
 | Keyword-only Top-25 strong-fit recall | `30.4%` |

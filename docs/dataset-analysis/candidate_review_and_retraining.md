@@ -8,6 +8,14 @@ The review is complete. Label mix:
 - `maybe`: 58
 - `not_fit`: 76
 
+Label provenance is explicit in the CSV:
+
+- `annotator`: `project_reviewer` for all 180 rows
+- `label_source`: `project_human_review` for all 180 rows
+- `review_round`: `reviewed_model_v1` for all 180 rows
+
+This does not turn the review set into a multi-annotator panel. It makes the single-reviewer source auditable and gives the next reviewer a clean place to add independent labels.
+
 The reviewed labels were converted into model-training labels with:
 
 ```bash

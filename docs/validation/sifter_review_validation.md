@@ -4,6 +4,8 @@ This report measures Sifter on the human-reviewed Redrob review set. It is not a
 
 - Reviewed examples: `180`
 - Label mix: `46` strong fit, `58` maybe, `76` not fit
+- Annotator provenance: `project_reviewer: 180`
+- Label source: `project_human_review: 180`
 - Best reviewed-set signal: `sifter_hybrid_ranker` by balanced score
 - Sifter Top-25 strong-fit recall: `41.3%`
 - Keyword Top-25 strong-fit recall: `30.4%`
@@ -13,6 +15,8 @@ This report measures Sifter on the human-reviewed Redrob review set. It is not a
 ## Methodology Notes
 
 The reviewed labels are project-created recruiter-style labels over selected Redrob candidates. They are useful for checking whether the ranker agrees with an explicit review rubric, but they are not a substitute for an independent Redrob judge panel.
+
+The review CSV includes explicit label provenance columns: `annotator`, `label_source`, and `review_round`. For this run every row is marked `project_reviewer` / `project_human_review` / `reviewed_model_v1`, which makes the single-reviewer limitation auditable and leaves a clean path for adding a second reviewer later.
 
 The comparison uses the same reviewed candidates for all signals:
 

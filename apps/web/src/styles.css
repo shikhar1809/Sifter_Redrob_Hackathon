@@ -1454,6 +1454,30 @@ textarea {
   line-height: 1.4;
 }
 
+.validation-provenance {
+  display: grid;
+  gap: 5px;
+  margin: 10px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f7f3;
+  padding: 11px 12px;
+}
+
+.validation-provenance strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.validation-provenance span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .validation-bars {
   display: grid;
   gap: 8px;
