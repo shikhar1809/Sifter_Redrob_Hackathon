@@ -157,5 +157,156 @@
     "Behavior-only ranking can surface some reachable strong candidates, but it is weaker across the full ranking order and should never decide fit alone.",
     "Production evidence is a stronger signal than raw keyword count, matching the Redrob role requirements.",
     "The Sifter hybrid signal is best on the balanced validation score because it combines role depth, production proof, retrieval/ranking evidence, and capped behavioral signals."
-  ]
+  ],
+  "technical_recruiter_holdout": {
+    "examples": 50,
+    "annotator": "technical_recruiter",
+    "blind_review": true,
+    "not_used_for_training": true,
+    "label_counts": {
+      "strong_fit": 8,
+      "maybe": 21,
+      "not_fit": 21
+    },
+    "project_label_counts": {
+      "strong_fit": 15,
+      "maybe": 15,
+      "not_fit": 20
+    },
+    "agreement": {
+      "exact_matches": 42,
+      "near_matches": 8,
+      "disagreements": 0,
+      "exact_agreement": 0.84,
+      "near_or_exact_agreement": 1.0,
+      "cohen_kappa": 0.7568
+    },
+    "models": [
+      {
+        "model": "keyword_baseline",
+        "spearman": 0.4992,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.5,
+          "strong_fit_recall": 0.625,
+          "maybe_or_better_precision": 0.8,
+          "maybe_or_better_recall": 0.2759,
+          "ndcg": 0.7695
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.28,
+          "strong_fit_recall": 0.875,
+          "maybe_or_better_precision": 0.76,
+          "maybe_or_better_recall": 0.6552,
+          "ndcg": 0.8112
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.16,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.58,
+          "maybe_or_better_recall": 1.0,
+          "ndcg": 0.9118
+        },
+        "balanced_validation_score": 0.7086
+      },
+      {
+        "model": "behavioral_shortcut",
+        "spearman": 0.3935,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.5,
+          "strong_fit_recall": 0.625,
+          "maybe_or_better_precision": 0.7,
+          "maybe_or_better_recall": 0.2414,
+          "ndcg": 0.7054
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.32,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.68,
+          "maybe_or_better_recall": 0.5862,
+          "ndcg": 0.784
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.16,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.58,
+          "maybe_or_better_recall": 1.0,
+          "ndcg": 0.9006
+        },
+        "balanced_validation_score": 0.6515
+      },
+      {
+        "model": "production_evidence",
+        "spearman": 0.8854,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.6,
+          "strong_fit_recall": 0.75,
+          "maybe_or_better_precision": 0.9,
+          "maybe_or_better_recall": 0.3103,
+          "ndcg": 0.8369
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.32,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.96,
+          "maybe_or_better_recall": 0.8276,
+          "ndcg": 0.9362
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.16,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.58,
+          "maybe_or_better_recall": 1.0,
+          "ndcg": 0.9521
+        },
+        "balanced_validation_score": 0.9261
+      },
+      {
+        "model": "sifter_hybrid_ranker",
+        "spearman": 0.9796,
+        "top_10": {
+          "k": 10,
+          "strong_fit_precision": 0.7,
+          "strong_fit_recall": 0.875,
+          "maybe_or_better_precision": 1.0,
+          "maybe_or_better_recall": 0.3448,
+          "ndcg": 0.9282
+        },
+        "top_25": {
+          "k": 25,
+          "strong_fit_precision": 0.32,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.96,
+          "maybe_or_better_recall": 0.8276,
+          "ndcg": 0.9562
+        },
+        "top_50": {
+          "k": 50,
+          "strong_fit_precision": 0.16,
+          "strong_fit_recall": 1.0,
+          "maybe_or_better_precision": 0.58,
+          "maybe_or_better_recall": 1.0,
+          "ndcg": 0.9717
+        },
+        "balanced_validation_score": 0.9755
+      }
+    ],
+    "headline": {
+      "sifter_spearman": 0.9796,
+      "keyword_spearman": 0.4992,
+      "sifter_top25_ndcg": 0.9562,
+      "keyword_top25_ndcg": 0.8112,
+      "sifter_top25_strong_fit_recall": 1.0,
+      "keyword_top25_strong_fit_recall": 0.875,
+      "sifter_vs_keyword_top25_recall_lift": 1.14
+    }
+  }
 }

@@ -26,6 +26,10 @@ Sifter is a full-pool, explainable AI hiring ranker that processes all `100,000`
 | Final submission rows | `100` |
 | Human-reviewed validation examples | `180` |
 | Reviewed labels | `46 strong_fit`, `58 maybe`, `76 not_fit` |
+| Blind technical-recruiter holdout | `50` candidates, not used for training |
+| Technical-recruiter agreement | `84.0%` exact, `100.0%` near/exact, `0.7568` Cohen's kappa |
+| Sifter holdout Spearman | `0.9796` vs `0.4992` keyword baseline |
+| Sifter holdout NDCG@25 | `0.9562` |
 | Label provenance | `project_reviewer: 180`, `project_human_review: 180` |
 | Sifter reviewed-set Spearman | `0.7989` |
 | Sifter NDCG@25 | `0.8740` |
@@ -35,6 +39,19 @@ Sifter is a full-pool, explainable AI hiring ranker that processes all `100,000`
 | Fine-tuned model validation Spearman | `0.7526` |
 
 The primary validation number is the Sifter system Spearman: `0.7989` across all `180` reviewed candidates. The `0.7526` model metric is a secondary diagnostic for the standalone Hugging Face reranker on its smaller reviewed validation split.
+
+The strongest independence check is the `50`-candidate blind technical-recruiter holdout. Those labels were not used for training and give the repo a second review source beyond the project reviewer.
+
+## Independent Technical-Recruiter Holdout
+
+| Holdout Signal | Spearman | NDCG@25 | Top-25 Strong-Fit Recall |
+| --- | ---: | ---: | ---: |
+| Keyword baseline | `0.4992` | `0.8112` | `87.5%` |
+| Behavioral shortcut | `0.3935` | `0.7840` | `100.0%` |
+| Production evidence | `0.8854` | `0.9362` | `100.0%` |
+| Sifter hybrid ranker | `0.9796` | `0.9562` | `100.0%` |
+
+The technical recruiter marked `8` strong fits, `21` maybes, and `21` not-fits. Agreement with the project reviewer was `84.0%` exact and `100.0%` near-or-exact, with Cohen's kappa `0.7568`. This is the strongest validation layer because it tests Sifter against a second review source.
 
 ## Metric Reconciliation
 

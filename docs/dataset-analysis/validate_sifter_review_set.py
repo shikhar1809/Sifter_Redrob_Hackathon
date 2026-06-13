@@ -23,6 +23,15 @@ OUT_MD = ROOT / "docs" / "validation" / "sifter_review_validation.md"
 OUT_SVG = ROOT / "docs" / "validation" / "sifter_validation_ladder.svg"
 
 LABEL_SCORE = {"not_fit": 0.0, "maybe": 0.5, "strong_fit": 1.0}
+LABEL_NORMALIZATION = {
+    "strong fit": "strong_fit",
+    "strong_fit": "strong_fit",
+    "maybe": "maybe",
+    "weak fit": "not_fit",
+    "not fit": "not_fit",
+    "not_fit": "not_fit",
+    "reject": "not_fit",
+}
 JD_TERMS = {
     "python",
     "embedding",
@@ -139,6 +148,86 @@ def evaluate_model(name: str, labels: list[float], scores: list[float]) -> dict[
     }
 
 
+def normalize_label(value: str) -> str:
+    key = (value or "").strip().lower().replace("-", " ").replace("_", " ")
+    return LABEL_NORMALIZATION.get(key, "")
+
+
+def agreement_status(left: str, right: str) -> str:
+    if not left or not right:
+        return ""
+    if left == right:
+        return "exact_match"
+    if left == "maybe" or right == "maybe":
+        return "near_match"
+    return "disagreement"
+
+
+def cohen_kappa(left: list[str], right: list[str]) -> float:
+    labels = list(LABEL_SCORE.keys())
+    n = len(left)
+    if not n:
+        return 0.0
+    observed = sum(1 for a, b in zip(left, right) if a == b) / n
+    left_counts = Counter(left)
+    right_counts = Counter(right)
+    expected = sum((left_counts[label] / n) * (right_counts[label] / n) for label in labels)
+    if expected >= 1:
+        return 0.0
+    return round((observed - expected) / (1 - expected), 4)
+
+
+def technical_recruiter_holdout(rows: list[dict[str, str]]) -> dict[str, object] | None:
+    holdout = [row for row in rows if normalize_label(row.get("technical_recruiter_label", ""))]
+    if not holdout:
+        return None
+    project_labels = [normalize_label(row.get("reviewer_label", "")) for row in holdout]
+    recruiter_labels = [normalize_label(row.get("technical_recruiter_label", "")) for row in holdout]
+    statuses = [agreement_status(a, b) for a, b in zip(project_labels, recruiter_labels)]
+    labels = [LABEL_SCORE[label] for label in recruiter_labels]
+    scores = {
+        "keyword_baseline": [keyword_score(row) for row in holdout],
+        "behavioral_shortcut": [behavioral_score(row) for row in holdout],
+        "production_evidence": [production_score(row) for row in holdout],
+        "sifter_hybrid_ranker": [hybrid_proxy(row) for row in holdout],
+    }
+    models = [evaluate_model(name, labels, values) for name, values in scores.items()]
+    keyword = next(item for item in models if item["model"] == "keyword_baseline")
+    sifter = next(item for item in models if item["model"] == "sifter_hybrid_ranker")
+    exact = statuses.count("exact_match")
+    near = statuses.count("near_match")
+    disagreements = statuses.count("disagreement")
+    return {
+        "examples": len(holdout),
+        "annotator": "technical_recruiter",
+        "blind_review": True,
+        "not_used_for_training": True,
+        "label_counts": dict(Counter(recruiter_labels)),
+        "project_label_counts": dict(Counter(project_labels)),
+        "agreement": {
+            "exact_matches": exact,
+            "near_matches": near,
+            "disagreements": disagreements,
+            "exact_agreement": round(exact / len(holdout), 4),
+            "near_or_exact_agreement": round((exact + near) / len(holdout), 4),
+            "cohen_kappa": cohen_kappa(project_labels, recruiter_labels),
+        },
+        "models": models,
+        "headline": {
+            "sifter_spearman": sifter["spearman"],
+            "keyword_spearman": keyword["spearman"],
+            "sifter_top25_ndcg": sifter["top_25"]["ndcg"],
+            "keyword_top25_ndcg": keyword["top_25"]["ndcg"],
+            "sifter_top25_strong_fit_recall": sifter["top_25"]["strong_fit_recall"],
+            "keyword_top25_strong_fit_recall": keyword["top_25"]["strong_fit_recall"],
+            "sifter_vs_keyword_top25_recall_lift": round(
+                sifter["top_25"]["strong_fit_recall"] / max(keyword["top_25"]["strong_fit_recall"], 0.0001),
+                2,
+            ),
+        },
+    }
+
+
 def make_svg(report: dict[str, object]) -> str:
     models = report["models"]
     width = 1060
@@ -203,6 +292,7 @@ def main() -> None:
     keyword = next(item for item in models if item["model"] == "keyword_baseline")
     sifter = next(item for item in models if item["model"] == "sifter_hybrid_ranker")
     lift = sifter["top_25"]["strong_fit_recall"] / max(keyword["top_25"]["strong_fit_recall"], 0.0001)
+    holdout = technical_recruiter_holdout(rows)
 
     report = {
         "generatedAt": "2026-06-11",
@@ -234,6 +324,8 @@ def main() -> None:
             "The Sifter hybrid signal is best on the balanced validation score because it combines role depth, production proof, retrieval/ranking evidence, and capped behavioral signals.",
         ],
     }
+    if holdout:
+        report["technical_recruiter_holdout"] = holdout
 
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
     OUT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
@@ -242,7 +334,7 @@ def main() -> None:
     lines = [
         "# Sifter Human-Reviewed Validation",
         "",
-        "This report measures Sifter on the human-reviewed Redrob review set. It is not a hidden official leaderboard or independent multi-recruiter panel, but it is a reproducible check that the ranker is doing more than keyword matching.",
+        "This report measures Sifter on the human-reviewed Redrob review set plus a 50-candidate blind technical-recruiter holdout. It is not a hidden official leaderboard or large multi-recruiter panel, but it is a reproducible check that the ranker is doing more than keyword matching.",
         "",
         f"- Reviewed examples: `{len(rows)}`",
         f"- Label mix: `{label_counts['strong_fit']}` strong fit, `{label_counts['maybe']}` maybe, `{label_counts['not_fit']}` not fit",
@@ -269,13 +361,51 @@ def main() -> None:
         "",
         "The standalone Hugging Face reranker reports `0.7526` Spearman on its own reviewed validation split. The `0.7989` value below measures the full Sifter hybrid ranker against the 180-candidate reviewed set, so the two values are intentionally different.",
         "",
-        "![Sifter validation ladder](sifter_validation_ladder.svg)",
-        "",
-        "## Model Comparison",
-        "",
-        "| Model | Balanced score | Spearman | NDCG@25 | Top-25 strong-fit recall | Top-25 maybe+ precision |",
-        "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
+    if holdout:
+        agreement = holdout["agreement"]
+        headline = holdout["headline"]
+        label_counts = holdout["label_counts"]
+        lines.extend(
+            [
+                "## Independent Technical-Recruiter Holdout",
+                "",
+                "A technical recruiter blind-reviewed 50 candidates without seeing Sifter rank, Sifter score, suggested labels, or the project review label. These labels are used as an independent holdout, not as training data.",
+                "",
+                f"- Holdout examples: `{holdout['examples']}`",
+                f"- Technical-recruiter label mix: `{label_counts.get('strong_fit', 0)}` strong fit, `{label_counts.get('maybe', 0)}` maybe, `{label_counts.get('not_fit', 0)}` not fit",
+                f"- Exact agreement with project reviewer: `{agreement['exact_agreement'] * 100:.1f}%`",
+                f"- Near-or-exact agreement: `{agreement['near_or_exact_agreement'] * 100:.1f}%`",
+                f"- Cohen's kappa: `{agreement['cohen_kappa']:.4f}`",
+                f"- Sifter Spearman on technical-recruiter holdout: `{headline['sifter_spearman']:.4f}`",
+                f"- Keyword Spearman on technical-recruiter holdout: `{headline['keyword_spearman']:.4f}`",
+                f"- Sifter NDCG@25 on technical-recruiter holdout: `{headline['sifter_top25_ndcg']:.4f}`",
+                "",
+                "| Holdout Signal | Spearman | NDCG@25 | Top-25 Strong-Fit Recall |",
+                "| --- | ---: | ---: | ---: |",
+            ]
+        )
+        for model in holdout["models"]:
+            lines.append(
+                f"| `{model['model']}` | `{model['spearman']:.4f}` | `{model['top_25']['ndcg']:.4f}` | `{model['top_25']['strong_fit_recall'] * 100:.1f}%` |"
+            )
+        lines.extend(
+            [
+                "",
+                "This is the strongest validation layer in the repo because it tests Sifter against a second review source that was not used to train the model.",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "![Sifter validation ladder](sifter_validation_ladder.svg)",
+            "",
+            "## Model Comparison",
+            "",
+            "| Model | Balanced score | Spearman | NDCG@25 | Top-25 strong-fit recall | Top-25 maybe+ precision |",
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
     for model in models:
         lines.append(
             f"| `{model['model']}` | `{model['balanced_validation_score']:.4f}` | `{model['spearman']:.4f}` | `{model['top_25']['ndcg']:.4f}` | `{model['top_25']['strong_fit_recall'] * 100:.1f}%` | `{model['top_25']['maybe_or_better_precision'] * 100:.1f}%` |"

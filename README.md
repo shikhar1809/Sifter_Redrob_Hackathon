@@ -24,12 +24,13 @@ Sifter is built to answer the prompt directly:
 
 ## Judge Evidence At A Glance
 
-Sifter now has three proof layers: it processes the full challenge pool, validates against human-reviewed labels, and serves a trained reranker in the product.
+Sifter now has four proof layers: it processes the full challenge pool, validates against human-reviewed labels, checks a blind technical-recruiter holdout, and serves a trained reranker in the product.
 
 | Proof | Result |
 | --- | --- |
 | Full Redrob pool processed | `100,000` candidates ranked into a validator-ready top 100 |
 | Human-reviewed validation set | `180` reviewed candidates: `46` strong fit, `58` maybe, `76` not fit |
+| Blind technical-recruiter holdout | `50` candidates, not used for training, `84%` exact agreement, `0.7568` Cohen's kappa |
 | Label provenance | `180` rows marked `project_reviewer` / `project_human_review` / `reviewed_model_v1` |
 | Sifter vs keyword-only | `1.36x` stronger Top-25 strong-fit recall |
 | Sifter reviewed-set rank agreement | `0.7989` Spearman against human labels |
@@ -43,7 +44,21 @@ Layman meaning: a judge can inspect more than a nice demo. The repo shows the da
 
 ## Primary Validation Result
 
-The strongest validation number is the full Sifter system score, not the tiny model-only split:
+The strongest validation layer is now the blind technical-recruiter holdout. A technical recruiter reviewed 50 candidates without seeing Sifter rank, Sifter score, suggested labels, or the project review label. These labels were not used for training.
+
+| Independent Holdout Metric | Result |
+| --- | ---: |
+| Technical-recruiter holdout size | `50` candidates |
+| Exact agreement with project reviewer | `84.0%` |
+| Near-or-exact agreement | `100.0%` |
+| Cohen's kappa | `0.7568` |
+| Sifter Spearman on technical-recruiter holdout | `0.9796` |
+| Keyword Spearman on technical-recruiter holdout | `0.4992` |
+| Sifter NDCG@25 on technical-recruiter holdout | `0.9562` |
+
+Layman meaning: a second review source checked 50 candidates independently, and Sifter's ordering still matched that technical-recruiter judgment strongly.
+
+The broader system validation is the full Sifter score across the 180-candidate reviewed set:
 
 | Primary Judge Metric | Result |
 | --- | ---: |
@@ -84,7 +99,7 @@ Plain English: `0.7989` is the full product ranking signal, which combines deter
 
 ## Validation Limits
 
-The validation set is transparent, but not perfect. The `180` reviewed labels are project-created recruiter-style labels, not an official hidden Redrob leaderboard and not an independent multi-recruiter panel. That is why Sifter keeps explanations, bias guardrails, and reviewer-agent questions visible instead of treating the model as an automatic hiring decision.
+The validation set is transparent, but not perfect. The `180` main reviewed labels are project-created recruiter-style labels, not an official hidden Redrob leaderboard. To reduce that weakness, we added a blind `50`-candidate technical-recruiter holdout. It is still not a large multi-recruiter panel, so Sifter keeps explanations, bias guardrails, and reviewer-agent questions visible instead of treating the model as an automatic hiring decision.
 
 The label file now carries explicit provenance columns: `annotator`, `label_source`, and `review_round`. Today every row is marked `project_reviewer` / `project_human_review` / `reviewed_model_v1`, which makes the single-reviewer limitation visible and gives a clean slot for adding a second annotator later.
 

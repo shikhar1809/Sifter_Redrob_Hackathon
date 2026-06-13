@@ -3826,6 +3826,34 @@
         },
         "balanced_validation_score": 0.8002
       }
-    ]
+    ],
+    "technicalRecruiterHoldout": {
+      "examples": 50,
+      "annotator": "technical_recruiter",
+      "blindReview": true,
+      "notUsedForTraining": true,
+      "labelCounts": {
+        "strong_fit": 8,
+        "maybe": 21,
+        "not_fit": 21
+      },
+      "agreement": {
+        "exactMatches": 42,
+        "nearMatches": 8,
+        "disagreements": 0,
+        "exactAgreement": 0.84,
+        "nearOrExactAgreement": 1,
+        "cohenKappa": 0.7568
+      },
+      "headline": {
+        "sifterSpearman": 0.9796,
+        "keywordSpearman": 0.4992,
+        "sifterTop25Ndcg": 0.9562,
+        "keywordTop25Ndcg": 0.8112,
+        "sifterTop25StrongFitRecall": 1,
+        "keywordTop25StrongFitRecall": 0.875,
+        "sifterVsKeywordTop25RecallLift": 1.14
+      }
+    }
   }
 }

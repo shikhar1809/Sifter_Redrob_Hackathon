@@ -1,6 +1,6 @@
 # Sifter Human-Reviewed Validation
 
-This report measures Sifter on the human-reviewed Redrob review set. It is not a hidden official leaderboard or independent multi-recruiter panel, but it is a reproducible check that the ranker is doing more than keyword matching.
+This report measures Sifter on the human-reviewed Redrob review set plus a 50-candidate blind technical-recruiter holdout. It is not a hidden official leaderboard or large multi-recruiter panel, but it is a reproducible check that the ranker is doing more than keyword matching.
 
 - Reviewed examples: `180`
 - Label mix: `46` strong fit, `58` maybe, `76` not fit
@@ -26,6 +26,28 @@ The comparison uses the same reviewed candidates for all signals:
 - `sifter_hybrid_ranker`: the combined Sifter signal.
 
 The standalone Hugging Face reranker reports `0.7526` Spearman on its own reviewed validation split. The `0.7989` value below measures the full Sifter hybrid ranker against the 180-candidate reviewed set, so the two values are intentionally different.
+
+## Independent Technical-Recruiter Holdout
+
+A technical recruiter blind-reviewed 50 candidates without seeing Sifter rank, Sifter score, suggested labels, or the project review label. These labels are used as an independent holdout, not as training data.
+
+- Holdout examples: `50`
+- Technical-recruiter label mix: `8` strong fit, `21` maybe, `21` not fit
+- Exact agreement with project reviewer: `84.0%`
+- Near-or-exact agreement: `100.0%`
+- Cohen's kappa: `0.7568`
+- Sifter Spearman on technical-recruiter holdout: `0.9796`
+- Keyword Spearman on technical-recruiter holdout: `0.4992`
+- Sifter NDCG@25 on technical-recruiter holdout: `0.9562`
+
+| Holdout Signal | Spearman | NDCG@25 | Top-25 Strong-Fit Recall |
+| --- | ---: | ---: | ---: |
+| `keyword_baseline` | `0.4992` | `0.8112` | `87.5%` |
+| `behavioral_shortcut` | `0.3935` | `0.7840` | `100.0%` |
+| `production_evidence` | `0.8854` | `0.9362` | `100.0%` |
+| `sifter_hybrid_ranker` | `0.9796` | `0.9562` | `100.0%` |
+
+This is the strongest validation layer in the repo because it tests Sifter against a second review source that was not used to train the model.
 
 ![Sifter validation ladder](sifter_validation_ladder.svg)
 

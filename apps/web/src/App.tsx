@@ -70,6 +70,30 @@ type RedrobValidationReport = {
   annotatorCounts?: Record<string, number>;
   labelSourceCounts?: Record<string, number>;
   reviewRoundCounts?: Record<string, number>;
+  technicalRecruiterHoldout?: {
+    examples: number;
+    annotator: string;
+    blindReview: boolean;
+    notUsedForTraining: boolean;
+    labelCounts: Record<string, number>;
+    agreement: {
+      exactMatches: number;
+      nearMatches: number;
+      disagreements: number;
+      exactAgreement: number;
+      nearOrExactAgreement: number;
+      cohenKappa: number;
+    };
+    headline: {
+      sifterSpearman: number;
+      keywordSpearman: number;
+      sifterTop25Ndcg: number;
+      keywordTop25Ndcg: number;
+      sifterTop25StrongFitRecall: number;
+      keywordTop25StrongFitRecall: number;
+      sifterVsKeywordTop25RecallLift: number;
+    };
+  };
   limitation: string;
   headline: {
     best_model: string;
@@ -1648,6 +1672,7 @@ function ValidationProofPanel({ report }: { report: RedrobValidationReport }) {
   const rows = [keyword, behavior, sifter].filter((model): model is RedrobValidationModelMetric => Boolean(model));
   const annotatorTotal = Object.values(report.annotatorCounts ?? {}).reduce((sum, count) => sum + count, 0);
   const labelSource = Object.keys(report.labelSourceCounts ?? {})[0] ?? "project review";
+  const holdout = report.technicalRecruiterHoldout;
 
   return (
     <section className="panel validation-proof-panel">
@@ -1681,6 +1706,23 @@ function ValidationProofPanel({ report }: { report: RedrobValidationReport }) {
           {labelSource ? ` (${labelSource})` : ""}. This keeps the single-reviewer limitation visible and prepares the dataset for a second reviewer.
         </span>
       </div>
+      {holdout ? (
+        <div className="technical-holdout-box">
+          <div>
+            <span>Independent technical-recruiter holdout</span>
+            <strong>{holdout.examples} blind-reviewed candidates</strong>
+            <p>
+              Not used for training. Exact agreement {Math.round(holdout.agreement.exactAgreement * 100)}%, near/exact agreement{" "}
+              {Math.round(holdout.agreement.nearOrExactAgreement * 100)}%, Cohen&apos;s kappa {holdout.agreement.cohenKappa.toFixed(3)}.
+            </p>
+          </div>
+          <div>
+            <span>Sifter vs keyword</span>
+            <strong>{holdout.headline.sifterSpearman.toFixed(3)} vs {holdout.headline.keywordSpearman.toFixed(3)}</strong>
+            <p>Spearman rank agreement on labels from the independent technical recruiter.</p>
+          </div>
+        </div>
+      ) : null}
       <div className="validation-bars">
         {rows.map((model) => (
           <div key={model.model} className={model.model === "sifter_hybrid_ranker" ? "is-winner" : ""}>

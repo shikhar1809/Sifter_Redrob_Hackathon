@@ -1478,6 +1478,45 @@ textarea {
   line-height: 1.35;
 }
 
+.technical-holdout-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.45fr);
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.technical-holdout-box > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ecfdf3;
+  padding: 12px;
+}
+
+.technical-holdout-box span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.technical-holdout-box strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+.technical-holdout-box p {
+  margin: 8px 0 0;
+  color: #30302c;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .validation-bars {
   display: grid;
   gap: 8px;

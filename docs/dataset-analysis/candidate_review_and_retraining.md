@@ -16,6 +16,20 @@ Label provenance is explicit in the CSV:
 
 This does not turn the review set into a multi-annotator panel. It makes the single-reviewer source auditable and gives the next reviewer a clean place to add independent labels.
 
+## Blind Technical-Recruiter Holdout
+
+A technical recruiter independently reviewed 50 candidates from the review set without seeing Sifter rank, Sifter score, suggested labels, or the project reviewer label.
+
+- Holdout examples: 50
+- Technical-recruiter labels: 8 `strong_fit`, 21 `maybe`, 21 `not_fit`
+- Exact agreement with project reviewer: 84.0%
+- Near-or-exact agreement: 100.0%
+- Cohen's kappa: 0.7568
+- Sifter Spearman on the technical-recruiter holdout: 0.9796
+- Keyword Spearman on the technical-recruiter holdout: 0.4992
+
+The holdout labels are not used for training. They are an independent check that Sifter's ranking agrees with a second technical recruiting judgment source.
+
 The reviewed labels were converted into model-training labels with:
 
 ```bash
